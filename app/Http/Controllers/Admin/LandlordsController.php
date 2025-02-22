@@ -307,8 +307,4 @@ class LandlordsController extends Controller
 
         return view('admin.landlords.index', compact('page', 'searchLandlords', 'searchLandlord', 'landlords', 'keywords'));
     }
-
-    public function justtesting(){
-    }
-
 }

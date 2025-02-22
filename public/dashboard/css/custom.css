@@ -1,0 +1,441 @@
+form input.error,
+form select.error,
+form textarea.error {
+    margin-bottom: 6px !important;
+    border-color: #FF1616 !important;
+}
+
+label.error {
+    color: #FF1616 !important;
+}
+
+#forgetPasswordForm label.error {
+    margin-right: 20px;
+}
+
+/* input:-webkit-autofill {
+    background-color: #d9d7d8 !important;
+} */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-background-clip: text;
+    /* -webkit-text-fill-color: #ffffff; */
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px #d9d7d8;
+    border: 1px solid #041e41;
+}
+
+.dropdown-toggle.dropdown-toggle-no-caret::after {
+    display: none;
+}
+
+
+.ps-scrollbar-y {
+    background-color: darkgrey !important;
+    width: 13px !important;
+}
+
+.ps-active-y > :nth-child(3) > * {
+    display: none !important;
+}
+
+.filter-multi-select .dropdown-toggle::after {
+    content: "" !important;
+}
+
+.filter-multi-select .dropdown-menu {
+    transition: initial !important;
+    transform: initial !important;
+}
+
+/*== Erros ===*/
+
+#loginForm .form-error {
+    margin-bottom: 3px;
+}
+
+.form-error input,
+input.error {
+    border-color: #FF1616;
+}
+
+label.error {
+    color: #FF1616;
+    font-size: 13px;
+    margin-top: 0.5rem;
+}
+
+
+/*=== errors*****/
+
+.error-code {
+    font-size: 9rem
+}
+
+
+/*==== Theme  options =====*/
+
+.theme-btn {
+    background-color: #041e41 !important;
+    border-color: #041e41 !important;
+    color: #fff
+}
+
+.theme-btn:hover {
+    background-color: #00bed6 !important;
+    border-color: #00bed6 !important;
+}
+
+.theme-btn-cust-hover:hover {
+    background-color: #00bed6 !important;
+    color: white !important;
+    border-color: #00bed6 !important;
+}
+
+.theme-btn-outline {
+    border-color: #041e41 !important;
+    color: #041e41 !important;
+}
+
+.theme-btn-outline:active {
+    border-color: #00bed6 !important;
+    color: white !important;
+}
+
+.theme-color {
+    color: #041e41 !important;
+}
+
+.theme-btn-outline:hover {
+    background-color: #041e41 !important;
+    border-color: #041e41 !important;
+    color: #fff !important
+}
+
+.theme-form-control:focus {
+    border-color: #041e41 !important;
+}
+
+
+/*--- Theme colors ---*/
+
+.bg-danger {
+    background: #ff5f56 !important;
+}
+
+.border-danger {
+    border-color: #ff5f56 !important;
+}
+
+.bg-warning {
+    background-color: #ffb400 !important;
+}
+
+.border-warning {
+    border-color: #ffb400 !important;
+}
+
+.bg-success {
+    background: #27c93f !important;
+}
+
+.border-success {
+    border-color: #27c93f !important
+}
+
+
+/*===== Input styles =====*/
+
+.input-custom-file_1 {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #4E5154;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.has-icon-left .input-icon {
+    top: 29px !important;
+}
+
+
+/* ===== List item ====*/
+
+.main-menu.menu-dark .navigation>li.open>a {
+    color: #fff;
+    background: #00bed6;
+    border-right: 4px solid #041e41;
+}
+
+.main-menu.menu-dark .navigation>li a.active {
+    color: #fff;
+    background: #00bed6;
+}
+
+
+/*==== Btn theme ---*/
+
+.basic-btn {
+    background-color: #041e41 !important;
+    border-color: #041e41 !important;
+}
+
+.basic-btn:hover,
+.basic-btn:focus {
+    background-color: #041e41 !important;
+    border-color: #041e41 !important;
+}
+
+
+/*==== Choose categeories row---*/
+
+.choose-categories-row {}
+
+.choose-categories-row .card {
+    border: 1px solid rgba(0, 0, 0, .125)
+}
+
+.choose-categories-row .card input[type="checkbox"] {
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0
+}
+
+.choose-categories-row .category-selected {
+    border: 1px solid #535BE2;
+}
+
+
+/*---- Custom table ===*/
+
+.custom-table th,
+.custom-table td {
+    border: 1px solid #e3ebf3 !important
+}
+
+.navbar-semi-dark .navbar-header .navbar-nav .nav-link {
+    color: white !important;
+}
+.table th, .table td {
+    font-size: 12px;
+    padding: 0.75rem 1rem;
+}
+img.dash_icn {
+    width: 1.4rem;
+    margin-right: 12px;
+}
+
+.bg-lead{ background: #7db8ca; }
+
+/*=== Reminders =================================*/
+.remidner--date  .picker__holder{
+    width: 393px;
+  }
+  .reminders-row img{
+      max-width: 142px;
+  }
+  .reminders-row  .calender-icon{
+      margin-right: 14.5px;
+  }
+  .reminders-row .reminders{}
+  .reminders-row .reminders p{
+      font-weight: bold;
+  }
+  .reminders-row .reminders  a{
+      display: flex;
+      font-weight: normal;
+      margin-top: 2px;
+  }
+  .reminders-row .reminders  a i{
+      margin-right: 4px;
+  }
+
+  /*=== Custom switch *****/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 53px;
+    height: 27px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+   /* Rounded sliders */
+   .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .task-count {
+    position: absolute;
+    top: 2px;
+    right: 150px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    padding: 0px 7px;
+    border-radius: 50%;
+  }
+
+    .lead-count {
+        position: absolute;
+        top: 2px;
+        right: 150px;
+        background-color: #a4a4a4;
+        color: white;
+        font-size: 12px;
+        padding: 0px 7px;
+        border-radius: 50%;
+    }
+
+    .supplier-leads-count {
+        position: absolute;
+        top: 2px;
+        right: 105px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        padding: 0px 7px;
+        border-radius: 50%;
+        animation: blink-animation 2s infinite !important;
+    }
+
+    .leads-count {
+        position: absolute;
+        top: 2px;
+        right: 149px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        padding: 0px 7px;
+        border-radius: 50%;
+    }
+
+    .enquiry-count {
+        position: absolute;
+        top: 2px;
+        right: 128px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        padding: 0px 7px;
+        border-radius: 50%;
+    }
+
+  .welcome_text_portal {
+    color: #041e41 !important;
+  }
+
+  /* blinking dot */
+  .blinking-dot {
+    position: absolute;
+    top: 16px; /* Adjust as needed */
+    right: 15px; /* Adjust as needed */
+    height: 10px; /* Size of the dot */
+    width: 10px; /* Size of the dot */
+    background-color: red; /* Dot color */
+    border-radius: 50%;
+    animation: blink-animation 1.5s infinite;
+  }
+
+  @keyframes blink-animation {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+
+/*  Toast */
+
+div.toast-success {
+    background-color: #00bed6 !important;
+    opacity: unset !important;
+}
+
+  .custom-content {
+    text-wrap: wrap;
+}
+
+.fc-daygrid-dot-event .fc-event-title {
+    text-wrap: wrap;
+}
+
+/* navbar */
+.main-menu.menu-custom {
+    background-color: #041e41;
+}
+
+.main-menu.menu-dark .navigation li {
+    background-color: #041e41;
+}
+
+.main-menu.menu-dark .navigation > li ul li {
+    background-color: #041e41;
+}
+
+.navbar-wrapper .navbar-header {
+    background-color: #041e41 !important;
+}
+
+.navbar-header img {
+    width: 50px;
+}
+

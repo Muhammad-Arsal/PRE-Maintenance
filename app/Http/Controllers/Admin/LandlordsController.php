@@ -22,12 +22,10 @@ class LandlordsController extends Controller
 
         $landlords = Landlord::orderBy('name', 'asc')->with('profile')->paginate(10);
 
-        $searchLandlords = Landlord::orderBy('name', 'asc')->get();
-
         $keywords = "";
-        $searchLandlord = "";
+        $status = "";
 
-        return view('admin.landlords.index', compact('page', 'landlords', 'searchLandlords', 'searchLandlord', 'keywords'));
+        return view('admin.landlords.index', compact('page', 'landlords', 'keywords', 'status'));
     }
 
     public function create() 
@@ -286,10 +284,14 @@ class LandlordsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Landlords';
 
-        $searchLandlord = $request['landlord'];
-        $keywords = $request['keywords'];
+        $status = $request->status;
+        $keywords = $request->keywords;
 
         $query = Landlord::with('profile')->orderBy('name', 'asc');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
 
         if ($keywords) {
             $query->where(function ($q) use ($keywords) {
@@ -303,8 +305,7 @@ class LandlordsController extends Controller
 
         $landlords = $query->orderBy('name', 'asc')->paginate(10);
 
-        $searchLandlords = Landlord::orderBy('name', 'asc')->get();
-
-        return view('admin.landlords.index', compact('page', 'searchLandlords', 'searchLandlord', 'landlords', 'keywords'));
+        return view('admin.landlords.index', compact('page', 'status', 'landlords', 'keywords'));
     }
+
 }

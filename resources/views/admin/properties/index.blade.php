@@ -38,15 +38,79 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
-                                    <form id="searchForm" action="">
+                                    <form id="searchForm" action="{{route('admin.properties.search')}}">
                                         <div class="form-body">
                                             <div class="row">
-                                                <div class="col-12 col-md-12">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <input value="{{ $keywords }}" type="text" class="form-control" name="keywords"
-                                                        placeholder="Address">
+                                                        placeholder="Address line 1, City, County, Postal Code">
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <select name="searchLandlord" id="searchLandlord" style="width: 100%" class="form-control select2">
+                                                            <option value="">Select landlord</option>
+                                                            @foreach ($landlords as $item)
+                                                                <option {{ $item->id == $searchLandlord ? 'selected' : '' }} value="{{ $item->id }}">
+                                                                    {{ $item->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <select name="searchTenant" id="searchTenant" style="width: 100%" class="form-control select2">
+                                                            <option value="">Select tenant</option>
+                                                            @foreach ($tenants as $item)
+                                                                <option {{ $item->id == $searchTenant ? 'selected' : '' }} value="{{ $item->id }}">
+                                                                    {{ $item->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div> 
+                                            </div>
+                                            <div class="row"> 
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                            <select id="searchType" name="searchType" class="form-control">
+                                                                <option value="">Select Property Type</option>
+                                                                @foreach($type as $type)
+                                                                    <option value="{{ $type->name }}" {{ old('searchType', $searchType ?? '') == $type->name ? 'selected' : '' }}>
+                                                                        {{ $type->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        @error('searchType') 
+                                                            <span class="text-danger">{{ $message }}</span> 
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <select name="searchBedrooms" id="searchBedrooms" style="width: 100%" class="form-control select2">
+                                                            <option value="">Select bedrooms</option>
+                                                            @for ($i = 1; $i <= 10; $i++)
+                                                                <option value="{{ $i }}" {{ isset($searchBedrooms) && $searchBedrooms == $i ? 'selected' : '' }}>
+                                                                    {{ $i }} {{ $i == 1 ? 'Bedroom' : 'Bedrooms' }}
+                                                                </option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <select name="status" id="status" style="width: 100%" class="form-control">
+                                                            <option value="">Select status</option>
+                                                            <option value="active" {{ $status == 'active' ? 'selected' : '' }}>Active</option>
+                                                            <option value="inactive" {{ $status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                </div>                                              
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-12 col-md-6">
                                                     <div class="form-group">
                                                         <div class="btn-group">
@@ -203,6 +267,7 @@
 @endsection
 
 @section('js')
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
 <script>
 $(document).ready(function() {
     $(".clickDeleteFunction").on("click", function(e) {
@@ -212,7 +277,12 @@ $(document).ready(function() {
         $("#forceDelete").modal("show");
     });
 });
+</script>
 
+<script>
+    $(function() {
+        $('.select2').select2();
+    })
 </script>
 @endsection
 

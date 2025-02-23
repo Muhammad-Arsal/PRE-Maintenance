@@ -22,12 +22,10 @@ class ContractorsController extends Controller
 
         $contractors = Contractor::orderBy('name', 'asc')->with('profile')->paginate(10);
 
-        $searchContractors = Contractor::orderBy('name', 'asc')->get();
-
         $keywords = "";
-        $searchContractor = "";
+        $status = "";
 
-        return view('admin.contractors.index', compact('page', 'contractors', 'searchContractors', 'searchContractor', 'keywords'));
+        return view('admin.contractors.index', compact('page', 'contractors', 'status', 'keywords'));
     }
 
     public function create() 
@@ -281,10 +279,14 @@ class ContractorsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Contractors';
 
-        $searchContractor = $request['contractor'];
+        $status = $request['status'];
         $keywords = $request['keywords'];
 
         $query = Contractor::with('profile')->orderBy('name', 'asc');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
 
         if ($keywords) {
             $query->where(function ($q) use ($keywords) {
@@ -298,8 +300,6 @@ class ContractorsController extends Controller
 
         $contractors = $query->orderBy('name', 'asc')->paginate(10);
 
-        $searchContractors = Contractor::orderBy('name', 'asc')->get();
-
-        return view('admin.contractors.index', compact('page', 'searchContractors', 'searchContractor', 'contractors', 'keywords'));
+        return view('admin.contractors.index', compact('page', 'status', 'contractors', 'keywords'));
     }
 }

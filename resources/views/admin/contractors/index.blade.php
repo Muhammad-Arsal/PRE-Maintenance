@@ -49,14 +49,13 @@
                                                 </div>
                                                 <div class="col-12 col-md-4">
                                                     <div class="form-group">
-                                                        <select name="contractor" id="contractor" style="width: 100%" class="form-control select2">
-                                                            <option value="">Select contractor</option>
-                                                            @foreach ($searchContractors as $item)
-                                                                <option {{ $item->id == $searchContractor ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->name }}</option>
-                                                            @endforeach
+                                                        <select name="status" id="status" style="width: 100%" class="form-control">
+                                                            <option value="">Select status</option>
+                                                            <option value="active" {{ $status == 'active' ? 'selected' : '' }}>Active</option>
+                                                            <option value="inactive" {{ $status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> 
                                                 <div class="col-12 col-md-6">
                                                     <div class="form-group">
                                                         <div class="btn-group">
@@ -97,7 +96,7 @@
                                     @php $j=1 @endphp
                                     <?php
                                         if($contractors->currentPage() !== 1){
-                                            $j =  $per_page * ( $contractors->currentPage() - 1) + 1;
+                                            $j =  10 * ( $contractors->currentPage() - 1) + 1;
                                         }
                                     ?>
                                     @forelse($contractors as $data)

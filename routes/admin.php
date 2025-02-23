@@ -98,6 +98,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('/properties/{id}/update', [PropertyController::class, 'update'])->name('admin.properties.update');
     Route::post('properties/{id}/destroy', [PropertyController::class, 'destroy'])->name('admin.properties.destroy');
     Route::get('properties/{id}/show', [PropertyController::class, 'show'])->name('admin.properties.show');
+    Route::get('/properties/search', [PropertyController::class,'searchData'])->name('admin.properties.search');
 
     // Property Types
     Route::get('settings/propertyType', [PropertyTypeController::class, 'index'])->name('admin.settings.propertyType');

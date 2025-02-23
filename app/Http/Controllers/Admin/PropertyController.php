@@ -20,12 +20,18 @@ class PropertyController extends Controller
     
         $properties = Property::orderBy('created_at', 'desc')->paginate(10);
 
-        // $searchTenants = Tenant::orderBy('name', 'asc')->get();
+        $landlords = Landlord::all();
+        $tenants = Tenant::all();
+        $type = PropertyType::all();
     
         $keywords = "";
-        // $searchTenant = "";
+        $searchTenant = "";
+        $searchLandlord = "";
+        $searchType = "";
+        $status = "";
+        $searchBedrooms = "";
     
-        return view('admin.properties.index', compact('page','keywords', 'properties'));
+        return view('admin.properties.index', compact('page','keywords', 'properties','landlords', 'tenants', 'type', 'status', 'searchTenant', 'searchLandlord', 'searchType', 'searchBedrooms'));
     }
 
     public function create(){
@@ -170,15 +176,64 @@ class PropertyController extends Controller
     }
 
     public function show($id)
-{
-    $property = Property::where('id', $id)->first();
+    {
+        $property = Property::where('id', $id)->first();
 
-    $tenant = \DB::table('tenants')->where('id', $property->tenant_id)->first();
-    $landlord = \DB::table('landlords')->where('id', $property->landlord_id)->first();
+        $tenant = \DB::table('tenants')->where('id', $property->tenant_id)->first();
+        $landlord = \DB::table('landlords')->where('id', $property->landlord_id)->first();
 
-    $page['page_title'] = 'View Property Details';
+        $page['page_title'] = 'View Property Details';
 
-    return view('admin.properties.show', compact('page', 'property', 'tenant', 'landlord'));
-}
+        return view('admin.properties.show', compact('page', 'property', 'tenant', 'landlord'));
+    }
+
+    public function searchData(Request $request)
+    {
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Properties';
+
+        $status = $request->input('status');
+        $searchTenant = $request->input('searchTenant');
+        $searchLandlord = $request->input('searchLandlord');
+        $searchType = $request->input('searchType');
+        $searchBedrooms = $request->input('searchBedrooms');
+        $keywords = $request->input('keywords');
+
+        $query = Property::query();
+        $landlords = Landlord::all();
+        $tenants = Tenant::all();
+        $type = PropertyType::all();
+
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+        if (!empty($searchTenant)) {
+            $query->where('tenant_id', $searchTenant);
+        }
+        if (!empty($searchLandlord)) {
+            $query->where('landlord_id', $searchLandlord);
+        }
+        if (!empty($searchType)) {
+            $query->where('type', $searchType);
+        }
+        if (!empty($searchBedrooms)) {
+            $query->where('bedrooms', $searchBedrooms);
+        }
+        if (!empty($keywords)) {
+            $query->where(function ($q) use ($keywords) {
+                $q->where('line1', 'LIKE', "%{$keywords}%")
+                ->orWhere('city', 'LIKE', "%{$keywords}%")
+                ->orWhere('county', 'LIKE', "%{$keywords}%")
+                ->orWhere('postcode', 'LIKE', "%{$keywords}%");
+            });
+        }
+
+        $properties = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('admin.properties.index', compact('page', 'properties', 'status', 'searchTenant', 'searchLandlord', 'searchType', 'searchBedrooms', 'keywords', 'landlords', 'tenants', 'type'));
+    }
+
 
 }

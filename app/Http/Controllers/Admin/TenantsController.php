@@ -6,10 +6,14 @@ use App\Events\TenantAdded;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\TenantProfile;
+use App\Models\Property;
+use App\Models\TenantDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class TenantsController extends Controller
 {
@@ -22,12 +26,10 @@ class TenantsController extends Controller
     
         $tenants = Tenant::orderBy('name', 'asc')->with('profile')->paginate(10);
     
-        $searchTenants = Tenant::orderBy('name', 'asc')->get();
-    
         $keywords = "";
-        $searchTenant = "";
+        $status = "";
     
-        return view('admin.tenants.index', compact('page', 'tenants', 'searchTenants', 'searchTenant', 'keywords'));
+        return view('admin.tenants.index', compact('page', 'tenants', 'keywords', 'status'));
     }
     
     public function create() 
@@ -36,18 +38,21 @@ class TenantsController extends Controller
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Add Tenant';
+
+        $properties = Property::all();
     
-        return view('admin.tenants.create', compact('page'));
+        return view('admin.tenants.create', compact('page', 'properties'));
     }
     
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fname' => 'required',
-            'email' => 'required|email|unique:tenants',
             'status' => 'required',
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048', // Optional, check for image
+            'property' => 'required',
+            'contract_start' =>'required',
+            'contract_end' => 'required',
         ]);
     
         if ($validator->fails()) {
@@ -55,56 +60,117 @@ class TenantsController extends Controller
                         ->withErrors($validator)
                         ->withInput();
         }
-    
-        $tenant = Tenant::create([
-            'name' => $request->fname . ' ' . $request->lname,
-            'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : null,
-            'deleted_at' => $request->status == 'Active' ? null : now(),
-            'status' =>  $request->status,
-        ]);
-    
-        if (!$tenant) {
-            return redirect()->back()
-                ->withFlashMessage('Failed to create tenant.')
-                ->withFlashType('errors');
-        }
-    
-        // Create tenant profile
-        $tenant_profile = TenantProfile::create([
-            'tenant_id' => $tenant->id,
-            'phone_number' => $request->phone_number,
-        ]);
-    
-        if ($request->hasFile('profile_image')) {
-            $profile_image = $request->file('profile_image');
-    
-            // Create directory if it doesn't exist
-            $directory = public_path('uploads/tenant-' . $tenant->id . '/');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0777, true);
+
+        $names = $request->name;
+        $phone_numbers = $request->phone_number;
+        $work_phones = $request->work_phone;
+        $home_phones = $request->home_phone;
+        $emails = $request->email;
+        $primary_users = $request->primary_user;
+
+        $length = count($names);
+
+        try {
+            DB::beginTransaction(); // Start the transaction
+        
+            // Validate that primary user email is unique before inserting
+            if (!empty($request->primary_user)) {
+                $primaryUserIndex = array_key_first($request->primary_user);
+                $primaryEmail = $emails[$primaryUserIndex] ?? null;
+        
+                if ($primaryEmail) {
+                    $existingTenant = Tenant::where('email', $primaryEmail)->first();
+                    if ($existingTenant) {
+                        throw ValidationException::withMessages(['email' => 'The primary user email must be unique.']);
+                    }
+                }
             }
-    
-            // Generate a unique filename
-            $profile_image_name = uniqid('profile_image_') . '.' . $profile_image->getClientOriginalExtension();
-    
-            // Move the image to the directory
-            $profile_image->move($directory, $profile_image_name);
-    
-            // Update tenant profile with image path
-            $tenant_profile->update([
-                'profile_image' => $profile_image_name,
+        
+            // Create the Tenant
+            $tenant = Tenant::create([
+                'password' => $request->password ? Hash::make($request->password) : null,
+                'deleted_at' => $request->status == 'Active' ? null : now(),
+                'status' =>  $request->status,
+                'property_id' => $request->property,
+                'contract_start' => $request->contract_start,
+                'contract_end' => $request->contract_end,
+                'deposit' => $request->deposit,
+                'adjust' => $request->adjust,
+                'left_property' => $request->date_left_property,
+                'note' => $request->note,
             ]);
-        }
-    
-        if($tenant->deleted_at == null) {
-            event(new TenantAdded($tenant));
-        }
-    
-        return redirect()
+        
+            // Iterate through the tenants
+            for ($i = 0; $i < $length; $i++) {
+                $name = $names[$i] ?? null;
+                $phone_number = $phone_numbers[$i] ?? null;
+                $work_phone = $work_phones[$i] ?? null;
+                $home_phone = $home_phones[$i] ?? null;
+                $email = $emails[$i] ?? null;
+                $primary_user = $primary_users[$i] ?? null;
+        
+                if ($primary_user) {
+                    // Update the primary tenant's information
+                    $tenant->update([
+                        'name' => $name,
+                        'email' => $email,
+                        'work_phone' => $work_phone,
+                        'home_phone' => $home_phone,
+                    ]);
+        
+                    if (!$tenant) {
+                        throw new \Exception('Failed to update tenant.');
+                    }
+        
+                    $tenant_profile = TenantProfile::create([
+                        'tenant_id' => $tenant->id,
+                        'phone_number' => $phone_number,
+                    ]);
+        
+                    if ($request->hasFile('profile_image')) {
+                        $profile_image = $request->file('profile_image');
+        
+                        $directory = public_path('uploads/tenant-' . $tenant->id . '/');
+                        if (!file_exists($directory)) {
+                            mkdir($directory, 0777, true);
+                        }
+                        $profile_image_name = uniqid('profile_image_') . '.' . $profile_image->getClientOriginalExtension();
+                        $profile_image->move($directory, $profile_image_name);
+        
+                        $tenant_profile->update([
+                            'profile_image' => $profile_image_name,
+                        ]);
+                    }
+        
+                    if ($tenant->deleted_at == null) {
+                        event(new TenantAdded($tenant));
+                    }
+                } else {
+                    TenantDetails::create([
+                        'tenant_id' => $tenant->id,
+                        'name' => $name,
+                        'email' => $email,
+                        'phone_number' => $phone_number,
+                        'work_phone' => $work_phone,
+                        'home_phone' => $home_phone,
+                    ]);
+                }
+            }
+        
+            DB::commit(); // Commit the transaction
+        
+            return redirect()
             ->route('admin.settings.tenants')
             ->withFlashMessage('Tenant created successfully! User will receive an email for verification')
             ->withFlashType('success');
+
+        } catch (\Exception $e) {
+            DB::rollback(); // Rollback if any error occurs
+        
+            return back()
+            ->withFlashMessage('Error: ' . $e->getMessage())
+            ->withFlashType('errors');        
+        }
     }
     
     public function edit($id) 
@@ -115,8 +181,12 @@ class TenantsController extends Controller
         $page['page_current'] = 'Edit Tenant';
     
         $tenant = Tenant::where('id', $id)->first();
+
+        $properties = Property::all();
+
+        $tenantDetails = TenantDetails::where('tenant_id', $id)->get();
     
-        return view('admin.tenants.edit', compact('page', 'tenant'));
+        return view('admin.tenants.edit', compact('page', 'tenant', 'properties', 'tenantDetails'));
     }
     
     public function update(Request $request, $id)
@@ -125,11 +195,12 @@ class TenantsController extends Controller
     
         // Validation
         $validator = Validator::make($request->all(), [
-            'fname' => 'required',
-            'email' => 'required|email|unique:tenants,email,' . $tenant->id,
             'status' => 'required',
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'property' => 'required',
+            'contract_start' =>'required',
+            'contract_end' => 'required',
         ]);
     
         if ($validator->fails()) {
@@ -137,56 +208,130 @@ class TenantsController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-    
-        $tenant->update([
-            'name' => $request->fname . ' ' . $request->lname,
-            'email' => $request->email,
-            'deleted_at' => $request->status == 'Active' ? null : now(),
-            'status' =>  $request->status,
-        ]);
-    
-        if ($request->filled('password')) {
+        if (!empty($request->primary_user)) {
+            $primaryUserIndex = array_key_first($request->primary_user);
+            $primaryEmail = $request->email[$primaryUserIndex] ?? null;
+            if ($primaryEmail) {
+                $existingTenant = Tenant::where('email', $primaryEmail)->where("id", "!=", $tenant->id)->first();
+                if ($existingTenant) {
+                    return back()
+                    ->withFlashMessage("The primary email address must be unique")
+                    ->withFlashType('errors');  
+                }
+            }
+        }
+        try {
+            DB::beginTransaction();
+
+             // Validate that primary user email is unique before inserting
+
             $tenant->update([
-                'password' => Hash::make($request->password),
+                'deleted_at' => $request->status == 'Active' ? null : now(),
+                'status' =>  $request->status,
+                'property_id' => $request->property,
+                'contract_start' => $request->contract_start,
+                'contract_end' => $request->contract_end,
+                'deposit' => $request->deposit,
+                'adjust' => $request->adjust,
+                'left_property' => $request->date_left_property,
+                'note' => $request->note,
             ]);
-        }
-    
-        $tenant->profile()->updateOrCreate(
-            ['tenant_id' => $tenant->id],
-            ['phone_number' => $request->phone_number]
-        );
-    
-        // Handle profile image upload
-        if ($request->hasFile('profile_image')) {
-            $profile_image = $request->file('profile_image');
-    
-            // Create directory if it doesn't exist
-            $directory = public_path('uploads/tenant-' . $tenant->id . '/');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0777, true);
+
+            if ($request->filled('password')) {
+                $tenant->update([
+                    'password' => Hash::make($request->password),
+                ]);
+            }
+        
+            // Handle profile image upload
+            if ($request->hasFile('profile_image')) {
+                $profile_image = $request->file('profile_image');
+        
+                // Create directory if it doesn't exist
+                $directory = public_path('uploads/tenant-' . $tenant->id . '/');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0777, true);
+                }
+        
+                if (isset($tenant->profile) && !empty($tenant->profile->profile_image)) {
+                    $existingProfileImage = $directory . $tenant->profile->profile_image;
+                    if (file_exists($existingProfileImage)) unlink($existingProfileImage);
+                }
+        
+                // Generate a unique filename
+                $profile_image_name = uniqid('profile_image_') . '.' . $profile_image->getClientOriginalExtension();
+        
+                // Move the image to the directory
+                $profile_image->move($directory, $profile_image_name);
+        
+                // Update profile image in tenant profile
+                $tenant->profile()->update([
+                    'profile_image' => $profile_image_name,
+                ]);
             }
     
-            if (isset($tenant->profile) && !empty($tenant->profile->profile_image)) {
-                $existingProfileImage = $directory . $tenant->profile->profile_image;
-                if (file_exists($existingProfileImage)) unlink($existingProfileImage);
+            $names = $request->name;
+            $phone_numbers = $request->phone_number;
+            $work_phones = $request->work_phone;
+            $home_phones = $request->home_phone;
+            $emails = $request->email;
+            $primary_users = $request->primary_user;
+    
+            TenantDetails::where('tenant_id', $tenant->id)->delete();
+
+            $length = count($names);
+
+            for ($i = 0; $i < $length; $i++) {
+                $name = $names[$i] ?? null;
+                $phone_number = $phone_numbers[$i] ?? null;
+                $work_phone = $work_phones[$i] ?? null;
+                $home_phone = $home_phones[$i] ?? null;
+                $email = $emails[$i] ?? null;
+                $primary_user = $primary_users[$i] ?? null;
+        
+                if ($primary_user) {
+                    // Update the primary tenant's information
+                    $tenant->update([
+                        'name' => $name,
+                        'email' => $email,
+                        'work_phone' => $work_phone,
+                        'home_phone' => $home_phone,
+                    ]);
+
+                    $tenant->profile()->updateOrCreate(
+                        ['tenant_id' => $tenant->id],
+                        ['phone_number' => $phone_number]
+                    );
+        
+                    if (!$tenant) {
+                        throw new \Exception('Failed to update tenant.');
+                    }
+                } else {
+                    TenantDetails::create([
+                        'tenant_id' => $tenant->id,
+                        'name' => $name,
+                        'email' => $email,
+                        'phone_number' => $phone_number,
+                        'work_phone' => $work_phone,
+                        'home_phone' => $home_phone,
+                    ]);
+                }
             }
-    
-            // Generate a unique filename
-            $profile_image_name = uniqid('profile_image_') . '.' . $profile_image->getClientOriginalExtension();
-    
-            // Move the image to the directory
-            $profile_image->move($directory, $profile_image_name);
-    
-            // Update profile image in tenant profile
-            $tenant->profile()->update([
-                'profile_image' => $profile_image_name,
-            ]);
+        
+            DB::commit(); // Commit the transaction
+        
+            return redirect()
+                ->route('admin.settings.tenants')
+                ->withFlashMessage('Tenant updated successfully!')
+                ->withFlashType('success');    
+        }catch (\Exception $e) {
+            DB::rollback(); // Rollback if any error occurs
+        
+            return back()
+            ->withFlashMessage('Error: ' . $e->getMessage())
+            ->withFlashType('errors');        
         }
-    
-        return redirect()
-            ->route('admin.settings.tenants')
-            ->withFlashMessage('Tenant updated successfully!')
-            ->withFlashType('success');
+        
     }    
 
 
@@ -248,10 +393,14 @@ class TenantsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Tenants';
 
-        $searchTenant = $request['tenant'];
+        $status = $request->status;
         $keywords = $request['keywords'];
 
         $query = Tenant::with('profile')->orderBy('name', 'asc');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
 
         if ($keywords) {
             $query->where(function ($q) use ($keywords) {
@@ -265,8 +414,6 @@ class TenantsController extends Controller
 
         $tenants = $query->orderBy('name', 'asc')->paginate(10);
 
-        $searchTenants = Tenant::orderBy('name', 'asc')->get();
-
-        return view('admin.tenants.index', compact('page', 'searchTenants', 'searchTenant', 'tenants', 'keywords'));
+        return view('admin.tenants.index', compact('page', 'tenants', 'keywords', 'status'));
     }
 }

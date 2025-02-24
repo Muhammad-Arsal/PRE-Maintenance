@@ -18,12 +18,15 @@ class Tenant extends Authenticatable implements MustVerifyEmail
     protected $table = "tenants";
 
     protected $fillable = [
-        'name', 'email', 'password', 'status'
+        'name', 'email', 'password', 'status', 'property_id', 'contract_start', 'contract_end', 'deposit', 'adjust', 'left_property', 'work_phone','home_phone','note'
     ];
 
 
     public function profile(){
         return $this->hasOne(TenantProfile::class);
+    }
+    public function details(){
+        return $this->hasMany(TenantDetails::class);
     }
 
     public function sendPasswordResetNotification($token)

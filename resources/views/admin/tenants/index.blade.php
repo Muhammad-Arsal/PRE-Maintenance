@@ -49,14 +49,13 @@
                                                 </div>
                                                 <div class="col-12 col-md-4">
                                                     <div class="form-group">
-                                                        <select name="tenant" id="tenant" style="width: 100%" class="form-control select2">
-                                                            <option value="">Select tenant</option>
-                                                            @foreach ($searchTenants as $item)
-                                                                <option {{ $item->id == $searchTenant ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->name }}</option>
-                                                            @endforeach
+                                                        <select name="status" id="status" style="width: 100%" class="form-control">
+                                                            <option value="">Select status</option>
+                                                            <option value="active" {{ $status == 'active' ? 'selected' : '' }}>Active</option>
+                                                            <option value="inactive" {{ $status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> 
                                                 <div class="col-12 col-md-6">
                                                     <div class="form-group">
                                                         <div class="btn-group">

@@ -41,16 +41,14 @@ class PropertyController extends Controller
         $page['page_current'] = 'Add Property';
 
         $landlords = Landlord::all();
-        $tenants = Tenant::all();
         $property_types = PropertyType::all();
     
-        return view('admin.properties.create', compact('page', 'tenants', 'landlords', 'property_types'));
+        return view('admin.properties.create', compact('page', 'landlords', 'property_types'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'tenant' => 'required|integer',
             'monthly_rent' => 'required',
             'landlord' => 'required|integer',
             'address_line_1' => 'required|string|max:255',
@@ -60,7 +58,6 @@ class PropertyController extends Controller
         ]);
 
         $property = new Property();
-        $property->tenant_id = $request->tenant;
         $property->landlord_id = $request->landlord;
         $property->type = $request->property_type;
         $property->management_charge = $request->management_charge;
@@ -106,17 +103,15 @@ class PropertyController extends Controller
 
         $property = Property::find($id);
         $landlords = Landlord::all();
-        $tenants = Tenant::all();
         $property_types = PropertyType::all();
 
-        return view('admin.properties.edit', compact('page', 'property', 'tenants', 'landlords', 'property_types'));
+        return view('admin.properties.edit', compact('page', 'property', 'landlords', 'property_types'));
     }
 
     public function update(Request $request, Property $id)
     {
         $property = $id;
         $request->validate([
-            'tenant' => 'required|integer',
             'monthly_rent' => 'required',
             'landlord' => 'required|integer',
             'address_line_1' => 'required|string|max:255',
@@ -125,7 +120,6 @@ class PropertyController extends Controller
             'postal_code' => 'required|string|max:20',
         ]);
 
-        $property->tenant_id = $request->tenant;
         $property->landlord_id = $request->landlord;
         $property->type = $request->property_type;
         $property->management_charge = $request->management_charge;

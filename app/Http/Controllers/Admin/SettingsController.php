@@ -11,6 +11,7 @@ use App\Helper\Helpers;
 use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\User;
+use App\Models\GeneralSetting;
 use App\Models\SocialOptions;
 
 class SettingsController extends Controller
@@ -90,6 +91,35 @@ class SettingsController extends Controller
         ->withFlashType( 'success' );
 
     }
+
+
+    public function create()
+    {
+        $setting = GeneralSetting::first();
+
+        return view('admin.settings.general_settings.create', compact('setting'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'vat_rate' => 'required|numeric',
+        ]);
+
+        $settings = GeneralSetting::first(); 
+
+        if ($settings) {
+            $settings->update(['vat_rate' => $request->vat_rate]);
+        } else {
+            GeneralSetting::create(['vat_rate' => $request->vat_rate]);
+        }
+
+        return redirect()
+        ->route('admin.settings.general.create')
+        ->withFlashMessage('General Settings stored successfully!')
+        ->withFlashType('success');
+    }
+
 
     /*------ General Settings ------*/
 

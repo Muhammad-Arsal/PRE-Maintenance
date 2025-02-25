@@ -13,6 +13,7 @@
         </li>
         <li class="nav-item has-sub {{ Request::segment(2) == 'settings' ? 'open' :''}}"><a href="javascript:void(0)"><i class="la la-cog"></i><span class="menu-title">Settings</span>
           <ul class="menu-content">
+            <li class=""><a class="menu-item {{ Request::segment(3) == 'general' ? 'active' :''}}" href="{{ route('admin.settings.general.create') }}">General Settings</a></li>
             <li class=""><a class="menu-item {{ Request::segment(3) == 'admins' ? 'active' :''}}" href="{{ route('admin.settings.admins') }}">Admins</a></li>
             <li class=""><a class="menu-item {{ Request::segment(3) == 'emailTemplate' ? 'active' :''}}" href="{{ route('admin.emailTemplate.index') }}">Email Templates</a></li>
             <li class=""><a class="menu-item {{ Request::segment(3) == 'themeOptions' ? 'active' :''}}" href="{{ route('admin.settings.themeOptions') }}">Theme Options</a></li>

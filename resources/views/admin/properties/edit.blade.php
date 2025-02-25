@@ -235,30 +235,6 @@
                                             </div> 
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="tenant">Tenant</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <select id="tenant" class="form-control" name="tenant">
-                                                            <option value="">Select Tenant</option>
-                                                            @foreach($tenants as $tenant)
-                                                                <option value="{{ $tenant->id }}" {{ old('tenant', $property->tenant_id ?? '') == $tenant->id ? 'selected' : '' }}>
-                                                                    {{ $tenant->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        <div class="form-control-position">
-                                                            <i class="la la-user"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('tenant'))
-                                                        <p class="text-danger">{{ $errors->first('tenant') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <br>
                                         <div class="row">
                                             <div class="col-md-4">
@@ -437,9 +413,6 @@
                     number: true,
                     min: 1
                 },
-                tenant: {
-                    required: true
-                },
                 address_line_1: {
                     required: true,
                     minlength: 5
@@ -460,7 +433,6 @@
                     number: "Please enter a valid number.",
                     min: "Number of bedrooms must be at least 1."
                 },
-                tenant: "Please select a tenant.",
                 address_line_1: {
                     required: "Address Line 1 is required.",
                     minlength: "Address must be at least 5 characters long."

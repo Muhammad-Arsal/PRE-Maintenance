@@ -308,4 +308,12 @@ class LandlordsController extends Controller
         return view('admin.landlords.index', compact('page', 'status', 'landlords', 'keywords'));
     }
 
+    public function show($id){
+        $page['page_title'] = 'View Landlord Details';
+
+        $landlord = Landlord::where('id', $id)->with('profile','property.tenant')->first();
+
+        return view('admin.landlords.show', compact('page', 'landlord'));
+    }
+
 }

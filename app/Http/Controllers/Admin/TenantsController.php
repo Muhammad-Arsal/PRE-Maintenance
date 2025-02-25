@@ -39,7 +39,7 @@ class TenantsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Add Tenant';
 
-        $properties = Property::all();
+        $properties = Property::whereNull('tenant_id')->where('status', 'Active')->get();
     
         return view('admin.tenants.create', compact('page', 'properties'));
     }
@@ -99,7 +99,13 @@ class TenantsController extends Controller
                 'left_property' => $request->date_left_property,
                 'note' => $request->note,
             ]);
-        
+
+            if ($request->property) {
+                Property::where('id', $request->property)->update([
+                    'tenant_id' => $tenant->id
+                ]);
+            }
+
             // Iterate through the tenants
             for ($i = 0; $i < $length; $i++) {
                 $name = $names[$i] ?? null;
@@ -182,7 +188,7 @@ class TenantsController extends Controller
     
         $tenant = Tenant::where('id', $id)->first();
 
-        $properties = Property::all();
+        $properties = Property::whereNull('tenant_id')->where('status', 'Active')->orWhere('tenant_id', $id)->get();
 
         $tenantDetails = TenantDetails::where('tenant_id', $id)->get();
     
@@ -236,6 +242,12 @@ class TenantsController extends Controller
                 'left_property' => $request->date_left_property,
                 'note' => $request->note,
             ]);
+
+            if ($request->property) {
+                Property::where('id', $request->property)->update([
+                    'tenant_id' => $tenant->id
+                ]);
+            }
 
             if ($request->filled('password')) {
                 $tenant->update([

@@ -16,5 +16,9 @@ class Property extends Model
         'is_active', 'has_garage', 'has_parking', 'line1', 'line2', 'line3', 'city', 'county',
         'postcode', 'gas_certificate_due', 'eicr_due', 'epc_due', 'epc_rate'
     ];    
+
+    public function tenant(){
+        return $this->hasOne(Tenant::class);
+    }
     
 }

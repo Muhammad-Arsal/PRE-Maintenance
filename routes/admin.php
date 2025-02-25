@@ -79,6 +79,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('landlords/{id}/destroy', [LandlordsController::class, 'destroy'])->name('admin.settings.landlords.destroy');
     Route::post('/landlords/{id}/delete', [LandlordsController::class, 'delete'])->name('admin.settings.landlords.delete');
     Route::get('/landlords/search', [LandlordsController::class, 'searchData'])->name('admin.settings.landlords.search');
+    Route::get('landlords/{id}/show', [LandlordsController::class, 'show'])->name('admin.settings.landlords.show');
 
     // Contractors
     Route::get('/contractors', [ContractorsController::class, 'index'])->name('admin.settings.contractors');
@@ -107,6 +108,10 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('settings/propertyType/{id}/edit', [PropertyTypeController::class, 'edit'])->name('admin.settings.propertyType.edit');
     Route::post('settings/propertyType/{id}/update', [PropertyTypeController::class, 'update'])->name('admin.settings.propertyType.update');
     Route::post('settings/propertyType/{id}/destroy', [PropertyTypeController::class, 'destroy'])->name('admin.settings.propertyType.destroy');
+
+    //General Settings
+    Route::get('settings/general/create', [SettingsController::class, 'create'])->name('admin.settings.general.create');
+    Route::post('settings/general/store', [SettingsController::class,'store'])->name('admin.settings.general.store');
 });
 
 

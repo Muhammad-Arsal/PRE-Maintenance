@@ -1,7 +1,11 @@
 @extends('admin.partials.main')
 
 @section('css')
-
+<style>
+    .soft-border {
+        border: 1px solid #e0e0e0 !important; /* Light gray border */
+    }
+</style>
 @endsection
 
 @section('content')
@@ -21,58 +25,73 @@
 
     <div class="content-body">
         <div class="container-fluid p-0 m-0">        
-            <!-- Details Section -->
             <div class="card mb-3">
                 <div class="card-header text-white" style="background-color: #041E41;">
                     <strong>Details</strong>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ $landlord->title . ' ' . $landlord->name }}</p>
-                            <p><strong>Mobile phone:</strong> {{ $landlord->profile->phone_number ?? 'Not set' }}</p>
-                            <p><strong>Work phone:</strong> {{ $landlord->work_phone ?? 'Not set' }}</p>
-                            <p><strong>Home phone:</strong> {{ $landlord->home_phone ?? 'Not set' }}</p>
+                <div class="card-body p-0">
+                    <div class="container-fluid">
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Name:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->title . ' ' . $landlord->name }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Mobile phone:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->profile->phone_number ?? 'Not set' }}</div>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>Company name:</strong> {{ $landlord->company_name ?? 'Not set' }}</p>
-                            <p><strong>Commission rate:</strong> {{ $landlord->commission_rate ? $landlord->commission_rate . '%' : 'Not set' }}</p>
-                            <p><strong>E-mail:</strong> 
-                                @if($landlord->email)
-                                    <a href="mailto:{{ $landlord->email }}">{{ $landlord->email }}</a>
-                                @else
-                                    Not set
-                                @endif
-                            </p>
-                            <p><strong>Is active:</strong> 
-                                <span class="{{ $landlord->status ? 'text-success font-weight-bold' : 'text-danger' }}">
-                                    {{ $landlord->status ? '✔' : '✖' }}
-                                </span>
-                            </p>
-                        </div>                        
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Work phone:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->work_phone ?? 'Not set' }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Home phone:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->home_phone ?? 'Not set' }}</div>
+                        </div>
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Company name:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->company_name ?? 'Not set' }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Commission rate:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->commission_rate ? $landlord->commission_rate . '%' : 'Not set' }}</div>
+                        </div>
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">E-mail:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->email ?? 'Not set' }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Is active:</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">{{ $landlord->status ? 'Yes' : 'No' }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card">
+            
+            <div class="card mb-3">
                 <div class="card-header text-white" style="background-color: #041E41;">
                     <strong>Address</strong>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Line 1:</strong> {{ $landlord->line1 ?? 'Not set' }}</p>
-                            <p><strong>Line 2:</strong> {{ $landlord->line2 ?? 'Not set' }}</p>
-                            <p><strong>Line 3:</strong> {{ $landlord->line3 ?? 'Not set' }}</p>
+                <div class="card-body p-0">
+                    <div class="container-fluid">
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Line 1:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->line1 ?? 'Not set' }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Line 2:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->line2 ?? 'Not set' }}</div>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>City:</strong> {{ $landlord->city }}</p>
-                            <p><strong>County:</strong> {{ $landlord->county }}</p>
-                            <p><strong>Post code:</strong> {{ $landlord->postcode }}</p>
-                            <p><strong>Country:</strong> {{ $landlord->country ?? 'Not set' }}</p>
-                        </div>                        
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Line 3:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->line3 ?? 'Not set' }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">City:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->city }}</div>
+                        </div>
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">County:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->county }}</div>
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Post code:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->postcode }}</div>
+                        </div>
+                        <div class="row soft-border text-muted">
+                            <div class="col-md-3 font-weight-bold soft-border p-1">Country:</div>
+                            <div class="col-md-3 soft-border p-1">{{ $landlord->country ?? 'Not set' }}</div>
+
+                        </div>
                     </div>
                 </div>
             </div>
+            
 
             <table class="table table-bordered table-striped">
                 <thead class="text-white" style="background-color:  #041E41;">
@@ -117,7 +136,7 @@
                     </tfoot>
                 </tbody>
             </table>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="notes"><strong>Notes:</strong></label>
                 <textarea id="notes" class="form-control" rows="4" readonly>{{ $landlord->note }}</textarea>
             </div> 
@@ -126,7 +145,7 @@
                     <strong>Remittance Report</strong>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row align-items-end">
                         <div class="col-md-4">
                             <label><strong>Month:</strong></label>
                             <select class="form-control">
@@ -152,53 +171,54 @@
                                 <option>{{ $currentYear - 1 }}</option>
                             </select>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox">
                                 <label class="form-check-label">Show VAT?</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-end mt-3">
-                        <button class="btn" style="background-color: rgb(0,190,214);">
-                            <i class="la la-download"></i> Download
-                        </button>
+                        <div class="col-md-auto ms-auto">
+                            <button class="btn text-white" style="background-color: rgb(0,190,214);">
+                                <i class="la la-download"></i> Download
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div>            
             
             <div class="card mt-3">
                 <div class="card-header text-white" style="background-color: #041E41;">
                     <strong>Annual Statement</strong>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row align-items-end">
                         <div class="col-md-6">
                             <label><strong>Year:</strong></label>
                             <select class="form-control">
                                 <option selected>{{ $currentYear - 1 }} - {{ $currentYear }}</option>
                             </select>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
+                        <div class="col-md-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox">
                                 <label class="form-check-label">Separate VAT?</label>
                             </div>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
+                        <div class="col-md-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox">
                                 <label class="form-check-label">HMRC Statement?</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-end mt-3">
-                        <button class="btn" style="background-color: rgb(0,190,214);">
-                            <i class="la la-download"></i> Download
-                        </button>
+                        <div class="col-md-auto ms-auto">
+                            <button class="btn text-white" style="background-color: rgb(0,190,214);">
+                                <i class="la la-download"></i> Download
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>                       
+            </div>
+                                   
         </div>        
     </div>
 @endsection

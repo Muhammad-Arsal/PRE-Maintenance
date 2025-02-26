@@ -428,4 +428,13 @@ class TenantsController extends Controller
 
         return view('admin.tenants.index', compact('page', 'tenants', 'keywords', 'status'));
     }
+
+
+    public function show($id){
+        $page['page_title'] = 'View Tenants Details';
+
+        $tenant = Tenant::where('id', $id)->with('profile','details', 'property')->first();
+        
+        return view('admin.tenants.show', compact('page', 'tenant'));
+    }
 }

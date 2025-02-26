@@ -69,6 +69,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('tenants/{id}/destroy', [TenantsController::class, 'destroy'])->name('admin.settings.tenants.destroy');
     Route::post('/tenants/{id}/delete', [TenantsController::class, 'delete'])->name('admin.settings.tenants.delete');
     Route::get('/tenants/search', [TenantsController::class, 'searchData'])->name('admin.settings.tenants.search');
+    Route::get('tenants/{id}/show', [TenantsController::class,'show'])->name('admin.settings.tenants.show');
     
     // Landlords
     Route::get('/landlords', [LandlordsController::class, 'index'])->name('admin.settings.landlords');

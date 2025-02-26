@@ -28,7 +28,10 @@ class Tenant extends Authenticatable implements MustVerifyEmail
     public function details(){
         return $this->hasMany(TenantDetails::class);
     }
-
+    public function property(){
+        return $this->hasOne(Property::class);
+    }
+    
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new TenantPasswordResetNotification($token));

@@ -108,6 +108,14 @@
                                             <td>{{ $data['last_logged_in'] ? date('d/m/Y', strtotime($data['last_logged_in'])) : '' }}</td>
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y') : '' }}</td>
                                             <td style="width: 25%;">
+                                                <a href="{{route('admin.settings.tenants.show', $data->id)}}"
+                                                    data-toggle="tooltip" data-trigger="hover" data-placement="top" 
+                                                    data-title="More Details">
+                                                     <span style="padding:0.5rem 0.75rem" data-row-id="" 
+                                                           class="d-inline-block rounded bg-primary text-white">
+                                                         <i class="la la-eye"></i>
+                                                     </span>
+                                                 </a>
                                                 <a href="{{ route('admin.settings.tenants.edit', ['id' => $data['id']]) }}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit tenant"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id="{{ $data['id'] }}"

@@ -11,7 +11,7 @@
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="theme-color">Home</a></li>
-                        <li class="breadcrumb-item active">View Property</li>
+                        <li class="breadcrumb-item active">View Landlord</li>
                     </ol>
                 </div>
             </div>

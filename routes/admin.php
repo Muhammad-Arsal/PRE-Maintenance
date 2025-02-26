@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\LandlordsController;
 use App\Http\Controllers\Admin\ContractorsController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyTypeController;
+use App\Http\Controllers\Admin\JobsController;
+
 
 Route::get('/',  [AdminAuthController::class, 'login'])->name('admin.login');
 Route::post('/adminlogin',[AdminAuthController::class, 'adminLogin'])->name('adminLogin');
@@ -113,6 +115,16 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     //General Settings
     Route::get('settings/general/create', [SettingsController::class, 'create'])->name('admin.settings.general.create');
     Route::post('settings/general/store', [SettingsController::class,'store'])->name('admin.settings.general.store');
+
+    //Jobs
+    Route::get('/jobs', [JobsController::class, 'index'])->name('admin.jobs');
+    Route::get('/jobs/create', [JobsController::class, 'create'])->name('admin.jobs.create');
+    Route::post('/jobs/store', [JobsController::class,'store'])->name('admin.jobs.store');
+    Route::get('/jobs/{id}/edit', [JobsController::class, 'edit'])->name('admin.jobs.edit');
+    Route::post('/jobs/{id}/update', [JobsController::class, 'update'])->name('admin.jobs.update');
+    Route::post('jobs/{id}/destroy', [JobsController::class, 'destroy'])->name('admin.jobs.destroy');
+    Route::get('jobs/{id}/show', [JobsController::class,'show'])->name('admin.jobs.show');
+    Route::get('/jobs/search', [JobsController::class,'searchData'])->name('admin.jobs.search');
 });
 
 

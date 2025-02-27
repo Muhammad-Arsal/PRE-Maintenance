@@ -103,6 +103,10 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('properties/{id}/destroy', [PropertyController::class, 'destroy'])->name('admin.properties.destroy');
     Route::get('properties/{id}/show', [PropertyController::class, 'show'])->name('admin.properties.show');
     Route::get('/properties/search', [PropertyController::class,'searchData'])->name('admin.properties.search');
+    Route::get('properties/{id}/diary', [PropertyController::class, 'diary'])->name('admin.properties.diary');
+    Route::post('properties/{id}/editDiary', [PropertyController::class, 'diaryStore'])->name('admin.properties.diaryStore');
+    Route::post('properties/{id}/deleteDiary', [PropertyController::class, 'diaryDelete'])->name('admin.properties.diaryDelete');
+    Route::get('properties/{id}/view/jobs', [PropertyController::class, 'jobs'])->name('admin.properties.viewjobs');
 
     // Property Types
     Route::get('settings/propertyType', [PropertyTypeController::class, 'index'])->name('admin.settings.propertyType');
@@ -119,6 +123,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     //Jobs
     Route::get('/jobs', [JobsController::class, 'index'])->name('admin.jobs');
     Route::get('/jobs/create', [JobsController::class, 'create'])->name('admin.jobs.create');
+    Route::get('/jobs/custom/{id}/create', [JobsController::class, 'customCreate'])->name('admin.jobs.custom.create');
     Route::post('/jobs/store', [JobsController::class,'store'])->name('admin.jobs.store');
     Route::get('/jobs/{id}/edit', [JobsController::class, 'edit'])->name('admin.jobs.edit');
     Route::post('/jobs/{id}/update', [JobsController::class, 'update'])->name('admin.jobs.update');

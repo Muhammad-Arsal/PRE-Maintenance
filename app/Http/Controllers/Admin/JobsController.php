@@ -48,8 +48,21 @@ class JobsController extends Controller
 
         $properties = Property::where('status', 'Active')->get();
         $contractors = Contractor::where('status', 'Active')->get();
+        $property_id = '';
 
-        return view('admin.jobs.create', compact('page', 'properties', 'contractors'));
+        return view('admin.jobs.create', compact('page', 'properties', 'contractors', 'property_id'));
+    }
+
+    public function customCreate($property_id){
+        $page['page_title'] = 'Manage Jobs';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Add Jobs';
+
+        $properties = Property::where('id',$property_id)->where('status', 'Active')->get();
+        $contractors = Contractor::where('status', 'Active')->get();
+
+        return view('admin.jobs.create', compact('page', 'properties', 'contractors','property_id'));
     }
 
     /**

@@ -61,10 +61,14 @@
                                                     <select id="property" name="property_id" class="form-control select2">
                                                         <option value="">Select Property</option>
                                                         @foreach($properties as $item)
-                                                            <option value="{{$item->id }}">{{ $item->line1 . ', ' . $item->city . ', ' . $item->county . ', ' . $item->postcode }}</option>
+                                                            <option value="{{ $item->id }}" {{ old('property_id', $property_id) == $item->id ? 'selected' : '' }}>
+                                                                {{ $item->line1 . ', ' . $item->city . ', ' . $item->county . ', ' . $item->postcode }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('property') <span class="text-danger">{{ $message }}</span> @enderror
+                                                    @error('property_id') 
+                                                        <span class="text-danger">{{ $message }}</span> 
+                                                    @enderror
                                                 </div>                                              
                                             </div>                                                                                                                             
                                         </div>

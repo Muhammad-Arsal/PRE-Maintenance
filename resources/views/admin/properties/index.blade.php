@@ -178,7 +178,23 @@
                                                            class="d-inline-block rounded bg-primary text-white">
                                                          <i class="la la-eye"></i>
                                                      </span>
-                                                 </a>                                                 
+                                                 </a>    
+                                                 <a href="{{route('admin.properties.diary', $data->id)}}" 
+                                                    data-toggle="tooltip" data-trigger="hover" data-placement="top" 
+                                                    data-title="Diary">
+                                                     <span style="padding:0.5rem 0.75rem" data-row-id="" 
+                                                           class="d-inline-block rounded bg-success text-white">
+                                                         <i class="la la-book"></i>
+                                                     </span>
+                                                 </a>
+                                                 <a href="{{route('admin.properties.viewjobs', $data->id)}}" 
+                                                    data-toggle="tooltip" data-trigger="hover" data-placement="top" 
+                                                    data-title="View Jobs">
+                                                     <span style="padding:0.5rem 0.75rem" data-row-id="" 
+                                                           class="d-inline-block rounded bg-secondary text-white">
+                                                         <i class="la la-wrench"></i>
+                                                     </span>
+                                                 </a>                                             
                                                 <a href="{{route('admin.properties.edit', $data->id)}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit landlord"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id=""

@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\Landlord;
 use App\Models\Tenant;
-use App\Models\PropertyType;;
+use App\Models\PropertyType;
+use App\Models\Diary;
+use App\Models\Jobs;
 
 class PropertyController extends Controller
 {
@@ -227,5 +229,57 @@ class PropertyController extends Controller
         return view('admin.properties.index', compact('page', 'properties', 'status', 'searchTenant', 'searchLandlord', 'searchType', 'searchBedrooms', 'keywords', 'landlords', 'tenants', 'type'));
     }
 
+    public function diary($id)
+    {
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Diary';
 
+        $diary = Diary::where('property_id', $id)->with('admin', 'property')->paginate(10);
+        $property_id = $id;
+
+        return view('admin.properties.diary', compact('page','diary', 'property_id'));
+    }
+
+    public function diaryStore(Request $request, $id)
+    {
+        $request->validate([
+            'new_entry' => 'required|string',
+        ]);
+
+        $diary = new Diary();
+        $diary->property_id = $id;
+        $diary->entry = $request->new_entry;
+        $diary->admin_id = auth('admin')->id();
+        $diary->save();
+
+        return redirect()
+        ->route('admin.properties.diary', $id)
+        ->withFlashMessage('Diary New Entry created successfully!')
+        ->withFlashType('success');
+    }
+
+    public function diaryDelete(Diary $id){
+        if ($id->delete()) {
+            return redirect()
+                ->route('admin.properties.diary', $id->property_id)
+                ->withFlashMessage('Diary Entry permanently deleted successfully!')
+                ->withFlashType('success');
+        } else {
+            return back()->withFlashMessage('Failed to delete diary entry.')->withFlashType('danger');
+        }
+    }
+
+    public function jobs($id){
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Properties Jobs';
+
+        $jobs = Jobs::where('property_id',$id)->with('property', 'contractor')->paginate(10);
+        $property_id = $id;
+
+        return view('admin.properties.jobs', compact('page', 'jobs', 'property_id'));
+    }
 }

@@ -65,7 +65,6 @@ class PropertyController extends Controller
         $property->has_garden = $request->has_garden;
         $property->has_garage = $request->has_garage;
         $property->has_parking = $request->has_parking;
-        $property->is_active = $request->is_active;
         $property->is_furnished = $request->is_furnished;
         $property->rent_safe_month = $request->rent_safe_month;
         $property->monthly_rent = $request->monthly_rent;
@@ -127,7 +126,6 @@ class PropertyController extends Controller
         $property->has_garden = $request->has_garden;
         $property->has_garage = $request->has_garage;
         $property->has_parking = $request->has_parking;
-        $property->is_active = $request->is_active;
         $property->is_furnished = $request->is_furnished;
         $property->rent_safe_month = $request->rent_safe_month;
         $property->monthly_rent = $request->monthly_rent;

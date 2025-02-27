@@ -273,14 +273,6 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-check">
-                                                    <input type="checkbox" id="is_active" class="form-check-input" name="is_active" value="1" {{ old('is_active', $property->is_active ?? false) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="is_active">Is Active</label>
-                                                    @error('is_active') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-check">
                                                     <input type="checkbox" id="is_furnished" class="form-check-input" name="is_furnished" value="1" {{ old('is_furnished', $property->is_furnished ?? false) ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="is_furnished">Is Furnished</label>
                                                     @error('is_furnished') <span class="text-danger">{{ $message }}</span> @enderror

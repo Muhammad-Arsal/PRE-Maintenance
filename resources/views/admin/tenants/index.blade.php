@@ -85,10 +85,11 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Phone Number</th>
-                                        <th>Email Address</th>
-                                        <th>Last Logged In</th>
+                                        <th>Property</th>
+                                        <th>Contract Start</th>
+                                        <th>Contract End</th>
                                         <th>Created At</th>
+                                        <th>Modified At</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -103,11 +104,12 @@
                                         <tr>
                                             <td>{{ $j }}</td>
                                             <td>{{ $data['name'] }}</td>
-                                            <td>{{ !empty($data->profile) ? $data->profile->phone_number : '' }}</td>
-                                            <td>{{ $data['email'] }}</td>
-                                            <td>{{ $data['last_logged_in'] ? date('d/m/Y', strtotime($data['last_logged_in'])) : '' }}</td>
+                                            <td><a href="{{route('admin.properties.show', $data->property->id)}}">{{$data->property->line1 . ', ' . $data->property->city .', '. $data->property->county . ', '. $data->property->postcode}}</a></td>
+                                            <td>{{ $data['contract_start'] ? date('d/m/Y', strtotime($data['contract_start'])) : '' }}</td>
+                                            <td>{{ $data['contract_end'] ? date('d/m/Y', strtotime($data['contract_end'])) : '' }}</td>
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y') : '' }}</td>
-                                            <td style="width: 25%;">
+                                            <td>{{ isset($data['updated_at']) ? \Carbon\Carbon::parse($data['updated_at'])->format('d/m/Y') : '' }}</td>
+                                            <td>
                                                 <a href="{{route('admin.settings.tenants.show', $data->id)}}"
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="More Details">

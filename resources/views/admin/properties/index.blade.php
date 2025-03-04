@@ -159,13 +159,17 @@
                                     ?>
                                     @forelse ($properties as $data)
                                         <tr>
-                                            @php
-                                                $tenant = \DB::table('tenants')->where('id', $data->tenant_id)->first();
-                                                $landlord = \DB::table('landlords')->where('id', $data->landlord_id)->first();
-                                            @endphp
                                             <td><strong>{{ $j }}</strong></td>
-                                            <td>{{$tenant->name}}</td>
-                                            <td>{{$landlord->name}}</td>
+                                            <td>
+                                                <a href="{{ isset($data->landlord) ? route('admin.settings.landlords.show', $data->landlord->id) : '#' }}">
+                                                    {{ $data->landlord->name ?? "" }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="{{ isset($data->tenant) ? route('admin.settings.tenants.show', $data->tenant->id) : '#' }}">
+                                                    {{ $data->tenant->name ?? "" }}
+                                                </a>
+                                            </td>                                            
                                             <td>{{$data->type}}</td>
                                             <td>{{ $data->line1 . ', ' . $data->county . ', ' . $data->city . ', ' . $data->postcode }}</td>
                                             <td>{{ $data->created_at->format('d/m/Y') }}</td>

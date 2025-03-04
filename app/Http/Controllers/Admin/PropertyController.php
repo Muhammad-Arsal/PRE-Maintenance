@@ -20,7 +20,7 @@ class PropertyController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Properties';
     
-        $properties = Property::orderBy('created_at', 'desc')->paginate(10);
+        $properties = Property::orderBy('created_at', 'desc')->with('tenant', 'landlord')->paginate(10);
 
         $landlords = Landlord::all();
         $tenants = Tenant::all();

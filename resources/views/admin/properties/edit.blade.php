@@ -95,10 +95,9 @@
                                                 <div class="form-group">
                                                     <label for="monthly_rent">Monthly Rent</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="monthly_rent" class="form-control" placeholder="Monthly Rent" name="monthly_rent" value="{{ old('monthly_rent', $property->monthly_rent ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-money"></i>
-                                                        </div>
+                                                        <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
+                                                        <input type="text" id="monthly_rent" class="form-control" placeholder="Monthly Rent" name="monthly_rent" 
+                                                            value="{{ old('monthly_rent', $property->monthly_rent ?? '') }}">
                                                     </div>
                                                     @error('monthly_rent') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
@@ -391,6 +390,17 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
+    $(document).ready(function () {
+        $('#monthly_rent').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
+        });
+        $('#number_of_floors').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
+        });
+        $('#bedrooms').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
+        });
+    });
     $(document).ready(function () {
         $("#manageProperties").validate({
             rules: {

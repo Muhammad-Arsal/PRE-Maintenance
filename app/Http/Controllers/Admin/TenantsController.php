@@ -24,7 +24,7 @@ class TenantsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Tenants';
     
-        $tenants = Tenant::orderBy('name', 'asc')->with('profile')->paginate(10);
+        $tenants = Tenant::orderBy('name', 'asc')->with('profile','property')->paginate(10);
     
         $keywords = "";
         $status = "";

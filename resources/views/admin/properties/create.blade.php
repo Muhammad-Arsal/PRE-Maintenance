@@ -80,7 +80,7 @@
                                                 <div class="form-group">
                                                     <label for="bedrooms">No. of Bedrooms</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="number" id="bedrooms" class="form-control" placeholder="Number of Bedrooms" name="bedrooms" value="{{ old('bedrooms', $property->bedrooms ?? '') }}">
+                                                        <input type="text" id="bedrooms" class="form-control" placeholder="Number of Bedrooms" name="bedrooms" value="{{ old('bedrooms', $property->bedrooms ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-bed"></i>
                                                         </div>
@@ -95,15 +95,13 @@
                                                 <div class="form-group">
                                                     <label for="monthly_rent">Monthly Rent</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="monthly_rent" class="form-control" placeholder="Monthly Rent" name="monthly_rent" 
+                                                        <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
+                                                        <input type="text" id="monthly_rent" class="form-control pl-4" placeholder="Monthly Rent" name="monthly_rent" 
                                                             value="{{ old('monthly_rent', $property->monthly_rent ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-money"></i>
-                                                        </div>
                                                     </div>
                                                     @error('monthly_rent') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
-                                            </div>
+                                            </div>                                            
                                         
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -399,79 +397,90 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-$(document).ready(function () {
-    $("#manageProperties").validate({
-        rules: {
-            landlord: {
-                required: true
-            },
-            property_type: {
-                required: true
-            },
-            bedrooms: {
-                required: true,
-                number: true,
-                min: 1
-            },
-            gas_certificate_due: {
-                required: true,
-                date: true
-            },
-            eicr_due: {
-                required: true,
-                date: true
-            },
-            epc_due: {
-                required: true,
-                date: true
-            },
-            epc_rate: {
-                required: true
-            },
-            address_line_1: {
-                required: true,
-                minlength: 5
-            },
-            city: {
-                required: true
-            },
-            postcode: {
-                required: true,
-                minlength: 4
-            }
-        },
-        messages: {
-            landlord: "Please select a landlord.",
-            property_type: "Please select a property type.",
-            bedrooms: {
-                required: "Number of bedrooms is required.",
-                number: "Please enter a valid number.",
-                min: "Number of bedrooms must be at least 1."
-            },
-            gas_certificate_due: "Please select a valid gas certificate due date.",
-            eicr_due: "Please select a valid EICR due date.",
-            epc_due: "Please select a valid EPC due date.",
-            epc_rate: "Please select an EPC rate.",
-            address_line_1: {
-                required: "Address Line 1 is required.",
-                minlength: "Address must be at least 5 characters long."
-            },
-            city: "Please enter a city.",
-            postcode: {
-                required: "Postcode is required.",
-                minlength: "Postcode must be at least 4 characters long."
-            }
-        },
-        errorPlacement: function (error, element) {
-            error.addClass("text-danger");
-            if (element.parent(".position-relative").length) {
-                error.insertAfter(element.parent());
-            } else {
-                error.insertAfter(element);
-            }
-        }
+    $(document).ready(function () {
+        $('#monthly_rent').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
+        });
+        $('#number_of_floors').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
+        });
+        $('#bedrooms').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
+        });
     });
-});
+    $(document).ready(function () {
+        $("#manageProperties").validate({
+            rules: {
+                landlord: {
+                    required: true
+                },
+                property_type: {
+                    required: true
+                },
+                bedrooms: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                gas_certificate_due: {
+                    required: true,
+                    date: true
+                },
+                eicr_due: {
+                    required: true,
+                    date: true
+                },
+                epc_due: {
+                    required: true,
+                    date: true
+                },
+                epc_rate: {
+                    required: true
+                },
+                address_line_1: {
+                    required: true,
+                    minlength: 5
+                },
+                city: {
+                    required: true
+                },
+                postcode: {
+                    required: true,
+                    minlength: 4
+                }
+            },
+            messages: {
+                landlord: "Please select a landlord.",
+                property_type: "Please select a property type.",
+                bedrooms: {
+                    required: "Number of bedrooms is required.",
+                    number: "Please enter a valid number.",
+                    min: "Number of bedrooms must be at least 1."
+                },
+                gas_certificate_due: "Please select a valid gas certificate due date.",
+                eicr_due: "Please select a valid EICR due date.",
+                epc_due: "Please select a valid EPC due date.",
+                epc_rate: "Please select an EPC rate.",
+                address_line_1: {
+                    required: "Address Line 1 is required.",
+                    minlength: "Address must be at least 5 characters long."
+                },
+                city: "Please enter a city.",
+                postcode: {
+                    required: "Postcode is required.",
+                    minlength: "Postcode must be at least 4 characters long."
+                }
+            },
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger");
+                if (element.parent(".position-relative").length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    });
 </script>
 
 

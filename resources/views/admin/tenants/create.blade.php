@@ -30,7 +30,7 @@
                         <div class="card-content">
                             <div class="card-body">
                                 @include('admin.partials.flashes')
-                                <form method="post" enctype="multipart/form-data" id='managetenant'  action="{{ route('admin.settings.tenants.store') }}">
+                                <form method="post" enctype="multipart/form-data" id="manageTenant"  action="{{ route('admin.settings.tenants.store') }}">
                                     @csrf
                                     <div class="form-body">
                                         <h3 class="mb-2"><strong>Contract Details</strong></h3>
@@ -233,21 +233,21 @@
                                                     <label for="deposit">Deposit</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="deposit" class="form-control" placeholder="Enter deposit amount" name="deposit" value="{{ old('deposit') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-money"></i>
+                                                        <div class="form-control-position" style="top: -2px;">
+                                                            £ 
                                                         </div>
                                                     </div>
                                                     @if ($errors->has('deposit'))
                                                         <p class="text-danger">{{ $errors->first('deposit') }}</p>
                                                     @endif
                                                 </div>
-                                            </div>
+                                            </div>                                            
                                             
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="adjust">Adjust</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="adjust" class="form-control" placeholder="Enter adjustment amount" name="adjust" value="{{ old('adjust') }}">
+                                                        <input type="text" id="adjust" class="form-control" placeholder="Enter adjustment" name="adjust" value="{{ old('adjust') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-balance-scale"></i>
                                                         </div>
@@ -302,24 +302,73 @@
 @endsection
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".datepicker").forEach(function (element) {
-            flatpickr(element, {
-                dateFormat: "d/m/Y", // Display format
-                altInput: true,
-                altFormat: "d/m/Y",
-                allowInput: true,
-                onChange: function (selectedDates, dateStr, instance) {
-                    let hiddenInput = document.getElementById(element.id + "_hidden");
-                    if (hiddenInput) {
-                        hiddenInput.value = selectedDates.length ? instance.formatDate(selectedDates[0], "Y-m-d") : "";
+                flatpickr(element, {
+                    dateFormat: "d/m/Y", // Display format
+                    altInput: true,
+                    altFormat: "d/m/Y",
+                    allowInput: true,
+                    onChange: function (selectedDates, dateStr, instance) {
+                        let hiddenInput = document.getElementById(element.id + "_hidden");
+                        if (hiddenInput) {
+                            hiddenInput.value = selectedDates.length ? instance.formatDate(selectedDates[0], "Y-m-d") : "";
+                            console.log(hiddenInput.name, hiddenInput.value); // Debugging: Log hidden field value
+                            $(hiddenInput).valid(); // Trigger validation
+                        }
                     }
-                }
+                });
             });
+    });
+
+    $(document).ready(function () {
+        $("#manageTenant").validate({
+            rules: {
+                "deposit": { 
+                    number: true
+                },
+                "property": { required: true },
+                "contract_start_hidden": { required: true, date: true },
+                "contract_end_hidden": { required: true, date: true }
+            },
+            messages: {
+                "deposit": { 
+                    number: "Please enter a valid number" // Correct the message to match the rule
+                },
+                "property": { required: "Property is required" },
+                "contract_start_hidden": { 
+                    required: "Contract start date is required", 
+                    date: "Please enter a valid date" 
+                },
+                "contract_end_hidden": { 
+                    required: "Contract end date is required", 
+                    date: "Please enter a valid date" 
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "contract_start_hidden" || element.attr("name") === "contract_end_hidden") {
+                    // Place error message after the visible field's container
+                    error.insertAfter(element.closest('.position-relative'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function (form) {
+                var primaryUserCheckbox = $(".primary-user-checkbox:checked").length;
+                console.log(primaryUserCheckbox);
+                if (primaryUserCheckbox == 0) {
+                    $("#primary_0").last().closest('.form-check').append("<p class='text-danger primary_user_error'>At least one user should be selected as the primary user</p>");
+                    return false;
+                }
+                form.submit();
+            }
         });
     });
 </script>
+
 
 <script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
 <script>
@@ -330,39 +379,13 @@
 
 <script>
     $(document).ready(function () {
-         // Apply jQuery validation
-        $("#managetenant").validate({
-            rules: {
-                "deposit": { 
-                    number: true 
-                },
-                "property": { required: true },
-                "contract_start_hidden": { required: true, date: true },
-                "contract_end_hidden": { required: true, date: true }
-            },
-            messages: {
-                "deposit": { 
-                    number: "Please enter a valid number" 
-                },
-                "property": { required: "Property is required" },
-                "contract_start_hidden": { required: "Contract start date is required", date: "Please enter a valid date" },
-                "contract_end_hidden": { required: "Contract end date is required", date: "Please enter a valid date" }
-            },
-            submitHandler: function (form) {
-                console.log("here");
-                
-                var primaryUserCheckbox = $(".primary-user-checkbox:checked").length;
-                console.log(primaryUserCheckbox);
-                if(primaryUserCheckbox == 0){
-                    $("#primary_0").last().closest('.form-check').append("<p class='text-danger primary_user_error'>At least one user should be selected as the primary user</p>");
-                    return false;
-                }
-                form.submit();
-            }
+        $('#deposit').on('input', function () {
+            $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
         });
+    });
+    $(document).ready(function () {
     let rowIndex = 1; // Start index for rows
-
-    // Function to update the indexes
+    updateIndexes();
     function updateIndexes() {
         $(".row.cloneable").each(function (index) {
             var primaryUser = $(this).find("input[type='checkbox']").prop("checked");
@@ -397,6 +420,20 @@
                         number: true,
                         messages: {
                             number: "Please enter a valid phone number",
+                        }
+                    });
+                } else if (fieldName == "work_phone") {
+                    $(this).rules("add", {
+                        number: true,
+                        messages: {
+                            number: "Please enter a valid work phone number",
+                        }
+                    });
+                }  else if (fieldName == "home_phone") {
+                    $(this).rules("add", {
+                        number: true,
+                        messages: {
+                            number: "Please enter a valid work home phone number",
                         }
                     });
                 }

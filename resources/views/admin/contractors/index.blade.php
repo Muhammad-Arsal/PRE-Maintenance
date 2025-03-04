@@ -86,6 +86,7 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Phone Number</th>
+                                        <th>Company Name</th>
                                         <th>Email Address</th>
                                         <th>Last Logged In</th>
                                         <th>Created At</th>
@@ -102,9 +103,10 @@
                                     @forelse($contractors as $data)
                                         <tr>
                                             <td>{{ $j }}</td>
-                                            <td>{{ $data['name'] }}</td>
+                                            <td>{{ $data['name'] ?? '' }}</td>
                                             <td>{{ !empty($data->profile) ? $data->profile->phone_number : '' }}</td>
-                                            <td>{{ $data['email'] }}</td>
+                                            <td>{{$data->company_name ?? ''}}</td>
+                                            <td>{{ $data['email'] ?? ""}}</td>
                                             <td>{{ $data['last_logged_in'] ? date('d/m/Y', strtotime($data['last_logged_in'])) : '' }}</td>
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y') : '' }}</td>
                                             <td style="width: 25%;">

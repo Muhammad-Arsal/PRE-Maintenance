@@ -411,6 +411,7 @@
                     required: true,
                 },
                 title: { required:true },
+                company_name : { required: true},
             },
             messages: {
                 fname: 'The first name field is required',
@@ -431,6 +432,7 @@
                     minlength: "The confirm password must be at least 6 characters long",
                     equalTo:'Confirm Password should be equal to Password'
                 },
+                company_name: 'The Company Name field is required',
             }
 
         });

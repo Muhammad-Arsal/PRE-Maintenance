@@ -6,6 +6,7 @@ use App\Events\ContractorAdded;
 use App\Http\Controllers\Controller;
 use App\Models\Contractor;
 use App\Models\ContractorProfile;
+use App\Models\Jobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -301,5 +302,18 @@ class ContractorsController extends Controller
         $contractors = $query->orderBy('name', 'asc')->paginate(10);
 
         return view('admin.contractors.index', compact('page', 'status', 'contractors', 'keywords'));
+    }
+
+    public function jobs($id)
+    {
+        $page['page_title'] = 'Manage Contractors';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Contractor Jobs';
+
+        $jobs = Jobs::where('contractor_id',$id)->with('property', 'contractor')->paginate(10);
+        $contractor_id = $id;
+
+        return view('admin.contractors.jobs', compact('page', 'jobs', 'contractor_id'));
     }
 }

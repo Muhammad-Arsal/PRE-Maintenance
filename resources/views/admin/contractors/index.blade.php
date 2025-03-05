@@ -109,21 +109,25 @@
                                             <td>{{ $data['email'] ?? ""}}</td>
                                             <td>{{ $data['last_logged_in'] ? date('d/m/Y', strtotime($data['last_logged_in'])) : '' }}</td>
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y') : '' }}</td>
-                                            <td style="width: 25%;">
+                                            <td>
+                                                <a href="{{route('admin.contractors.viewjobs', $data->id)}}" 
+                                                    data-toggle="tooltip" data-trigger="hover" data-placement="top" 
+                                                    data-title="View Jobs">
+                                                        <span style="padding:0.5rem 0.75rem" data-row-id="" 
+                                                            class="d-inline-block rounded bg-secondary text-white">
+                                                            <i class="la la-wrench"></i>
+                                                        </span>
+                                                </a> 
                                                 <a href="{{ route('admin.settings.contractors.edit', ['id' => $data['id']]) }}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit contractor"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id="{{ $data['id'] }}"
                                                         class="d-inline-block rounded bg-warning bg text-white"><i
                                                             class="la la-edit"></i></span></a>
-                                                {{-- <a href="#" style="word-wrap: nowrap" class="clickDeleteFunction" data-modal="deleteEventModal"
-                                                    data-action="{{ route('admin.settings.contractors.destroy', ['id' => $data['id']]) }}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
-                                                    data-title="{{ isset($data['deleted_at']) ? 'Inactive contractor' : 'Active contractor' }}"><span
-                                                        style="padding:0.5rem 0.75rem" data-row-id="{{ $data['id'] }}"
-                                                        class="d-inline-block rounded {{ isset($data['deleted_at']) ? 'bg-danger' : 'bg-success' }} bg text-white"><i class="la la-power-off" aria-hidden="true"></i></span></a> --}}
-                                                <a href="#" style="word-wrap: nowrap; margin-right: 0.35rem;" class="clickDeleteFunction" data-modal="forceDelete"
-                                                    data-action="{{ route('admin.settings.contractors.delete', ['id' => $data['id']]) }}"><span
-                                                    style="padding:0.5rem 0.75rem" data-row-id="{{ $data['id'] }}"
-                                                        class="d-inline-block rounded bg-danger bg text-white"><i class="la la-trash" aria-hidden="true"></i></span></a>
+                                                    
+                                                    <a href="#" style="word-wrap: nowrap; margin-right: 0.35rem;" class="clickDeleteFunction" data-modal="forceDelete"
+                                                data-action="{{ route('admin.settings.contractors.delete', ['id' => $data['id']]) }}"><span
+                                                style="padding:0.5rem 0.75rem" data-row-id="{{ $data['id'] }}"
+                                                    class="d-inline-block rounded bg-danger bg text-white"><i class="la la-trash" aria-hidden="true"></i></span></a>
                                             </td>
                                         </tr>
                                         @php $j++ @endphp

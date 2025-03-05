@@ -37,6 +37,51 @@
 
                                         <div class="row">
                                             <div class="col-md-4">
+                                                <!-- Company Name -->
+                                                <div class="form-group">
+                                                    <label for="company_name">Company Name</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="text" id="company_name" class="form-control" name="company_name"
+                                                            value="{{ old('company_name', $landlord->company_name ?? '') }}" placeholder="Company Name">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-building"></i>
+                                                        </div>
+                                                    </div>
+                                                    @error('company_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                 <!-- Work Phone -->
+                                                <div class="form-group">
+                                                    <label for="work_phone">Work Phone</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="text" id="work_phone" class="form-control" name="work_phone"
+                                                            value="{{ old('work_phone', $landlord->work_phone ?? '') }}" placeholder="Work Phone">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-phone"></i>
+                                                        </div>
+                                                    </div>
+                                                    @error('work_phone') <span class="text-danger">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- Commission Rate -->
+                                                <div class="form-group">
+                                                    <label for="commission_rate">Repairs Rate (%)</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="number" step="0.01" id="commission_rate" class="form-control" name="commission_rate"
+                                                            value="{{ old('commission_rate', $landlord->commission_rate ?? '') }}" placeholder="Commission Rate">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-money"></i>
+                                                        </div>
+                                                    </div>
+                                                    @error('commission_rate') <span class="text-danger">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="title">Title</label>
                                                     <div class="position-relative has-icon-left">
@@ -132,50 +177,6 @@
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <!-- Company Name -->
-                                                <div class="form-group">
-                                                    <label for="company_name">Company Name</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="company_name" class="form-control" name="company_name"
-                                                            value="{{ old('company_name', $landlord->company_name ?? '') }}" placeholder="Company Name">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-building"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('company_name') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                 <!-- Work Phone -->
-                                                <div class="form-group">
-                                                    <label for="work_phone">Work Phone</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="work_phone" class="form-control" name="work_phone"
-                                                            value="{{ old('work_phone', $landlord->work_phone ?? '') }}" placeholder="Work Phone">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-phone"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('work_phone') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <!-- Commission Rate -->
-                                                <div class="form-group">
-                                                    <label for="commission_rate">Commission Rate (%)</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="number" step="0.01" id="commission_rate" class="form-control" name="commission_rate"
-                                                            value="{{ old('commission_rate', $landlord->commission_rate ?? '') }}" placeholder="Commission Rate">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-money"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('commission_rate') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         <div class="row">
                                             <div class="col-md-4">

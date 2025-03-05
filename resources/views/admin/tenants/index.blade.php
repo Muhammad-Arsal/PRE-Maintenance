@@ -44,7 +44,7 @@
                                                 <div class="col-12 col-md-4">
                                                     <div class="form-group">
                                                         <input value="{{ $keywords }}" type="text" class="form-control" name="keywords"
-                                                        placeholder="Name, Phone Number, Email">
+                                                        placeholder="Address">
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-4">

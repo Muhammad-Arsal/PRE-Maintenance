@@ -35,6 +35,54 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
+                                                    <label for="company_name">Company Name</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="text" id="company_name" class="form-control"
+                                                            placeholder="Company Name" name="company_name" value="{{ old('company_name') }}">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-building"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('company_name'))
+                                                        <p class="text-danger">{{ $errors->first('company_name') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="work_phone">Work Phone</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="text" id="work_phone" class="form-control"
+                                                            placeholder="Work Phone" name="work_phone" value="{{ old('work_phone') }}">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-phone"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('work_phone'))
+                                                        <p class="text-danger">{{ $errors->first('work_phone') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="commission_rate">Repairs Rate (%)</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="number" step="0.01" id="commission_rate" class="form-control"
+                                                            placeholder="Commission Rate" name="commission_rate" value="{{ old('commission_rate') }}">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-money"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('commission_rate'))
+                                                        <p class="text-danger">{{ $errors->first('commission_rate') }}</p>
+                                                    @endif
+                                                </div>  
+                                            </div>                                                                                                           
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
                                                     <label for="fname">First Name</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="fname" class="form-control"
@@ -136,53 +184,7 @@
                                             </div>
                                         </div>  
                                         
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="company_name">Company Name</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="company_name" class="form-control"
-                                                            placeholder="Company Name" name="company_name" value="{{ old('company_name') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-building"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('company_name'))
-                                                        <p class="text-danger">{{ $errors->first('company_name') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="work_phone">Work Phone</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="work_phone" class="form-control"
-                                                            placeholder="Work Phone" name="work_phone" value="{{ old('work_phone') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-phone"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('work_phone'))
-                                                        <p class="text-danger">{{ $errors->first('work_phone') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="commission_rate">Commission Rate (%)</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="number" step="0.01" id="commission_rate" class="form-control"
-                                                            placeholder="Commission Rate" name="commission_rate" value="{{ old('commission_rate') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-money"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('commission_rate'))
-                                                        <p class="text-danger">{{ $errors->first('commission_rate') }}</p>
-                                                    @endif
-                                                </div>  
-                                            </div>                                                                                                           
-                                        </div>
+                                        
                                         
                                         <div class="row">
                                             <div class="col-md-4">

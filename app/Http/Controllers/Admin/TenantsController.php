@@ -408,21 +408,20 @@ class TenantsController extends Controller
         $status = $request->status;
         $keywords = $request['keywords'];
 
-        $query = Tenant::with('profile')->orderBy('name', 'asc');
+        $query = Tenant::with(['profile', 'property'])->orderBy('name', 'asc');
 
         if ($status) {
             $query->where('status', $status);
         }
-
+        
         if ($keywords) {
-            $query->where(function ($q) use ($keywords) {
-                $q->where('name', 'like', '%' . $keywords . '%')
-                ->orWhere('email', 'like', '%' . $keywords . '%')
-                ->orWhereHas('profile', function ($q) use ($keywords) {
-                    $q->where('phone_number', 'like', '%' . $keywords . '%');
-                });
+            $query->whereHas('property', function ($q) use ($keywords) {
+                $q->where('line1', 'like', '%' . $keywords . '%')
+                  ->orWhere('city', 'like', '%' . $keywords . '%')
+                  ->orWhere('county', 'like', '%' . $keywords . '%')
+                  ->orWhere('postcode', 'like', '%' . $keywords . '%');
             });
-        }
+        }             
 
         $tenants = $query->orderBy('name', 'asc')->paginate(10);
 

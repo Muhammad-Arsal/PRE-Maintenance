@@ -93,6 +93,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('contractors/{id}/destroy', [ContractorsController::class, 'destroy'])->name('admin.settings.contractors.destroy');
     Route::post('/contractors/{id}/delete', [ContractorsController::class, 'delete'])->name('admin.settings.contractors.delete');
     Route::get('/contractors/search', [ContractorsController::class, 'searchData'])->name('admin.settings.contractors.search');
+    Route::get('contractors/{id}/view/jobs', [ContractorsController::class, 'jobs'])->name('admin.contractors.viewjobs');
 
     //Properties
     Route::get('/properties', [PropertyController::class, 'index'])->name('admin.properties');

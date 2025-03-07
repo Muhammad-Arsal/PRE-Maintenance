@@ -143,7 +143,7 @@
                                                      </span>
                                                  </a>
                                                 <a href="{{route('admin.jobs.edit', $item->id)}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
-                                                    data-title="Edit tenant"><span
+                                                    data-title="Edit Jobs"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id=""
                                                         class="d-inline-block rounded bg-warning bg text-white"><i
                                                             class="la la-edit"></i></span></a>

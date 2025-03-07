@@ -11,7 +11,7 @@ use Carbon\Carbon;
 class InvoicesController extends Controller
 {
     public function index(){
-        $page['page_title'] = 'Manage Invoice';
+        $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Invoices';
@@ -23,7 +23,7 @@ class InvoicesController extends Controller
     }
 
     public function create(){
-        $page['page_title'] = 'Manage Invoice';
+        $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Add Invoice';
@@ -103,7 +103,7 @@ class InvoicesController extends Controller
     }
 
     public function edit($id){
-        $page['page_title'] = 'Manage Invoice';
+        $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Edit Invoice';
@@ -188,7 +188,7 @@ class InvoicesController extends Controller
 
     public function show($id)
     {
-        $page['page_title'] = 'Manage Invoice';
+        $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Invoice';
@@ -200,7 +200,7 @@ class InvoicesController extends Controller
 
     public function searchData(Request $request)
     {
-        $page['page_title'] = 'Manage Invoice';
+        $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Invoice';

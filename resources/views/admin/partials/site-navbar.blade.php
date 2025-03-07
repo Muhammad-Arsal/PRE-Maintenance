@@ -13,8 +13,8 @@
         </li>
         <li class="nav-item {{ Request::segment(2) == 'invoices' ? 'open' : '' }}">
           <a href="{{route('admin.invoices')}}">
-              <i class="la la-file"></i>
-              <span class="menu-title">Invoices</span>
+              <i class="la la-calculator"></i>
+              <span class="menu-title">Accounts</span>
           </a>
       </li>
       

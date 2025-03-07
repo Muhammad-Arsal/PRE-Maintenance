@@ -134,14 +134,14 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/jobs/search', [JobsController::class,'searchData'])->name('admin.jobs.search');
 
     //invoices
-    Route::get('/invoices', [InvoicesController::class, 'index'])->name('admin.invoices');
-    Route::get('/invoices/create', [InvoicesController::class, 'create'])->name('admin.invoices.create');
-    Route::post('/invoices/store', [InvoicesController::class,'store'])->name('admin.invoices.store');
-    Route::get('/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('admin.invoices.edit');
-    Route::post('/invoices/{id}/update', [InvoicesController::class, 'update'])->name('admin.invoices.update');
-    Route::delete('invoices/{id}/destroy', [InvoicesController::class, 'destroy'])->name('admin.invoices.destroy');
-    Route::get('invoices/{id}/show', [InvoicesController::class,'show'])->name('admin.invoices.show');
-    Route::get('/invoices/search', [InvoicesController::class,'searchData'])->name('admin.invoices.search');
+    Route::get('accounts/invoices', [InvoicesController::class, 'index'])->name('admin.invoices');
+    Route::get('accounts/invoices/create', [InvoicesController::class, 'create'])->name('admin.invoices.create');
+    Route::post('accounts/invoices/store', [InvoicesController::class,'store'])->name('admin.invoices.store');
+    Route::get('accounts/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('admin.invoices.edit');
+    Route::post('accounts/invoices/{id}/update', [InvoicesController::class, 'update'])->name('admin.invoices.update');
+    Route::delete('accounts/invoices/{id}/destroy', [InvoicesController::class, 'destroy'])->name('admin.invoices.destroy');
+    Route::get('accounts/invoices/{id}/show', [InvoicesController::class,'show'])->name('admin.invoices.show');
+    Route::get('accounts/invoices/search', [InvoicesController::class,'searchData'])->name('admin.invoices.search');
 
     //AJAX
     Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');

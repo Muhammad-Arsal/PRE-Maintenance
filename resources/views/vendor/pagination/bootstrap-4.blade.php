@@ -44,6 +44,8 @@
         </ul>
     </nav>
 @else
+
+@if ($paginator->count() > 0)
     <nav>
         <ul class="pagination">
             <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
@@ -56,4 +58,6 @@
             </li>
         </ul>
     </nav>
+@endif
+    
 @endif

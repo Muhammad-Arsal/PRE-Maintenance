@@ -22,9 +22,9 @@
     </div>
     <div class="content-body">
         <section id="search-landlords">
+            <h3 class="mb-2"><strong>Jobs</strong></h3>
             <div class="row">
                 <div class="col-12">
-
                     <div class="container-fluid p-0 m-0">
                         <div class="table-responsive">
                             <table id="diaryTable" class="table table-bordered">
@@ -53,8 +53,8 @@
                                             <td>{{$item->description}}</td>
                                             <td>{{$item->status}}</td>
                                             <td>{{$item->won_contract == "yes" ? "Yes" : "no"}}</td>
-                                            <td>{{$item->created_at->format('H:i  d/m/Y') }}</td>
-                                            <td>{{$item->updated_at->format('H:i  d/m/Y') }}</td>                                            
+                                            <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
+                                            <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            
                                         </tr>
                                         @php $j++ @endphp
                                     @empty

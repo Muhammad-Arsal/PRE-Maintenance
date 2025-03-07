@@ -145,7 +145,7 @@
                                                     <div class="form-group">
                                                         <div class="custom-control custom-radio">
                                                             <input type="radio" id="entered_address" name="address_option" class="custom-control-input" 
-                                                                value="entered" {{ old('address_option', $property->address_option ?? '') == 'entered' ? 'checked' : '' }}>
+                                                                value="entered" checked>
                                                             <label class="custom-control-label" for="entered_address">Use entered address?</label>
                                                         </div>
                                                     </div>
@@ -155,7 +155,7 @@
                                                     <div class="form-group">
                                                         <div class="custom-control custom-radio">
                                                             <input type="radio" id="property_address" name="address_option" class="custom-control-input" 
-                                                                value="property" {{ old('address_option', $property->address_option ?? '') == 'property' ? 'checked' : '' }}>
+                                                                value="property">
                                                             <label class="custom-control-label" for="property_address">Use property's address?</label>
                                                         </div>
                                                     </div>
@@ -165,7 +165,7 @@
                                                     <div class="form-group">
                                                         <div class="custom-control custom-radio">
                                                             <input type="radio" id="landlord_address" name="address_option" class="custom-control-input" 
-                                                                value="landlord" {{ old('address_option', $property->address_option ?? '') == 'landlord' ? 'checked' : '' }}>
+                                                                value="landlord">
                                                             <label class="custom-control-label" for="landlord_address">Use landlord's address?</label>
                                                         </div>
                                                     </div>

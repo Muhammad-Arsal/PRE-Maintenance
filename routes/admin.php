@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ContractorsController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyTypeController;
 use App\Http\Controllers\Admin\JobsController;
+use App\Http\Controllers\Admin\InvoicesController;
 
 
 Route::get('/',  [AdminAuthController::class, 'login'])->name('admin.login');
@@ -131,6 +132,19 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('jobs/{id}/destroy', [JobsController::class, 'destroy'])->name('admin.jobs.destroy');
     Route::get('jobs/{id}/show', [JobsController::class,'show'])->name('admin.jobs.show');
     Route::get('/jobs/search', [JobsController::class,'searchData'])->name('admin.jobs.search');
+
+    //invoices
+    Route::get('/invoices', [InvoicesController::class, 'index'])->name('admin.invoices');
+    Route::get('/invoices/create', [InvoicesController::class, 'create'])->name('admin.invoices.create');
+    Route::post('/invoices/store', [InvoicesController::class,'store'])->name('admin.invoices.store');
+    Route::get('/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('admin.invoices.edit');
+    Route::post('/invoices/{id}/update', [InvoicesController::class, 'update'])->name('admin.invoices.update');
+    Route::delete('invoices/{id}/destroy', [InvoicesController::class, 'destroy'])->name('admin.invoices.destroy');
+    Route::get('invoices/{id}/show', [InvoicesController::class,'show'])->name('admin.invoices.show');
+    Route::get('/invoices/search', [InvoicesController::class,'searchData'])->name('admin.invoices.search');
+
+    //AJAX
+    Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');
 });
 
 

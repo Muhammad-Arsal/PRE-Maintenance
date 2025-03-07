@@ -72,6 +72,12 @@
                 <label for="other_information"><strong>Other Information:</strong></label>
                 <textarea id="other_information" class="form-control" rows="4" readonly>{{ $job->other_information ?? '' }}</textarea>
             </div> 
+
+            <div class="form-actions right">
+                <a href="{{route('admin.jobs')}}" class="theme-btn btn btn-primary">
+                    <i class="la la-times"></i> Back
+                </a>
+            </div>
         </div>   
     </div>
 @endsection

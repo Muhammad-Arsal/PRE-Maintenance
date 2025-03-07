@@ -80,6 +80,7 @@ class PropertyController extends Controller
         $property->city = $request->city;
         $property->county = $request->county;
         $property->postcode = $request->postal_code;
+        $property->country = $request->country;
 
         $property->gas_certificate_due = $request->gas_certificate_due;
         $property->eicr_due = $request->eicr_due;
@@ -141,6 +142,7 @@ class PropertyController extends Controller
         $property->city = $request->city;
         $property->county = $request->county;
         $property->postcode = $request->postal_code;
+        $property->country = $request->country;
 
         $property->gas_certificate_due = $request->gas_certificate_due;
         $property->eicr_due = $request->eicr_due;

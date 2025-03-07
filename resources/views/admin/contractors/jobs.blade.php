@@ -74,7 +74,13 @@
                                       
                 </div>
             </div>
+            <div class="form-actions right">
+                <a href="{{route('admin.settings.contractors')}}" class="theme-btn btn btn-primary">
+                    <i class="la la-times"></i> Back
+                </a>
+            </div>
         </section>
+
     </div>
 @endsection
 

@@ -117,6 +117,12 @@
                 <label for="notes"><strong>Notes:</strong></label>
                 <textarea id="notes" class="form-control" rows="4" readonly>{{ $tenant->note ?? '' }}</textarea>
             </div> 
+
+            <div class="form-actions right">
+                <a href="{{route('admin.settings.tenants')}}" class="theme-btn btn btn-primary">
+                    <i class="la la-times"></i> Back
+                </a>
+            </div>
         </div>   
     </div>
 @endsection

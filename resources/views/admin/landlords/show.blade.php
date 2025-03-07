@@ -212,6 +212,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-actions right">
+                <a href="{{route('admin.settings.landlords')}}" class="theme-btn btn btn-primary">
+                    <i class="la la-times"></i> Back
+                </a>
+            </div>
                                    
         </div>        
     </div>

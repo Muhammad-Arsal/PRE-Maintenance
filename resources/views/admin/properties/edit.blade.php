@@ -362,6 +362,23 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="country"><span style="color: red;">*</span>Country</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="text" id="country" class="form-control" placeholder="Country" 
+                                                            name="country" value="{{ old('country', $property->country ?? '') }}">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-globe"></i>
+                                                        </div>
+                                                    </div>
+                                                    @error('country') 
+                                                        <span class="text-danger">{{ $message }}</span> 
+                                                    @enderror
+                                                </div>
+                                            </div>                                            
+                                        </div>
 
                                         <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ trim(old('note', $property->note)) }}</textarea>
 

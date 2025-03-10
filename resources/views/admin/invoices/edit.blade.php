@@ -366,29 +366,19 @@
                 number: true
             },
             address_line_1: {
-                required: function () {
-                    return $("#entered_address").is(":checked");
-                }
+                required: true,
             },
             county: {
-                required: function () {
-                    return $("#entered_address").is(":checked");
-                }
+                required: true,
             },
             city: {
-                required: function () {
-                    return $("#entered_address").is(":checked");
-                }
+                required: true,
             },
             postal_code: {
-                required: function () {
-                    return $("#entered_address").is(":checked");
-                }
+                required: true,
             },
             country: {
-                required: function () {
-                    return $("#entered_address").is(":checked");
-                }
+                required: true,
             }
         },
         messages: {
@@ -399,11 +389,11 @@
             vat_rate: "Please enter a valid VAT rate",
             vat: "Please enter a valid VAT amount",
             total: "Please enter a valid total",
-            address_line_1: "Address Line 1 is required when using an entered address",
-            county: "County is required when using an entered address",
-            city: "City is required when using an entered address",
-            postal_code: "Postal Code is required when using an entered address",
-            country: "Country is required when using an entered address",
+            address_line_1: "Address Line 1 is required",
+            county: "County is required",
+            city: "City is required",
+            postal_code: "Postal Code is required",
+            country: "Country is required",
         },
         errorElement: "span",
         errorClass: "text-danger",

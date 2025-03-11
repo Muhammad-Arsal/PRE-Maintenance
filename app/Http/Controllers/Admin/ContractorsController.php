@@ -293,6 +293,7 @@ class ContractorsController extends Controller
             $query->where(function ($q) use ($keywords) {
                 $q->where('name', 'like', '%' . $keywords . '%')
                 ->orWhere('email', 'like', '%' . $keywords . '%')
+                ->orWhere('id', intval($keywords)) 
                 ->orWhereHas('profile', function ($q) use ($keywords) {
                     $q->where('phone_number', 'like', '%' . $keywords . '%');
                 });

@@ -205,8 +205,11 @@ class JobsController extends Controller
             $query->where('contractor_id', $selectedContractor);
         }
         if (!empty($keywords)) {
-            $query->where('description', 'LIKE', '%'.$keywords.'%');
-        }
+            $query->where(function ($q) use ($keywords) {
+                $q->where('description', 'LIKE', '%'.$keywords.'%')
+                  ->orWhere('id', intval($keywords)); 
+            });
+        }        
 
         $jobs = $query->orderBy('created_at', 'desc')->paginate(10);
 

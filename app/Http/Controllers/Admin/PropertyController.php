@@ -221,6 +221,7 @@ class PropertyController extends Controller
             $query->where(function ($q) use ($keywords) {
                 $q->where('line1', 'LIKE', "%{$keywords}%")
                 ->orWhere('city', 'LIKE', "%{$keywords}%")
+                ->orWhere('id', intval($keywords))
                 ->orWhere('county', 'LIKE', "%{$keywords}%")
                 ->orWhere('postcode', 'LIKE', "%{$keywords}%");
             });

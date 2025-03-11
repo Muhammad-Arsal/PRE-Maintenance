@@ -210,13 +210,16 @@ class InvoicesController extends Controller
         $query = Invoices::with(['property'])->orderBy('created_at', 'asc');
         
         if ($keywords) {
-            $query->whereHas('property', function ($q) use ($keywords) {
-                $q->where('line1', 'like', '%' . $keywords . '%')
-                  ->orWhere('city', 'like', '%' . $keywords . '%')
-                  ->orWhere('county', 'like', '%' . $keywords . '%')
-                  ->orWhere('postcode', 'like', '%' . $keywords . '%');
+            $query->where(function ($q) use ($keywords) {
+                $q->where('id', intval($keywords))
+                  ->orWhereHas('property', function ($q) use ($keywords) {
+                      $q->where('line1', 'like', '%' . $keywords . '%')
+                        ->orWhere('city', 'like', '%' . $keywords . '%')
+                        ->orWhere('county', 'like', '%' . $keywords . '%')
+                        ->orWhere('postcode', 'like', '%' . $keywords . '%');
+                  });
             });
-        }             
+        }            
 
         $invoices = $query->orderBy('created_at', 'asc')->paginate(10);
 

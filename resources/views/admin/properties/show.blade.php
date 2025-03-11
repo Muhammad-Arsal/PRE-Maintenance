@@ -47,10 +47,10 @@
                         </tr>                        
                         <tr>
                             <th class="font-weight-bold w-25">Weekly rent:</th>
-                            <td class="w-25">£ {{$property->monthly_rent/4 ?? 'Not Set'}}</td>
+                            <td class="w-25">£ {{ isset($property->monthly_rent) ? number_format($property->monthly_rent / 4, 2) : 'Not Set' }}</td>
                             <th class="font-weight-bold w-25">Monthly rent:</th>
-                            <td class="w-25">£ {{$property->monthly_rent ?? 'Not Set'}}</td>
-                        </tr>
+                            <td class="w-25">£ {{ isset($property->monthly_rent) ? number_format($property->monthly_rent, 2) : 'Not Set' }}</td>
+                        </tr>                        
                         <tr>
                             <th class="font-weight-bold w-25">Type:</th>
                             <td class="w-25">{{$property->type}}</td>

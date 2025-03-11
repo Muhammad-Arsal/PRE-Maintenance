@@ -84,12 +84,14 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Landlord Id</th>
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Company Name</th>
                                         <th>Email Address</th>
                                         <th>Last Logged In</th>
                                         <th>Created At</th>
+                                        <th>Modified At</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -103,12 +105,14 @@
                                     @forelse($landlords as $data)
                                         <tr>
                                             <td>{{ $j }}</td>
+                                            <td>{{$data['id'] }}</td>
                                             <td>{{ $data['name'] }}</td>
                                             <td>{{ !empty($data->profile) ? $data->profile->phone_number : '' }}</td>
                                             <td>{{$data->company_name ?? ''}}</td>
                                             <td>{{ $data['email'] ?? '' }}</td>
                                             <td>{{ $data['last_logged_in'] ? date('d/m/Y', strtotime($data['last_logged_in'])) : '' }}</td>
-                                            <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y') : '' }}</td>
+                                            <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y, h:i') : '' }}</td>
+                                            <td>{{ isset($data['updated_at']) ? \Carbon\Carbon::parse($data['updated_at'])->format('d/m/Y, h:i') : '' }}</td>
                                             <td>
                                                 <a href="{{route('admin.settings.landlords.show', $data->id)}}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 

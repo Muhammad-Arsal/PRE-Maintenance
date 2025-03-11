@@ -20,44 +20,119 @@
     </div>
 
     <div class="content-body">
-        <section id="view-property">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-content">
-                            <div class="card-body">
-                                @php
-                                    $tenant = \DB::table('tenants')->where('id', $property->tenant_id)->value('name');
-                                    $landlord = \DB::table('landlords')->where('id', $property->landlord_id)->value('name');
-                                @endphp
-                                
-                                @foreach ($property->toArray() as $key => $value)
-                                    <div class="position-relative form-group d-flex justify-content-between border-bottom p-1">
-                                        <label for="{{ $key }}">{{ ucwords(str_replace('_', ' ', $key)) }}</label>
-                                        <div class="sm:mt-0 sm:col-span-2">
-                                            @if ($key == 'tenant_id')
-                                                {{ $tenant ?? 'N/A' }}
-                                            @elseif ($key == 'landlord_id')
-                                                {{ $landlord ?? 'N/A' }}
-                                            @elseif (in_array($key, ['created_at', 'updated_at']))
-                                                {!! !is_null($value) ? date('d/m/Y', strtotime($value)) : '' !!}
-                                            @else
-                                                {!! $value !!}
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                                
-                                <div class="form-actions right">
-                                    <a href="{{ route('admin.properties') }}" class="theme-btn btn btn-primary">
-                                        <i class="la la-times"></i> Go Back
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="container-fluid p-0 m-0">    
+            <div class="card mb-3">
+                <div class="card-header text-white" style="background-color: #041E41;">
+                    <strong>Details</strong>
                 </div>
+                <table class="table table-bordered text-muted mb-0">
+                    <tbody>
+                        <tr>
+                            <th class="font-weight-bold w-25">Landlord:</th>
+                            <td class="w-25">
+                                @if(isset($property->landlord) && isset($property->landlord->id))
+                                    <a href="{{ route('admin.settings.landlords.show', $property->landlord->id) }}">{{ $property->landlord->name ?? 'Not Set' }}</a>
+                                @else
+                                    Not Set
+                                @endif
+                            </td>
+                            <th class="font-weight-bold w-25">Tenant:</th>
+                            <td class="w-25">
+                                @if(isset($property->tenant) && isset($property->tenant->id))
+                                    <a href="{{ route('admin.settings.tenants.show', $property->tenant->id) }}">{{ $property->tenant->name ?? 'Not Set' }}</a>
+                                @else
+                                    Not Set
+                                @endif
+                            </td>
+                        </tr>                        
+                        <tr>
+                            <th class="font-weight-bold w-25">Weekly rent:</th>
+                            <td class="w-25">{{$property->monthly_rent/4 ?? 'Not Set'}}</td>
+                            <th class="font-weight-bold w-25">Monthly rent:</th>
+                            <td class="w-25">{{$property->monthly_rent ?? 'Not Set'}}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold w-25">Type:</th>
+                            <td class="w-25">{{$property->type}}</td>
+                            <th class="font-weight-bold w-25">No. bedrooms:</th>
+                            <td class="w-25">{{$property->bedrooms}}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold w-25">Management Charge For Maintenance:</th>
+                            <td class="w-25">{{$property->management_charge == 1 ? "Yes" : "No"}}</td>
+                            <th class="font-weight-bold w-25">Is active:</th>
+                            <td class="w-25">{{$property->status == "Active" ? "Yes" : "No"}}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold w-25">Gas certificate Due:</th>
+                            <td class="w-25">{{ $property->gas_certificate_due ? \Carbon\Carbon::parse($property->gas_certificate_due)->format('d/m/Y') : 'Not Set' }}</td>
+                            <th class="font-weight-bold w-25">Is furnished:</th>
+                            <td class="w-25">{{$property->is_furnished == 1 ? "Yes" : "No"}}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold w-25">No. floors:</th>
+                            <td class="w-25">{{$property->number_of_floors ?? "Not Set"}}</td>
+                            <th class="font-weight-bold w-25">Has garage:</th>
+                            <td class="w-25">{{$property->has_garage == 1 ? "Yes" : "No"}}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold w-25">Has parking:</th>
+                            <td class="w-25">{{$property->has_parking == 1 ? "Yes" : "No"}}</td>
+                            <th class="font-weight-bold w-25">Rent safe month:</th>
+                            <td class="w-25">{{$property->rent_safe_month ?? "Not Set"}}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold w-25">Has garden:</th>
+                            <td class="w-25">{{$property->has_garden == 1 ? "Yes" : "No"}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                                
+            </div>  
+
+            <div class="card mb-3">
+                <div class="card-header text-white" style="background-color: #041E41;">
+                    <strong>Address</strong>
+                </div>
+                <table class="table table-bordered text-muted mb-0">
+                    <tbody>
+                        <tr>
+                            <th class="font-weight-bold ">Line 1:</th>
+                            <td class="">{{ $property->line1 ?? 'Not set' }}</td>
+                            <th class="font-weight-bold ">Line 2:</th>
+                            <td class="">{{ $property->line2 ?? 'Not set' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold ">Line 3:</th>
+                            <td class="">{{ $property->line3 ?? 'Not set' }}</td>
+                            <th class="font-weight-bold ">City:</th>
+                            <td class="">{{ $property->city }}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold ">County:</th>
+                            <td class="">{{ $property->county }}</td>
+                            <th class="font-weight-bold ">Post code:</th>
+                            <td class="">{{ $property->postcode }}</td>
+                        </tr>
+                        <tr>
+                            <th class="font-weight-bold ">Country:</th>
+                            <td class="" colspan="3">{{ $property->country ?? 'Not set' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>            
+            
+            <div class="form-group mb-3">
+                <label for="notes"><strong>Notes:</strong></label>
+                <textarea id="notes" class="form-control" rows="4" readonly>{{ $property->note }}</textarea>
             </div>
-        </section>
+
+            <div class="form-actions right">
+                <a href="{{route('admin.properties')}}" class="theme-btn btn btn-primary">
+                    <i class="la la-times"></i> Back
+                </a>
+            </div>
+                                   
+        </div>        
     </div>
 @endsection

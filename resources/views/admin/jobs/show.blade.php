@@ -23,13 +23,13 @@
 
             <div class="card mb-3">
                 <div class="card-header text-white" style="background-color: #041E41;">
-                    <strong>Contractor Details</strong>
+                    <strong>Winner Contractor</strong>
                 </div>
                 <table class="table table-bordered text-muted mb-0">
                     <tbody>
                         <tr>
                             <th class="font-weight-bold">Name:</th>
-                            <td>{{ $job->contractor->name ?? 'Not Set' }}</td>
+                            <td><a href="{{route('admin.settings.contractors.edit', $job->contractor->id)}}">{{ $job->contractor->name ?? 'Not Set' }}</a></td>
                             <th class="font-weight-bold">Job Sheet:</th>
                             <td>
                                 <a href="#">View Job Sheet</a>

@@ -76,6 +76,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Invoice Id</th>
                                         <th>Total</th>
                                         <th>Description</th>
                                         <th>Property</th>
@@ -95,6 +96,7 @@
                                     @forelse($invoices as $data)
                                         <tr>
                                             <td>{{$j}}</td>
+                                            <td>{{$data->id}}</td>
                                             <td>{{$data->total}}</td>
                                             <td>{{$data->description}}</td>
                                             <td><a href="{{route('admin.properties.show',$data->property->id)}}">{{$data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode}}</a></td>

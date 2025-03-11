@@ -60,7 +60,7 @@
                                         <th>User</th>
                                         <th>Tenant</th>
                                         <th>Description</th>
-                                        <th>Created</th>
+                                        <th>Created At</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -76,7 +76,7 @@
                                             <td>{{$item->admin->name}}</td>
                                             <td>{{$item->property->tenant->name}}</td>
                                             <td>{{$item->entry}}</td>
-                                            <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                                            <td>{{ $item->created_at->format('d/m/Y, h:i') }}</td>
                                             <td>
                                                 <a href="#" class="clickDeleteFunction" 
                                                 data-modal="forceDelete"

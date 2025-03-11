@@ -173,7 +173,7 @@ class PropertyController extends Controller
 
     public function show($id)
     {
-        $property = Property::where('id', $id)->first();
+        $property = Property::where('id', $id)->with('landlord', 'tenant')->first();
 
         $tenant = \DB::table('tenants')->where('id', $property->tenant_id)->first();
         $landlord = \DB::table('landlords')->where('id', $property->landlord_id)->first();

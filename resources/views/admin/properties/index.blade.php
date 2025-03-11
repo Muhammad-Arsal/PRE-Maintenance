@@ -140,6 +140,7 @@
                                     <tr>
                                         <tr>
                                             <th>#</th>
+                                            <th>Property Id</th>
                                             <th>Landlord</th>
                                             <th>Tenant</th>
                                             <th>Property Type</th>
@@ -160,6 +161,7 @@
                                     @forelse ($properties as $data)
                                         <tr>
                                             <td><strong>{{ $j }}</strong></td>
+                                            <td>{{$data->id}}</td>
                                             <td>
                                                 <a href="{{ isset($data->landlord) ? route('admin.settings.landlords.show', $data->landlord->id) : '#' }}">
                                                     {{ $data->landlord->name ?? "" }}
@@ -172,8 +174,8 @@
                                             </td>                                            
                                             <td>{{$data->type}}</td>
                                             <td>{{ $data->line1 . ', ' . $data->county . ', ' . $data->city . ', ' . $data->postcode }}</td>
-                                            <td>{{ $data->created_at->format('d/m/Y') }}</td>
-                                             <td>{{ $data->updated_at->format('d/m/Y') }}</td>
+                                            <td>{{ $data->created_at->format('d/m/Y, h:i') }}</td>
+                                             <td>{{ $data->updated_at->format('d/m/Y, h:i') }}</td>
                                             <td>
                                                 <a href="{{ route('admin.properties.show', $data->id) }}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 

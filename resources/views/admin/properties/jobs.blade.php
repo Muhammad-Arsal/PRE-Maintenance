@@ -61,8 +61,8 @@
                                             <td>{{$item->status}}</td>
                                             <td>{{$item->description}}</td>
                                             <td><a href="{{route('admin.settings.contractors.edit', $item->contractor_id)}}">{{$item->contractor->name}}</a></td>
-                                            <td>{{$item->created_at->format('d/m/Y') }}</td>
-                                            <td>{{$item->updated_at->format('d/m/Y') }}</td>
+                                            <td>{{$item->created_at->format('d/m/Y, h:i') }}</td>
+                                            <td>{{$item->updated_at->format('d/m/Y, h:i') }}</td>
                                         </tr>
                                         @php $j++ @endphp
                                     @empty

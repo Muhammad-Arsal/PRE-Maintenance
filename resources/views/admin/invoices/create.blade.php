@@ -81,8 +81,7 @@
                                                     <label for="subtotal">Subtotal</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="subtotal" class="form-control pl-4" placeholder="Subtotal" name="subtotal" 
-                                                             value="{{ old('subtotal', isset($property->subtotal) ? number_format($property->subtotal, 2) : '0.00') }}">
+                                                        <input type="text" id="subtotal" class="form-control pl-4 auto-format" placeholder="Subtotal" name="subtotal" value="0.00">
 
                                                     </div>
                                                     @error('subtotal') <span class="text-danger">{{ $message }}</span> @enderror
@@ -108,7 +107,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
                                                         <input type="text" id="vat" class="form-control pl-4" placeholder="VAT" name="vat" 
-                                                            value="{{ old('vat', $property->vat ?? '') }}">
+                                                            value="0.00">
                                                     </div>
                                                     @error('vat') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
@@ -120,7 +119,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
                                                         <input type="text" id="total" class="form-control pl-4" placeholder="Total" name="total" 
-                                                            value="{{ old('total', $property->total ?? '') }}">
+                                                            value="0.00">
                                                     </div>
                                                     @error('total') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
@@ -131,7 +130,7 @@
                                                     <label for="vat_applicable">VAT Applicable</label>
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" id="vat_applicable" class="custom-control-input" name="vat_applicable" 
-                                                            value="yes" {{ old('vat_applicable', $property->vat_applicable ?? '') == 'yes' ? 'checked' : '' }}>
+                                                            value="yes" checked>
                                                         <label class="custom-control-label" for="vat_applicable">Is VAT applicable?</label>
                                                     </div>
                                                     @error('vat_applicable') <span class="text-danger">{{ $message }}</span> @enderror
@@ -301,6 +300,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
+    function formatToFixed(input) {
+        let value = parseFloat(input.value);
+        if (!isNaN(value)) {
+            input.value = value.toFixed(2);
+        } else {
+            input.value = "0.00";
+        }
+    }
+
+    document.getElementById('subtotal').addEventListener('change', function() {
+        formatToFixed(this);
+    });
+
+    document.getElementById('vat_rate').addEventListener('change', function() {
+        formatToFixed(this);
+    });
+</script>
+<script>
     $(document).ready(function() {
         $('.select2').select2();
     });
@@ -392,14 +409,6 @@
             postal_code: "Postal Code is required",
             country: "Country is required",
         },
-        errorElement: "span",
-        errorClass: "text-danger",
-        highlight: function (element) {
-            $(element).addClass("is-invalid");
-        },
-        unhighlight: function (element) {
-            $(element).removeClass("is-invalid");
-        }
     });
 
     // Revalidate form when address option changes
@@ -426,74 +435,76 @@
                 let vat = (subtotal * vatRate) / 100;
                 let total = subtotal + vat;
 
-                $('#vat').val(formatNumber(vat)); // Set VAT with 2 decimal places
-                $('#total').val(formatNumber(total)); // Set Total with 2 decimal places
+                $('#vat').val(formatNumber(vat)); 
+                $('#total').val(formatNumber(total)); 
             } else {
-                $('#vat').val(formatNumber(0)); // Reset VAT if not applicable
-                $('#total').val(formatNumber(subtotal)); // Total is just the subtotal
+                $('#vat').val(formatNumber(0));
+                $('#total').val(formatNumber(subtotal));
             }
         }
 
-        // Format inputs to always show .00 if empty
         function enforceTwoDecimalPlaces() {
             $('.auto-format').each(function() {
                 $(this).val(formatNumber($(this).val()));
             });
         }
 
-        // Trigger calculation when fields change
         $('#subtotal, #vat_rate, #vat_applicable').on('input change', function() {
             calculateVAT();
         });
 
-        // Enforce .00 formatting when input loses focus
         $('.auto-format').on('blur', function() {
             $(this).val(formatNumber($(this).val()));
         });
 
-        // Call function on page load in case values are already set
         calculateVAT();
         enforceTwoDecimalPlaces();
     });
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('input[name="address_option"]').change(function () {
-            let selectedOption = $(this).val(); 
-            let propertyId = $('#property').val(); 
-            console.log(propertyId);
-            
-            if ((selectedOption === 'property' || selectedOption === 'landlord') && propertyId) {
-                $.ajax({
-                    url: "{{ route('get.address.details') }}",
-                    type: "GET",
-                    data: { 
-                        property_id: propertyId, 
-                        address_type: selectedOption 
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            let address = response.data;
+   $(document).ready(function () {
+    $('input[name="address_option"]').change(function () {
+        let selectedOption = $(this).val(); 
+        let propertyId = $('#property').val(); 
+        
+        $('#address_line_1, #address_line_2, #address_line_3, #city, #county, #postal_code, #country').val('');
 
-                            $('#address_line_1').val(address.address_line_1);
-                            $('#address_line_2').val(address.address_line_2);
-                            $('#address_line_3').val(address.address_line_3);
-                            $('#city').val(address.city);
-                            $('#county').val(address.county);
-                            $('#postal_code').val(address.postal_code);
-                            $('#country').val(address.country);
-                        }
-                    },
-                    error: function () {
-                        alert('Failed to fetch address details.');
+        if (selectedOption === 'entered') {
+            return;
+        }
+
+        if ((selectedOption === 'property' || selectedOption === 'landlord') && propertyId) {
+            $.ajax({
+                url: "{{ route('get.address.details') }}",
+                type: "GET",
+                data: { 
+                    property_id: propertyId, 
+                    address_type: selectedOption 
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let address = response.data;
+
+                        $('#address_line_1').val(address.address_line_1);
+                        $('#address_line_2').val(address.address_line_2);
+                        $('#address_line_3').val(address.address_line_3);
+                        $('#city').val(address.city);
+                        $('#county').val(address.county);
+                        $('#postal_code').val(address.postal_code);
+                        $('#country').val(address.country);
                     }
-                });
-            } else if (selectedOption !== 'entered') {
-                alert("Please select a property first.");
-            }
-        });
+                },
+                error: function () {
+                    alert('Failed to fetch address details.');
+                }
+            });
+        } else {
+            alert("Please select a property first.");
+        }
     });
+});
+
 
 </script>
 

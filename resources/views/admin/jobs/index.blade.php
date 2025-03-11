@@ -100,6 +100,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Job Id</th>
                                         <th>Status</th>
                                         <th>Description</th>
                                         <th>Property</th>
@@ -119,6 +120,7 @@
                                     @forelse ($jobs as $item)
                                         <tr>
                                             <td>{{ $j }}</td>
+                                            <td>{{ $item->id }}</td>
                                             <td>{{ $item->status }}</td>
                                             <td>{{ $item->description }}</td>
                                             <td>
@@ -131,8 +133,8 @@
                                                     {{ $item->won_contract == "yes" ? $item->contractor->name : '' }}
                                                 </a>
                                             </td>
-                                            <td>{{ $item->created_at ? $item->created_at->format('d-m-Y') : 'N/A' }}</td>
-                                            <td>{{ $item->updated_at ? $item->updated_at->format('d-m-Y') : 'N/A' }}</td>
+                                            <td>{{ $item->created_at ? $item->created_at->format('d/m/Y, h:i') : 'N/A' }}</td>
+                                            <td>{{ $item->updated_at ? $item->updated_at->format('d/m/Y, h:i') : 'N/A' }}</td>
                                             <td >
                                                 <a href="{{route('admin.jobs.show', $item->id)}}"
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 

@@ -304,6 +304,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
+    function formatToFixed(input) {
+        let value = parseFloat(input.value);
+        if (!isNaN(value)) {
+            input.value = value.toFixed(2);
+        } else {
+            input.value = "0.00";
+        }
+    }
+
+    document.getElementById('subtotal').addEventListener('change', function() {
+        formatToFixed(this);
+    });
+
+    document.getElementById('vat_rate').addEventListener('change', function() {
+        formatToFixed(this);
+    });
+</script>
+<script>
     $(document).ready(function() {
         $('.select2').select2();
     });
@@ -395,14 +413,6 @@
             postal_code: "Postal Code is required",
             country: "Country is required",
         },
-        errorElement: "span",
-        errorClass: "text-danger",
-        highlight: function (element) {
-            $(element).addClass("is-invalid");
-        },
-        unhighlight: function (element) {
-            $(element).removeClass("is-invalid");
-        }
     });
 
     // Revalidate form when address option changes
@@ -456,42 +466,50 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('input[name="address_option"]').change(function () {
-            let selectedOption = $(this).val(); 
-            let propertyId = $('#property').val(); 
-            console.log(propertyId);
-            
-            if ((selectedOption === 'property' || selectedOption === 'landlord') && propertyId) {
-                $.ajax({
-                    url: "{{ route('get.address.details') }}",
-                    type: "GET",
-                    data: { 
-                        property_id: propertyId, 
-                        address_type: selectedOption 
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            let address = response.data;
+   $(document).ready(function () {
+    $('input[name="address_option"]').change(function () {
+        let selectedOption = $(this).val(); 
+        let propertyId = $('#property').val(); 
+        
+        // Always clear fields first
+        $('#address_line_1, #address_line_2, #address_line_3, #city, #county, #postal_code, #country').val('');
 
-                            $('#address_line_1').val(address.address_line_1);
-                            $('#address_line_2').val(address.address_line_2);
-                            $('#address_line_3').val(address.address_line_3);
-                            $('#city').val(address.city);
-                            $('#county').val(address.county);
-                            $('#postal_code').val(address.postal_code);
-                            $('#country').val(address.country);
-                        }
-                    },
-                    error: function () {
-                        alert('Failed to fetch address details.');
+        // If "entered" is selected, stop further execution
+        if (selectedOption === 'entered') {
+            return;
+        }
+
+        if ((selectedOption === 'property' || selectedOption === 'landlord') && propertyId) {
+            $.ajax({
+                url: "{{ route('get.address.details') }}",
+                type: "GET",
+                data: { 
+                    property_id: propertyId, 
+                    address_type: selectedOption 
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let address = response.data;
+
+                        $('#address_line_1').val(address.address_line_1);
+                        $('#address_line_2').val(address.address_line_2);
+                        $('#address_line_3').val(address.address_line_3);
+                        $('#city').val(address.city);
+                        $('#county').val(address.county);
+                        $('#postal_code').val(address.postal_code);
+                        $('#country').val(address.country);
                     }
-                });
-            } else if (selectedOption !== 'entered') {
-                alert("Please select a property first.");
-            }
-        });
+                },
+                error: function () {
+                    alert('Failed to fetch address details.');
+                }
+            });
+        } else {
+            alert("Please select a property first.");
+        }
     });
+});
+
 
 </script>
 @endsection

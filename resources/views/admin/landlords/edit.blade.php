@@ -234,20 +234,6 @@
                                                <p class="text-danger">{{ $errors->first('profile_image') }}</p>
                                             @endif
                                         </div>
-                                        
-                                        <!-- Country -->
-                                        <div class="form-group">
-                                            <label for="country">Country</label>
-                                            <div class="position-relative has-icon-left">
-                                                <input type="text" id="country" class="form-control" name="country"
-                                                    value="{{ old('country', $landlord->country ?? '') }}" placeholder="Country">
-                                                <div class="form-control-position">
-                                                    <i class="la la-globe"></i>
-                                                </div>
-                                            </div>
-                                            @error('country') <span class="text-danger">{{ $message }}</span> @enderror
-                                        </div>
-
 
                                         <h3 class="mb-2"><strong>Address</strong></h3>
 

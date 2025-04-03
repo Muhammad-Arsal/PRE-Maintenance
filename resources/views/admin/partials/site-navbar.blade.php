@@ -11,7 +11,7 @@
 
         <li class="nav-item  {{ Request::segment(2) == 'properties' ? 'open' :''}}"><a href="{{route('admin.properties')}}" ><i class="la la-building"></i><span class="menu-title">Properties</span></a>
         </li>
-        <li class="nav-item {{ Request::segment(2) == 'invoices' ? 'open' : '' }}">
+        <li class="nav-item {{ Request::segment(2) == 'accounts' ? 'open' : '' }}">
           <a href="{{route('admin.invoices')}}">
               <i class="la la-calculator"></i>
               <span class="menu-title">Accounts</span>

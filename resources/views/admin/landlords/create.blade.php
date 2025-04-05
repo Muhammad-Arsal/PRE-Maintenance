@@ -1,7 +1,11 @@
 @extends('admin.partials.main')
 
 @section('css')
-
+<style>
+    label {
+        font-weight: bold;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -38,7 +42,7 @@
                                                     <label for="company_name">Company Name</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="company_name" class="form-control"
-                                                            placeholder="Company Name" name="company_name" value="{{ old('company_name') }}">
+                                                             name="company_name" value="{{ old('company_name') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
                                                         </div>
@@ -53,7 +57,7 @@
                                                     <label for="work_phone">Work Phone</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="work_phone" class="form-control"
-                                                            placeholder="Work Phone" name="work_phone" value="{{ old('work_phone') }}">
+                                                             name="work_phone" value="{{ old('work_phone') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-phone"></i>
                                                         </div>
@@ -68,7 +72,7 @@
                                                     <label for="commission_rate">Repairs Rate (%)</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="number" step="0.01" id="commission_rate" class="form-control"
-                                                            placeholder="Commission Rate" name="commission_rate" value="{{ old('commission_rate') }}">
+                                                            name="commission_rate" value="{{ old('commission_rate') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-money"></i>
                                                         </div>
@@ -86,7 +90,7 @@
                                                     <label for="fname">First Name</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="fname" class="form-control"
-                                                            placeholder="First name" name="fname" value="{{ old('fname') }}">
+                                                            name="fname" value="{{ old('fname') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-user"></i>
                                                         </div>
@@ -100,7 +104,7 @@
                                                 <div class="form-group">
                                                     <label for="lname">Last Name</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="lname" class="form-control" placeholder="Last name"
+                                                        <input type="text" id="lname" class="form-control" 
                                                             name="lname" value="{{ old('lname') }}" />
                                                         <div class="form-control-position">
                                                             <i class="la la-user"></i>
@@ -138,7 +142,7 @@
                                                     <label for="phone_number">Phone Number</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="phone_number" class="form-control"
-                                                            placeholder="Phone number" name="phone_number" value="{{ old('phone_number') }}">
+                                                            name="phone_number" value="{{ old('phone_number') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-phone"></i>
                                                         </div>
@@ -152,7 +156,7 @@
                                                 <div class="form-group">
                                                     <label for="email">Email</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="email" id="email" class="form-control" placeholder="Email"
+                                                        <input type="email" id="email" class="form-control" 
                                                             name="email" value="{{ old('email') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
@@ -192,7 +196,7 @@
                                                     <label for="home_phone">Home Phone</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="home_phone" class="form-control"
-                                                            placeholder="Home Phone" name="home_phone" value="{{ old('home_phone') }}">
+                                                             name="home_phone" value="{{ old('home_phone') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-phone"></i>
                                                         </div>
@@ -207,7 +211,7 @@
                                                     <label for="password">Password</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="password" id="password" class="form-control"
-                                                            placeholder="Password" name="password"  />
+                                                             name="password"  />
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
@@ -222,7 +226,7 @@
                                                     <label for="confirmPassword">Confirm Password</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="password" id="password_confirmation" class="form-control"
-                                                            placeholder="Confirm Password" name="password_confirmation">
+                                                             name="password_confirmation">
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
@@ -250,7 +254,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_1">Address Line 1</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_1" class="form-control" placeholder="Address Line 1" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
+                                                        <input type="text" id="address_line_1" class="form-control" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -263,7 +267,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_2">Address Line 2</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_2" class="form-control" placeholder="Address Line 2" name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
+                                                        <input type="text" id="address_line_2" class="form-control"  name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -276,7 +280,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_3">Address Line 3</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_3" class="form-control" placeholder="Address Line 3" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
+                                                        <input type="text" id="address_line_3" class="form-control" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -291,7 +295,7 @@
                                                 <div class="form-group">
                                                     <label for="city">City</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="city" class="form-control" placeholder="City" name="city" value="{{ old('city', $property->city ?? '') }}">
+                                                        <input type="text" id="city" class="form-control"  name="city" value="{{ old('city', $property->city ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
                                                         </div>
@@ -304,7 +308,7 @@
                                                 <div class="form-group">
                                                     <label for="county">County</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="county" class="form-control" placeholder="County" name="county" value="{{ old('county', $property->county ?? '') }}">
+                                                        <input type="text" id="county" class="form-control"  name="county" value="{{ old('county', $property->county ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map"></i>
                                                         </div>
@@ -317,7 +321,7 @@
                                                 <div class="form-group">
                                                     <label for="postal_code">Postal Code</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="postal_code" class="form-control" placeholder="Postal Code" name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
+                                                        <input type="text" id="postal_code" class="form-control"  name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -332,7 +336,7 @@
                                                 <div class="form-group">
                                                     <label for="country">Country</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="country" class="form-control" placeholder="Country" 
+                                                        <input type="text" id="country" class="form-control" 
                                                             name="country" value="{{ old('country', $property->country ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
@@ -342,12 +346,50 @@
                                                         <span class="text-danger">{{ $message }}</span> 
                                                     @enderror
                                                 </div>
-                                            </div>                                            
+                                            </div>  
+                                            
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="overseas_landlord">Overseas Landlord</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <select id="overseas_landlord" name="overseas_landlord" class="form-control"
+                                                            data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                            data-title="Is the landlord overseas?" title="">
+                                                            <option value="">Select Option</option>
+                                                            <option value="Yes" >Yes</option>
+                                                            <option value="No">No</option>
+                                                        </select>
+                                                        <div class="form-control-position">
+                                                            <i class="la la-globe"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('overseas_landlord'))
+                                                        <p class="text-danger">{{ $errors->first('overseas_landlord') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4" id="tax_exemption_code_wrapper" style="display: none;">
+                                                <div class="form-group">
+                                                    <label for="tax_exemption_code">Tax at Source Exemption Code</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <input type="text" id="tax_exemption_code" class="form-control"
+                                                            name="tax_exemption_code" value="{{ old('tax_exemption_code') }}">
+                                                        <div class="form-control-position">
+                                                            <i class="la la-file-code-o"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('tax_exemption_code'))
+                                                        <p class="text-danger">{{ $errors->first('tax_exemption_code') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            
                                         </div>
 
                                         <div class="form-group">
                                             <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $property->note ?? '') }}</textarea>
+                                            <textarea id="note" class="form-control" name="note" rows="4" >{{ old('note', $property->note ?? '') }}</textarea>
                                             @error('note') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
 
@@ -436,4 +478,30 @@
             });
         });
     </script>
+
+
+
+<script>
+    $(document).ready(function () {
+        function toggleTaxField() {
+            const selected = $('#overseas_landlord').val();
+            if (selected === 'Yes') {
+                $('#tax_exemption_code_wrapper').show();
+            } else {
+                $('#tax_exemption_code_wrapper').hide();
+                $('#tax_exemption_code').val(''); // Clear the field
+            }
+        }
+
+        // Initial load
+        toggleTaxField();
+
+        // On change
+        $('#overseas_landlord').on('change', function () {
+            toggleTaxField();
+        });
+    });
+</script>
+
+
 @endsection

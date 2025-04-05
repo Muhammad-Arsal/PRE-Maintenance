@@ -22,7 +22,7 @@ class Landlord extends Authenticatable implements MustVerifyEmail
         'home_phone',
         'commission_rate',
         'country','line1', 'line2', 'line3', 'city', 'county',
-        'postcode', 'note',
+        'postcode', 'note','account_number', 'sort_code', 'account_name', 'bank', 'bank_address', 'overseas_landlord', 'tax_exemption_code',
     ];
 
     public function profile(){

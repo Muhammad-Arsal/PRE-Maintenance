@@ -15,6 +15,11 @@ use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyTypeController;
 use App\Http\Controllers\Admin\JobsController;
 use App\Http\Controllers\Admin\InvoicesController;
+use App\Http\Controllers\Admin\LandlordsCorrespondenceController;
+use App\Http\Controllers\Admin\TaskTrayController;
+use App\Http\Controllers\Admin\TasksController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\CalendarController;
 
 
 Route::get('/',  [AdminAuthController::class, 'login'])->name('admin.login');
@@ -79,6 +84,11 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/landlords/create', [LandlordsController::class, 'create'])->name('admin.settings.landlords.create');
     Route::post('/landlords/store', [LandlordsController::class, 'store'])->name('admin.settings.landlords.store');
     Route::get('/landlords/{id}/edit', [LandlordsController::class, 'edit'])->name('admin.settings.landlords.edit');
+    Route::get('/landlords/{id}/address', [LandlordsController::class, 'address'])->name('admin.settings.landlord.address');
+    Route::post('/landlords/{id}/address/store', [LandlordsController::class, 'updateAddress'])->name('admin.settings.landlord.address.store');
+    Route::get('/landlords/{id}/bank_details', [LandlordsController::class, 'bankDetails'])->name('admin.settings.landlord.bank');
+    Route::post('/landlords/{id}/bank_details/store', [LandlordsController::class, 'updateBankDetails'])->name('admin.settings.landlord.bank.store');
+    Route::get('/landlords/{id}/properties', [LandlordsController::class, 'properties'])->name('admin.settings.landlord.properties');
     Route::put('/landlords/{id}/update', [LandlordsController::class, 'update'])->name('admin.settings.landlords.update');
     Route::post('landlords/{id}/destroy', [LandlordsController::class, 'destroy'])->name('admin.settings.landlords.destroy');
     Route::post('/landlords/{id}/delete', [LandlordsController::class, 'delete'])->name('admin.settings.landlords.delete');
@@ -145,6 +155,72 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
 
     //AJAX
     Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');
+
+    //Landlord Correspondence Routes
+    Route::get('/landlord/{id}/correspondence', [LandlordsCorrespondenceController::class, 'index'])->name('admin.landlords.correspondence');
+    Route::get('/landlord/{id}/correspondence/{parent_id}/view', [LandlordsCorrespondenceController::class, 'showChild'])->name('admin.landlords.correspondence.child');
+    Route::post('/landlord/{id}/correspondence/delete', [LandlordsCorrespondenceController::class, 'delete'])->name('admin.landlords.correspondence.delete');
+    Route::post('/landlord/{id}/correspondence/{parent_id}/move_file', [LandlordsCorrespondenceController::class, 'moveFile'])->name('admin.landlords.correspondence.moveFile');
+    Route::post('/landlord/{id}/correspondence/fileVault', [LandlordsCorrespondenceController::class, 'fileVault'])->name('admin.landlords.correspondence.fileVault');
+    Route::post('/landlord/{id}/correspondence/{parent_id}/new_folder', [LandlordsCorrespondenceController::class, 'createFolder'])->name('admin.landlords.correspondence.newFolder');
+    Route::get('/landlord/{id}/correspondence/{parent_id}/upload', [LandlordsCorrespondenceController::class, 'showUploadFileForm'])->name('admin.landlords.correspondence.uploadFilesForm');
+    Route::post('/landlord/{id}/correspondence/{parent_id}/upload', [LandlordsCorrespondenceController::class, 'uploadFiles'])->name('admin.landlords.correspondence.uploadFiles');
+    Route::post('/landlord/{id}/correspondence/ajax/addComment', [LandlordsCorrespondenceController::class, 'saveComment'])->name('admin.landlords.correspondence.ajax-add-comment');
+    Route::post('/landlord/{id}/correspondence/ajax/editComment', [LandlordsCorrespondenceController::class, 'editComment'])->name('admin.landlords.correspondence.ajax-edit-comment');
+    Route::post('/landlord/{id}/correspondence/file/description', [LandlordsCorrespondenceController::class, 'add_edit_description'])->name('admin.landlords.correspondence.add-edit-description');
+    Route::post('/landlord/{id}/correspondence/{parent_id}/new-call', [LandlordsCorrespondenceController::class, 'newCall'])->name('admin.landlords.correspondence.newCall');
+    Route::post('/landlord/{id}/correspondence/{parent_id}/new-meeting', [LandlordsCorrespondenceController::class, 'storeMeeting'])->name('admin.landlords.correspondence.newMeeting');
+    // Route::post('/supplier/correspondence/{id}/move', [SuppliersCorrespondenceController::class, 'copyToCorres'])->name('supplier.corres.add');
+    Route::get('landlord/{id}/correspondence/task', [LandlordsCorrespondenceController::class, 'showTaskPage'])->name('admin.suppliers.correspondence.task');
+    Route::post('tasks/create/task', [LandlordsCorrespondenceController::class, 'storeTask'])->name('admin.tasks.cross.store');
+
+    //Task Tray
+    Route::get('settings/task-tray', [TaskTrayController::class, 'index'])->name('admin.settings.taskTray');
+    Route::get('settings/task-tray/create', [TaskTrayController::class, 'create'])->name('admin.settings.taskTray.create');
+    Route::post('settings/task-tray/store', [TaskTrayController::class, 'store'])->name('admin.settings.taskTray.store');
+    Route::get('settings/task-tray/{id}/edit', [TaskTrayController::class, 'edit'])->name('admin.settings.taskTray.edit');
+    Route::post('settings/task-tray/{id}/update', [TaskTrayController::class, 'update'])->name('admin.settings.taskTray.update');
+    Route::post('settings/task-tray/{id}/delete', [TaskTrayController::class, 'delete'])->name('admin.settings.taskTray.delete');
+
+    //Tasks
+    Route::get('/tasks', [TasksController::class, 'index'])->name('admin.tasks');
+    Route::get('tasks/create', [TasksController::class, 'create'])->name('admin.tasks.create');
+    Route::post('tasks/create', [TasksController::class, 'store'])->name('admin.tasks.store');
+    Route::get('tasks/{id}/edit', [TasksController::class, 'edit'])->name('admin.tasks.edit');
+    Route::post('tasks/{id}/update', [TasksController::class, 'update'])->name('admin.tasks.update');
+    Route::post('tasks/{id}/delete', [TasksController::class, 'destroy'])->name('admin.tasks.delete');
+    Route::post('tasks/{id}/status', [TasksController::class, 'changeStatus'])->name('admin.tasks.changeStatus');
+    Route::get('/tasks/searchData', [TasksController::class, 'searchTasks'])->name('admin.tasks.searchData');
+    Route::get('/tasks/exportCSV', [TasksController::class, 'exportCSV'])->name('admin.tasks.export');
+    Route::delete('/tasks/{taskId}/file', [TasksController::class, 'deleteFile'])->name('admin.task.deleteFile');
+
+
+    // Event Type
+    Route::get('settings/event/type', [EventController::class, 'manageType'])->name('admin.settings.event-type');
+    Route::get('settings/event/type/create', [EventController::class, 'createType'])->name('admin.settings.event-type.create');
+    Route::post('settings/event/type/store', [EventController::class, 'storeType'])->name('admin.settings.event-type.store');
+    Route::get('settings/event/type/{id}/edit', [EventController::class, 'editType'])->name('admin.settings.event-type.edit');
+    Route::post('settings/event/type/{id}/update', [EventController::class, 'updateType'])->name('admin.settings.event-type.update');
+    Route::post('settings/event/type/{id}/destroy', [EventController::class, 'destroyType'])->name('admin.settings.event-type.destroy');
+
+    //Calendar
+    Route::get('/diary', [CalendarController::class, 'index'])->name('admin.diary');
+    Route::post('/diary/save-calendar-state', [CalendarController::class, 'saveCalendarState'])->name('admin.saveCalendarState');
+    
+    //Calendar Events
+    Route::get('diary/event/add', [EventController::class, 'create'])->name('admin.diary.event.create');
+    Route::post('diary/event/store', [EventController::class, 'store'])->name('admin.diary.event.store');
+    Route::get('diary/event/{id}/edit', [EventController::class, 'edit'])->name('admin.diary.event.edit');
+    Route::post('diary/event/{id}/update', [EventController::class, 'update'])->name('admin.diary.event.update');
+    Route::post('diary/event/{id}/delete', [EventController::class, 'destroy'])->name('admin.diary.event.delete');
+    Route::post('diary/event/{id}/deleteAllRecurrences', [EventController::class, 'deleteAllRecurrences'])->name('admin.diary.event.deleteAllRecurrences');
+    Route::post('diary/event/{id}/file-delete', [EventController::class, 'fileDelete'])->name('admin.diary.event.fileDelete');
+
+    //Diary Meeting
+    Route::get('diary/{id}/meeting/{type}', [CalendarController::class, 'editMeetingForm'])->name('admin.diary.meeting.editForm');
+    Route::post('diary/{id}/meeting/{type}', [CalendarController::class, 'storeMeetingForm'])->name('admin.diary.meeting.update');
+
+
 });
 
 

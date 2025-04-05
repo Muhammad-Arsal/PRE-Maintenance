@@ -1,7 +1,11 @@
 @extends('admin.partials.main')
 
 @section('css')
-
+<style>
+    label {
+        font-weight: bold;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -27,6 +31,30 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-content">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs nav-underline no-hover-bg">
+                                    <li class="nav-item">
+                                        <a class="nav-link active disabled" id="overview" data-toggle="tab"
+                                            aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.landlord.address', $landlord->id)}}">Address</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.landlord.bank', $landlord->id)}}">Bank Details</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.landlord.properties', $landlord->id)}}">Properties</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.landlords.correspondence', $landlord->id)}}">Correspondence</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="card-body">
                                 @include('admin.partials.flashes')
                                 <form method="post" enctype="multipart/form-data" id='managelandlord' action="{{ route('admin.settings.landlords.update', $landlord->id) }}">
@@ -42,7 +70,7 @@
                                                     <label for="company_name">Company Name</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="company_name" class="form-control" name="company_name"
-                                                            value="{{ old('company_name', $landlord->company_name ?? '') }}" placeholder="Company Name">
+                                                            value="{{ old('company_name', $landlord->company_name ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
                                                         </div>
@@ -56,7 +84,7 @@
                                                     <label for="work_phone">Work Phone</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="work_phone" class="form-control" name="work_phone"
-                                                            value="{{ old('work_phone', $landlord->work_phone ?? '') }}" placeholder="Work Phone">
+                                                            value="{{ old('work_phone', $landlord->work_phone ?? '') }}" >
                                                         <div class="form-control-position">
                                                             <i class="la la-phone"></i>
                                                         </div>
@@ -70,7 +98,7 @@
                                                     <label for="commission_rate">Repairs Rate (%)</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="number" step="0.01" id="commission_rate" class="form-control" name="commission_rate"
-                                                            value="{{ old('commission_rate', $landlord->commission_rate ?? '') }}" placeholder="Commission Rate">
+                                                            value="{{ old('commission_rate', $landlord->commission_rate ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-money"></i>
                                                         </div>
@@ -103,7 +131,7 @@
                                                 <div class="form-group">
                                                     <label for="fname">First Name</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="fname" class="form-control" placeholder="First name" name="fname" value="{{ old('fname', $name[0]) }}">
+                                                        <input type="text" id="fname" class="form-control"  name="fname" value="{{ old('fname', $name[0]) }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-user"></i>
                                                         </div>
@@ -117,7 +145,7 @@
                                                 <div class="form-group">
                                                     <label for="lname">Last Name</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="lname" class="form-control" placeholder="Last name" name="lname" value="{{ old('lname', array_key_exists('1', $name) ? $name[1] : '') }}">
+                                                        <input type="text" id="lname" class="form-control" name="lname" value="{{ old('lname', array_key_exists('1', $name) ? $name[1] : '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-user"></i>
                                                         </div>
@@ -134,7 +162,7 @@
                                                 <div class="form-group">
                                                     <label for="phone_number">Phone Number</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="phone_number" class="form-control" placeholder="Phone number" name="phone_number" value="{{ old('phone_number', $landlord->profile->phone_number) }}">
+                                                        <input type="text" id="phone_number" class="form-control"  name="phone_number" value="{{ old('phone_number', $landlord->profile->phone_number) }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-phone"></i>
                                                         </div>
@@ -148,7 +176,7 @@
                                                 <div class="form-group">
                                                     <label for="email">Email</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="{{ old('email', $landlord->email) }}">
+                                                        <input type="email" id="email" class="form-control"  name="email" value="{{ old('email', $landlord->email) }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -184,7 +212,7 @@
                                                     <label for="home_phone">Home Phone</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="home_phone" class="form-control" name="home_phone"
-                                                            value="{{ old('home_phone', $landlord->home_phone ?? '') }}" placeholder="Home Phone">
+                                                            value="{{ old('home_phone', $landlord->home_phone ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-phone"></i>
                                                         </div>
@@ -196,7 +224,7 @@
                                                 <div class="form-group">
                                                     <label for="password">Password (leave blank to keep current password)</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="password" id="password" class="form-control" placeholder="Password" name="password">
+                                                        <input type="password" id="password" class="form-control" name="password">
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
@@ -210,7 +238,7 @@
                                                 <div class="form-group">
                                                     <label for="confirmPassword">Confirm Password</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="password" id="password_confirmation" class="form-control" placeholder="Confirm Password" name="password_confirmation">
+                                                        <input type="password" id="password_confirmation" class="form-control" name="password_confirmation">
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
@@ -233,118 +261,6 @@
                                             @if ($errors->has('profile_image'))
                                                <p class="text-danger">{{ $errors->first('profile_image') }}</p>
                                             @endif
-                                        </div>
-
-                                        <h3 class="mb-2"><strong>Address</strong></h3>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="address_line_1">Address Line 1</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_1" class="form-control" name="address_line_1"
-                                                            value="{{ old('address_line_1', $landlord->line1 ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-map-marker"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('address_line_1') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="address_line_2">Address Line 2</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_2" class="form-control" name="address_line_2"
-                                                            value="{{ old('address_line_2', $landlord->line2 ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-map-marker"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('address_line_2') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="address_line_3">Address Line 3</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_3" class="form-control" name="address_line_3"
-                                                            value="{{ old('address_line_3', $landlord->line3 ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-map-marker"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('address_line_3') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="city">City</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="city" class="form-control" name="city"
-                                                            value="{{ old('city', $landlord->city ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-building"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('city') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="county">County</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="county" class="form-control" name="county"
-                                                            value="{{ old('county', $landlord->county ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-map"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('county') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="postal_code">Postal Code</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="postal_code" class="form-control" name="postal_code"
-                                                            value="{{ old('postal_code', $landlord->postcode ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-envelope"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('postal_code') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="country">Country</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="country" class="form-control" name="country"
-                                                            value="{{ old('country', $landlord->country ?? '') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-globe"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('country') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4">{{ old('note', $landlord->note ?? '') }}</textarea>
-                                            @error('note') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
 
                                         <div class="form-actions right">

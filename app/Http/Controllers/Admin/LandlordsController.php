@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\LandlordAdded;
 use App\Http\Controllers\Controller;
 use App\Models\Landlord;
+use App\Models\Property;
 use App\Models\LandlordProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,8 @@ class LandlordsController extends Controller
             'postcode' => $request->postal_code, 
             'status' => $request->status,
             'note' => $request->note, 
+            'tax_exemption_code' => $request->tax_exemption_code,
+            'overseas_landlord' => $request->overseas_landlord,
         ]);
 
         if (!$landlord) {
@@ -136,6 +139,47 @@ class LandlordsController extends Controller
         return view('admin.landlords.edit', compact('page', 'landlord'));
     }
 
+    public function address($id){
+        $page['page_title'] = 'Manage Landlords';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Landlord';
+
+        $landlord = Landlord::where('id', $id)->first();
+
+        return view('admin.landlords.address.index', compact('page', 'landlord'));
+    }
+
+    public function bankDetails($id)
+    {
+        $page['page_title'] = 'Manage Landlords';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Landlord';
+
+        $landlord = Landlord::where('id', $id)->first();
+
+        return view('admin.landlords.bank_details.index', compact('page', 'landlord'));
+    }
+
+    public function properties($id)
+    {
+        $page['page_title'] = 'Manage Landlords';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Landlord';
+
+        $landlord = Landlord::with('profile')->findOrFail($id);
+
+        $properties = Property::where('landlord_id', $landlord->id)
+                            ->with('tenant')
+                            ->paginate(10);
+
+
+        return view('admin.landlords.properties.index', compact('page', 'landlord', 'properties'));
+
+    }
+
     public function update(Request $request, $id)
     {
         $landlord = Landlord::where('id', $id)->first();
@@ -148,10 +192,6 @@ class LandlordsController extends Controller
             'status' => 'required',
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'address_line_1' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'county' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
             'commission_rate' => 'required',
         ]);
 
@@ -170,15 +210,7 @@ class LandlordsController extends Controller
             'work_phone' => $request->work_phone,
             'home_phone' => $request->home_phone,
             'commission_rate' => $request->commission_rate,
-            'country' => $request->country,
-            'line1' => $request->address_line_1,
-            'line2' => $request->address_line_2,
-            'line3' => $request->address_line_3,
-            'city' => $request->city,
-            'county' => $request->county,
-            'postcode' => $request->postal_code, 
             'status' => $request->status,
-            'note' => $request->note, 
         ]);
 
         if ($request->filled('password')) {
@@ -218,6 +250,60 @@ class LandlordsController extends Controller
                 'profile_image' => $profile_image_name,
             ]);
         }
+
+        return redirect()
+            ->route('admin.settings.landlords')
+            ->withFlashMessage('Landlord updated successfully!')
+            ->withFlashType('success');
+    }
+
+    public function updateAddress(Request $request, $id)
+    {
+        $landlord = Landlord::where('id', $id)->first();
+
+        $validator = Validator::make($request->all(), [
+            'address_line_1' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'county' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $landlord->update([
+            'country' => $request->country,
+            'line1' => $request->address_line_1,
+            'line2' => $request->address_line_2,
+            'line3' => $request->address_line_3,
+            'city' => $request->city,
+            'county' => $request->county,
+            'postcode' => $request->postal_code, 
+            'note' => $request->note, 
+            'tax_exemption_code' => $request->tax_exemption_code,
+            'overseas_landlord' => $request->overseas_landlord,
+        ]);
+
+        return redirect()
+            ->route('admin.settings.landlords')
+            ->withFlashMessage('Landlord updated successfully!')
+            ->withFlashType('success');
+    }
+
+    public function updateBankDetails(Request $request, $id)
+    {
+        $landlord = Landlord::where('id', $id)->first();
+
+        $landlord->update([
+            'account_number' => $request->account_number,
+            'sort_code' => $request->sort_code,
+            'account_name' => $request->account_name,
+            'bank' => $request->bank,
+            'bank_address' => $request->bank_address,
+        ]);
 
         return redirect()
             ->route('admin.settings.landlords')

@@ -48,7 +48,6 @@ class TenantCorrespondenceController extends Controller
         $filterType = $request->input('filterType', '');
 
         $tenant = $id;
-        $admin_id = auth()->guard('admin')->user()->id;
 
         if ($filterType === 'folder') { 
             $data = GeneralCorrespondence::where("parent_id", 0)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('name')->get();
@@ -82,7 +81,6 @@ class TenantCorrespondenceController extends Controller
     {
         try {
             $data = $request->except('_token');
-            $admin_id = auth()->guard('admin')->user()->id;
 
             $documents = \DB::table('general_correspondence_files')->insert([
                 'parent_id'  =>   0,
@@ -161,7 +159,6 @@ class TenantCorrespondenceController extends Controller
         $name = $request->new_folder;
         $name = str_replace(" ", "-", $name);
 
-        $admin_id = auth()->guard('admin')->user()->id;
         $check = GeneralCorrespondence::where('parent_id', $parent_id)->where('name', $name)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
         if (!empty($check)) {
             return response()->json(array(
@@ -173,8 +170,6 @@ class TenantCorrespondenceController extends Controller
         }
 
         $this->makeUserDirectory($tenant->id);
-
-        $admin_id = auth()->guard('admin')->user()->id;
 
         if ($parent_id == 0) {
             $directory = public_path('generalFileManager/tenant-' . $tenant->id . '/' . $name . '/');
@@ -221,8 +216,6 @@ class TenantCorrespondenceController extends Controller
 
     public function makeUserDirectory($tenant_id)
     {
-        $admin_id = auth()->guard('admin')->user()->id;
-
         $directory = public_path('generalFileManager/tenant-' . $tenant_id);
 
         if (!file_exists($directory)) {
@@ -247,7 +240,6 @@ class TenantCorrespondenceController extends Controller
     public function uploadFiles(Tenant $id, $parent_id, Request $request)
     {
         $tenant = $id;
-        $admin_id = auth()->guard('admin')->user()->id;
 
         $parent = GeneralCorrespondence::find($parent_id);
 
@@ -349,7 +341,6 @@ class TenantCorrespondenceController extends Controller
         $task->due_date = $due_date;
         $task->priority = $data['priority'];
         $task->platform_user = $data['platform_users'];
-        $task->admin_id = auth()->guard('admin')->user()->id;
         $task->status = $data['status'];
         $task->notes = $data['notes'];
         $task->task_tray_id = $data['task_tray'];
@@ -465,7 +456,6 @@ class TenantCorrespondenceController extends Controller
         $page['tenant_name'] = $id->name;
 
         $tenant = $id;
-        $admin_id = auth()->guard('admin')->user()->id;
 
         $filterType = $request->input('filterType', '');
 
@@ -571,7 +561,6 @@ class TenantCorrespondenceController extends Controller
             $fileType = $fileName[1];
             $fileName = $fileName[2];
 
-            $admin_id = auth()->guard('admin')->user()->id;
             if ($fileType == 'file') {
                 $file = \DB::table('general_correspondence_files')->where('id', $fileId)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
 

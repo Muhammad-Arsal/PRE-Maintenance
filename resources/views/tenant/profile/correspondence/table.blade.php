@@ -13,7 +13,7 @@
             <tr>
                 <td><input class="check" value="{{ $d->id."+".'folder' }}" style="cursor: pointer;" type="checkbox" name="check[]"></td>
                 <td><i style="color: #fdb900;" class="la la-folder"></i></td>
-                <td><a style="color: black; text-decoration: none;" href="{{ route('admin.tenants.correspondence.child', ['id' => $tenant->id, 'parent_id' => $d['id'] ]) }}">{{ $d['name'] }}</a></td>
+                <td><a style="color: black; text-decoration: none;" href="{{ route('tenant.tenants.correspondence.child', ['id' => $tenant->id, 'parent_id' => $d['id'] ]) }}">{{ $d['name'] }}</a></td>
                 <td style="color: black">{{ isset($d['created_at']) ? date('d/m/Y H:i', strtotime($d['created_at'])) : null }}</td>
             </tr>
             @else

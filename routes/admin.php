@@ -170,7 +170,6 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('/landlord/{id}/correspondence/file/description', [LandlordsCorrespondenceController::class, 'add_edit_description'])->name('admin.landlords.correspondence.add-edit-description');
     Route::post('/landlord/{id}/correspondence/{parent_id}/new-call', [LandlordsCorrespondenceController::class, 'newCall'])->name('admin.landlords.correspondence.newCall');
     Route::post('/landlord/{id}/correspondence/{parent_id}/new-meeting', [LandlordsCorrespondenceController::class, 'storeMeeting'])->name('admin.landlords.correspondence.newMeeting');
-    // Route::post('/supplier/correspondence/{id}/move', [SuppliersCorrespondenceController::class, 'copyToCorres'])->name('supplier.corres.add');
     Route::get('landlord/{id}/correspondence/task', [LandlordsCorrespondenceController::class, 'showTaskPage'])->name('admin.suppliers.correspondence.task');
     Route::post('tasks/create/task', [LandlordsCorrespondenceController::class, 'storeTask'])->name('admin.tasks.cross.store');
 

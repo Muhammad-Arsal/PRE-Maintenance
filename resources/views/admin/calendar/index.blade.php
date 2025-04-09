@@ -89,8 +89,8 @@
 
         /* for active button state */
         .fc-button.fc-button-active {
-            background-color: #fd7e14 !important;
-            border-color: #fd7e14 !important; 
+            background-color: #00BED6 !important;
+            border-color: #00BED6 !important; 
         }
 
         .fc-h-event {

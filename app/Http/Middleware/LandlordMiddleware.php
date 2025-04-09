@@ -20,7 +20,6 @@ class LandlordMiddleware
         // return redirect()->route('admin.login');
         $user = Auth::guard('landlord')->user();
 
-
         if(!$user){
             return redirect()->route('landlord.login');
         }

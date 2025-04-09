@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Landlord;
 
 use App\Http\Controllers\Controller;
 use App\Models\GeneralCorrespondenceCall;
@@ -21,7 +21,7 @@ use App\Models\EmailTemplate;
 use Validator;
 use PDF;
 
-class LandlordsCorrespondenceController extends Controller
+class LandlordCorrespondenceController extends Controller
 {
     public function paginate($items, $base_url='', $perPage = 10, $page = null, $options = [])
     {
@@ -40,14 +40,13 @@ class LandlordsCorrespondenceController extends Controller
     {
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('landlord.dashboard');
         $page['page_current'] = 'Correspondence';
         $page['landlord_name'] = $id->name;
 
         $filterType = $request->input('filterType', '');
 
         $landlord = $id;
-        $admin_id = auth()->guard('admin')->user()->id;
 
         if ($filterType === 'folder') { 
             $data = GeneralCorrespondence::where("parent_id", 0)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
@@ -70,18 +69,17 @@ class LandlordsCorrespondenceController extends Controller
         $parent = 0;
         $all = $data->concat($files)->concat($call);
         $all = $all->sortByDesc('created_at');
-        $all = $this->paginate($all, route("admin.landlords.correspondence", $landlord->id));
+        $all = $this->paginate($all, route("landlord.landlords.correspondence", $landlord->id));
 
         $landlords = Landlord::orderBy('name', 'asc')->get();
 
-        return view('admin.landlords.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'landlords', 'filterType'));
+        return view('landlord.profile.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'landlords', 'filterType'));
     }
 
     public function saveComment(Landlord $id, Request $request)
     {
         try {
             $data = $request->except('_token');
-            $admin_id = auth()->guard('admin')->user()->id;
 
             $documents = \DB::table('general_correspondence_files')->insert([
                 'parent_id'  =>   0,
@@ -160,7 +158,6 @@ class LandlordsCorrespondenceController extends Controller
         $name = $request->new_folder;
         $name = str_replace(" ", "-", $name);
 
-        $admin_id = auth()->guard('admin')->user()->id;
         $check = GeneralCorrespondence::where('parent_id', $parent_id)->where('name', $name)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
         if (!empty($check)) {
             return response()->json(array(
@@ -173,7 +170,6 @@ class LandlordsCorrespondenceController extends Controller
 
         $this->makeUserDirectory($landlord->id);
 
-        $admin_id = auth()->guard('admin')->user()->id;
 
         if ($parent_id == 0) {
             $directory = public_path('generalFileManager/landlord-' . $landlord->id . '/' . $name . '/');
@@ -207,7 +203,7 @@ class LandlordsCorrespondenceController extends Controller
             $all = $data->merge($files);
             $all = $all->sortByDesc('created_at');
 
-            return view('admin.landlords.correspondence.table', compact('data', 'files', 'landlord', 'all'));
+            return view('landlord.profile.correspondence.table', compact('data', 'files', 'landlord', 'all'));
         } else {
             return response()->json(array(
                 'success' => false,
@@ -220,8 +216,6 @@ class LandlordsCorrespondenceController extends Controller
 
     public function makeUserDirectory($landlord_id)
     {
-        $admin_id = auth()->guard('admin')->user()->id;
-
         $directory = public_path('generalFileManager/landlord-' . $landlord_id);
 
         if (!file_exists($directory)) {
@@ -233,20 +227,19 @@ class LandlordsCorrespondenceController extends Controller
     {
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('landlord.dashboard');
         $page['page_current'] = 'Upload Files';
         $page['landlord_name'] = $id->name;
 
         $landlord = $id;
         $parent_id = $parent_id;
 
-        return view('admin.landlords.correspondence.uploadFiles', compact('page', 'landlord', 'parent_id'));
+        return view('landlord.profile.correspondence.uploadFiles', compact('page', 'landlord', 'parent_id'));
     }
 
     public function uploadFiles(Landlord $id, $parent_id, Request $request)
     {
         $landlord = $id;
-        $admin_id = auth()->guard('admin')->user()->id;
 
         $parent = GeneralCorrespondence::find($parent_id);
 
@@ -314,7 +307,7 @@ class LandlordsCorrespondenceController extends Controller
     public function showTaskPage(Landlord $id, Request $request){
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('landlord.dashboard');
         $page['page_current'] = 'New Task';
         $page['landlord_name'] = $id->name;
 
@@ -324,7 +317,7 @@ class LandlordsCorrespondenceController extends Controller
 
  
         $landlord = $id;
-        return view('admin.landlords.correspondence.createTask', compact('page', 'landlord',  'platform_users', 'taskTray', 'landlords'));
+        return view('landlord.profile.correspondence.createTask', compact('page', 'landlord',  'platform_users', 'taskTray', 'landlords'));
     }
 
     public function storeTask(Tasks $task, Request $request)
@@ -348,7 +341,6 @@ class LandlordsCorrespondenceController extends Controller
         $task->due_date = $due_date;
         $task->priority = $data['priority'];
         $task->platform_user = $data['platform_users'];
-        $task->admin_id = auth()->guard('admin')->user()->id;
         $task->status = $data['status'];
         $task->notes = $data['notes'];
         $task->task_tray_id = $data['task_tray'];
@@ -450,7 +442,7 @@ class LandlordsCorrespondenceController extends Controller
             }
             
         }
-        return redirect()->route('admin.landlords.correspondence',$task->contact_id)
+        return redirect()->route('landlord.landlords.correspondence',$task->contact_id)
         ->withFlashMessage('Task added successfully!')
         ->withFlashType('success');          
     }
@@ -459,12 +451,11 @@ class LandlordsCorrespondenceController extends Controller
     {
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('landlord.dashboard');
         $page['page_current'] = 'Correspondence';
         $page['landlord_name'] = $id->name;
 
         $landlord = $id;
-        $admin_id = auth()->guard('admin')->user()->id;
 
         $filterType = $request->input('filterType', '');
 
@@ -489,11 +480,11 @@ class LandlordsCorrespondenceController extends Controller
 
         $all = $data->concat($files)->concat($call);
         $all = $all->sortByDesc('created_at');
-        $all = $this->paginate($all, route("admin.landlords.correspondence.child", ['id' => $landlord->id, 'parent_id' => $parent_id]));
+        $all = $this->paginate($all, route("landlord.landlords.correspondence.child", ['id' => $landlord->id, 'parent_id' => $parent_id]));
 
         $landlords = Landlord::orderBy('name', 'asc')->get();
 
-        return view('admin.landlords.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'filterType', 'landlords'));
+        return view('landlord.profile.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'filterType', 'landlords'));
     }
 
     public function delete(Request $request)
@@ -512,9 +503,10 @@ class LandlordsCorrespondenceController extends Controller
                 GeneralCorrespondenceCall::where('id', $val[0])->delete();
             } else if($val[1] == 'meeting') {
                 GeneralCorrespondenceCall::where('id', $val[0])->delete();
-            } else if($val[1] == 'task') {
+            }  else if($val[1] == 'task') {
                 GeneralCorrespondenceCall::where('id', $val[0])->delete();
-            } else {
+            }
+             else {
                 $find = \DB::table('general_correspondence_files')->where('id', $val[0])->first();
                 if($find->is_email != 'yes') {
                     $directory = public_path($find->original_link);
@@ -527,63 +519,6 @@ class LandlordsCorrespondenceController extends Controller
 
         return back();
     }
-
-    // public function fileVault(Landlord $id, Request $request) {
-    //     $landlord = $id;
-    //     $admin_id = auth()->guard('admin')->user()->id;
-
-    //     $fileNames = explode(",", $request->copyFileNames);
-
-    //     foreach($fileNames as $fileItem) {
-    //         $fileName = explode("+", $fileItem);
-    //         $fileId = $fileName[0];
-    //         $fileType = $fileName[1];
-    //         $fileName = $fileName[2];
-
-    //         if ($fileType != 'file') {
-    //             return response()->json(array(
-    //                 'success' => false,
-    //                 'type'    => 1,
-    //                 'fileNameError' => 0,
-    //                 'message' => array('Please select only files'),
-
-    //             ), 400);
-    //         }
-
-    //         $file = \DB::table('general_correspondence_files')->where('id', $fileId)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
-    //         $fileLoc = public_path($file->original_link);
-    //         $fileSizeBytes = File::size($fileLoc);
-    //         $fileExtension = File::extension($fileLoc);
-
-    //         $fileSizeFormatted = $this->formatSizeUnits($fileSizeBytes);
-
-    //         $targetPath = public_path('uploads/admin/files/admin-'.$admin_id.'/'.$file->original_name);
-
-    //         if (copy($fileLoc, $targetPath)) {
-    //             AdminDocuments::create([
-    //                 'admin_id'  => $admin_id,
-    //                 'original_name' => $file->original_name,
-    //                 'file_size' => $fileSizeFormatted,
-    //                 'file_type' => strtoupper($fileExtension),
-    //                 'file_name' => $file->file_name
-    //             ]);
-    //         } else {
-    //             return response()->json(array(
-    //                 'success' => false,
-    //                 'type'    => 1,
-    //                 'fileNameError' => 0,
-    //                 'message' => array("Something went wrong while copying " . $file->file_name),
-
-    //             ), 400); // 400 being the HTTP code for an invalid request.
-    //         }
-
-    //     }
-
-    //     return response()->json(array(
-    //         'success' => true,
-    //         'message' => "File Copied Successfully",
-    //     ), 200); 
-    // }
 
     public function moveFile(Landlord $id, $parent_id, Request $request)
     {
@@ -627,7 +562,6 @@ class LandlordsCorrespondenceController extends Controller
             $fileType = $fileName[1];
             $fileName = $fileName[2];
 
-            $admin_id = auth()->guard('admin')->user()->id;
             if ($fileType == 'file') {
                 $file = \DB::table('general_correspondence_files')->where('id', $fileId)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
 
@@ -873,10 +807,10 @@ class LandlordsCorrespondenceController extends Controller
         ]);
 
         if ($file) {
-            return redirect()->route('admin.landlords.correspondence', $id)->withFlashMessage('File Description Edited Successfully')
+            return redirect()->route('landlord.landlords.correspondence', $id)->withFlashMessage('File Description Edited Successfully')
             ->withFlashType('success');
         } else {
-            return redirect()->route('admin.landlords.correspondence', $id)->withFlashMessage('Oops! Something went wrong')
+            return redirect()->route('landlord.landlords.correspondence', $id)->withFlashMessage('Oops! Something went wrong')
             ->withFlashType('errors');
         }
     }

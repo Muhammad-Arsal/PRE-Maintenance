@@ -1,4 +1,4 @@
-@extends('admin.partials.main')
+@extends('tenant.partials.main')
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -12,46 +12,62 @@
             <div class="row breadcrumbs-top d-inline-block">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ $page['page_parent_link'] }}"
-                                class="theme-color">{{ $page['page_parent'] }}</a>
+                        <li class="breadcrumb-item">
+                            <a href="{{ $page['page_parent_link'] }}" class="theme-color">{{ $page['page_parent'] }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ $page['page_current'] }}
-                        </li>
+                        <li class="breadcrumb-item active">{{ $page['page_current'] }}</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="content-body">
         <section id="search-tenants">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-content">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs nav-underline no-hover-bg">
+                                    <li class="nav-item">
+                                        <a class="nav-link active disabled" id="overview" data-toggle="tab"
+                                            aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('tenant.settings.tenants.edit.property', $tenant->id)}}">Property</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('tenant.tenants.correspondence', $tenant->id)}}">Correspondence</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="card-body">
-                                @include('admin.partials.flashes')
-                                <form method="post" enctype="multipart/form-data" id="manageTenant"  action="{{ route('admin.settings.tenants.store') }}">
+                                @include('tenant.partials.flashes')
+                                <form method="post" enctype="multipart/form-data" id='managetenant' action="{{ route('tenant.settings.tenants.update', $tenant->id) }}">
                                     @csrf
+                                    @method('PUT')
+                                    @php $name = explode(" ", $tenant->name); @endphp
                                     <div class="form-body">
-                                        <h3 class="mb-2"><strong>Contract Details</strong></h3>
                                         <div class="tenant-container">
                                             <div class="row cloneable position-relative">
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="name"><span style="color: red;">*</span>Name</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="name_0" class="form-control"
-                                                                placeholder="First name" name="name[0]">
+                                                            <input type="text" id="name_0" class="form-control" placeholder="First name" name="name[0]" value="{{ old('name.0', $tenant->name ?? '') }}">
                                                             <div class="form-control-position">
                                                                 <i class="la la-user"></i>
                                                             </div>
                                                         </div>
                                                         @if ($errors->has('name'))
-                                                        <p class="text-danger">{{ $errors->first('name') }}</p>
+                                                            <p class="text-danger">{{ $errors->first('name') }}</p>
                                                         @endif
                                                     </div>
                                                     <div class="form-group form-check">
-                                                        <input class="form-check-input primary-user-checkbox" type="checkbox" name="primary_user[0]" id="primary_0">
+                                                        <input class="form-check-input primary-user-checkbox" type="checkbox" name="primary_user[0]" id="primary_0" checked>
                                                         <label for="primary_user">Lead Tenant</label>
                                                         <div class="primary_user_error error"></div>
                                                     </div>
@@ -60,14 +76,13 @@
                                                     <div class="form-group">
                                                         <label for="phone_number">Phone Number</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="phone_number_0" class="form-control"
-                                                                placeholder="Phone number" name="phone_number[0]" >
+                                                            <input type="text" id="phone_number_0" class="form-control" placeholder="Phone number" name="phone_number[0]" value="{{ old('phone_number.0', $tenant->profile->phone_number ?? '') }}">
                                                             <div class="form-control-position">
                                                                 <i class="la la-phone"></i>
                                                             </div>
                                                         </div>
                                                         @if ($errors->has('phone_number'))
-                                                        <p class="text-danger">{{ $errors->first('phone_number') }}</p>
+                                                            <p class="text-danger">{{ $errors->first('phone_number') }}</p>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -75,7 +90,7 @@
                                                     <div class="form-group">
                                                         <label for="work_phone">Work Phone</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="work_phone_0" class="form-control" placeholder="Work phone" name="work_phone[0]">
+                                                            <input type="text" id="work_phone_0" class="form-control" placeholder="Work phone" name="work_phone[0]" value="{{ old('work_phone', $tenant->work_phone ?? '') }}">
                                                             <div class="form-control-position">
                                                                 <i class="la la-phone"></i>
                                                             </div>
@@ -89,7 +104,7 @@
                                                     <div class="form-group">
                                                         <label for="home_phone">Home Phone</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="home_phone_0" class="form-control" placeholder="Home phone" name="home_phone[0]">
+                                                            <input type="text" id="home_phone_0" class="form-control" placeholder="Home phone" name="home_phone[0]" value="{{ old('home_phone.0', $tenant->home_phone ?? '') }}">
                                                             <div class="form-control-position">
                                                                 <i class="la la-phone"></i>
                                                             </div>
@@ -98,192 +113,173 @@
                                                             <p class="text-danger">{{ $errors->first('home_phone') }}</p>
                                                         @endif
                                                     </div>
-                                                </div> 
+                                                </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="email"><span style="color: red;">*</span>Email</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="email" id="email_0" class="form-control" placeholder="Email"
-                                                                name="email[0]">
+                                                            <input type="email" id="email_0" class="form-control" placeholder="Email" name="email[0]" value="{{ old('email.0', $tenant->email ?? '') }}">
                                                             <div class="form-control-position">
                                                                 <i class="la la-envelope"></i>
                                                             </div>
                                                         </div>
                                                         @if ($errors->has('email'))
-                                                        <p class="text-danger">{{ $errors->first('email') }}</p>
+                                                            <p class="text-danger">{{ $errors->first('email') }}</p>
                                                         @endif
                                                     </div>
-                                                </div>                                           
-                                            </div>
-                                        </div>    
-                                        <div class="form-group">
-                                            <button class="theme-btn btn btn-primary add_tenant">
-                                                <i class="la la-plus"></i> Add Tenant
-                                            </button>
+                                                </div>
+                                            </div>  
+                                            @php $i =1; @endphp
+                                            @foreach ($tenantDetails as $tenant_detail)
+                                                <div class="row cloneable position-relative">
+                                                    <div class="col-md-12"><button type="button" class="btn btn-danger remove-row" style="margin-bottom:0px; float: right;">X</button></div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="name"><span style="color: red;">*</span>Name</label>
+                                                            <div class="position-relative has-icon-left">
+                                                                <input type="text" id="name_{{ $i }}" class="form-control" placeholder="First name" name="name[{{ $i }}]" value="{{ old('name.' . $i, $tenant_detail->name ?? '') }}">
+                                                                <div class="form-control-position">
+                                                                    <i class="la la-user"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('name'))
+                                                                <p class="text-danger">{{ $errors->first('name') }}</p>
+                                                            @endif
+                                                        </div>
+                                                        <div class="form-group form-check">
+                                                            <input class="form-check-input primary-user-checkbox" type="checkbox" name="primary_user[{{ $i }}]" id="primary_{{ $i }}">
+                                                            <label for="primary_user">Lead Tenant</label>
+                                                            <div class="primary_user_error error"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label for="phone_number">Phone Number</label>
+                                                            <div class="position-relative has-icon-left">
+                                                                <input type="text" id="phone_number_{{ $i }}" class="form-control" placeholder="Phone number" name="phone_number[{{ $i }}]" value="{{ old('phone_number.' . $i, $tenant_detail->phone_number ?? '') }}">
+                                                                <div class="form-control-position">
+                                                                    <i class="la la-phone"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('phone_number'))
+                                                                <p class="text-danger">{{ $errors->first('phone_number') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label for="work_phone">Work Phone</label>
+                                                            <div class="position-relative has-icon-left">
+                                                                <input type="text" id="work_phone_{{ $i }}" class="form-control" placeholder="Work phone" name="work_phone[{{ $i }}]" value="{{ old('work_phone.' . $i, $tenant_detail->work_phone ?? '') }}">
+                                                                <div class="form-control-position">
+                                                                    <i class="la la-phone"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('work_phone'))
+                                                                <p class="text-danger">{{ $errors->first('work_phone') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label for="home_phone">Home Phone</label>
+                                                            <div class="position-relative has-icon-left">
+                                                                <input type="text" id="home_phone_{{ $i }}" class="form-control" placeholder="Home phone" name="home_phone[{{ $i }}]" value="{{ old('home_phone.' . $i, $tenant_detail->home_phone ?? '') }}">
+                                                                <div class="form-control-position">
+                                                                    <i class="la la-phone"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('home_phone'))
+                                                                <p class="text-danger">{{ $errors->first('home_phone') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="email"><span style="color: red;">*</span>Email</label>
+                                                            <div class="position-relative has-icon-left">
+                                                                <input type="email" id="email_{{ $i }}" class="form-control" placeholder="Email" name="email[{{ $i }}]" value="{{ old('email.' . $i, $tenant_detail->email ?? '') }}">
+                                                                <div class="form-control-position">
+                                                                    <i class="la la-envelope"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('email'))
+                                                                <p class="text-danger">{{ $errors->first('email') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @php $i++; @endphp
+                                            @endforeach
                                         </div>
-                                        
+                                        <div class="form-group">
+                                        <button class="theme-btn btn btn-primary add_tenant">
+                                            <i class="la la-plus"></i> Add Tenant
+                                        </button>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="password">Password</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="password" id="password" class="form-control"
-                                                            placeholder="Password" name="password"  />
+                                                            placeholder="Enter new password (leave blank to keep current)" name="password" />
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
                                                     </div>
-                                                    @if ($errors->has('password'))
-                                                    <p class="text-danger">{{ $errors->first('password') }}</p>
-                                                @endif
+                                                    @error('password') <p class="text-danger">{{ $message }}</p> @enderror
                                                 </div>
                                             </div>
+                                        
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="confirmPassword">Confirm Password</label>
+                                                    <label for="password_confirmation">Confirm Password</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="password" id="password_confirmation" class="form-control"
-                                                            placeholder="Confirm Password" name="password_confirmation">
+                                                            placeholder="Confirm new password" name="password_confirmation">
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
                                                     </div>
-                                                    @if ($errors->has('password_confirmation'))
-                                                    <p class="text-danger">{{ $errors->first('password_confirmation') }}</p>
-                                                @endif
+                                                    @error('password_confirmation') <p class="text-danger">{{ $message }}</p> @enderror
                                                 </div>
                                             </div>
+                                        
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="confirmPassword">Status</label>
+                                                    <label for="status">Status</label>
                                                     <div class="position-relative has-icon-left">
                                                         <select id="status" name="status" class="form-control"
                                                             data-toggle="tooltip" data-trigger="hover" data-placement="top"
-                                                            data-title="Status" data-original-title="" title="">
-                                                            <option value="Active">Active</option>
-                                                            <option value="Inactive">Inactive</option>
+                                                            data-title="Status">
+                                                            <option value="Active" {{ old('status', $tenant->status) == 'Active' ? 'selected' : '' }}>Active</option>
+                                                            <option value="Inactive" {{ old('status', $tenant->status) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
                                                         </select>
                                                         <div class="form-control-position">
-                                                            <i class="la la-lock"></i>
+                                                            <i class="la la-toggle-on"></i>
                                                         </div>
                                                     </div>
-                                                    @if ($errors->has('status'))
-                                                        <p class="text-danger">{{ $errors->first('status') }}</p>
-                                                    @endif
+                                                    @error('status') <p class="text-danger">{{ $message }}</p> @enderror
                                                 </div>
                                             </div>
-                                        </div>
-                                        
+                                        </div>                                        
+
                                         <div class="form-group">
-                                            <label for="confirmPassword">Profile image</label>
+                                            <label for="profile_image">Profile Image</label>
                                             <br />
-                                            <input type="file" name="profile_image" id="profile_image"  />
+                                            <input type="file" name="profile_image" id="profile_image" />
+                                            <div class="relative mt-2">
+                                                <img src="{{isset($tenant->profile->profile_image) ? asset('uploads/tenant-'.$tenant->id.'/'.$tenant->profile->profile_image) :  asset('/dashboard/images/avatar.png') }}" alt="{{ $tenant->name }}" class="img-fluid" width="50" height="50" />
+                                            </div>
+
                                             @if ($errors->has('profile_image'))
-                                                <p class="text-danger">{{ $errors->first('profile_image') }}</p>
+                                               <p class="text-danger">{{ $errors->first('profile_image') }}</p>
                                             @endif
-                                        </div>
-
-                                        <h3 class="mt-3 mb-2"><strong>Property</strong></h3>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="property"><span style="color: red;">*</span>Property</label>
-                                                    <select id="property" name="property" class="form-control select2">
-                                                        <option value="">Select Property</option>
-                                                        @foreach($properties as $item)
-                                                            <option value="{{$item->id }}">{{ $item->line1 . ', ' . $item->city . ', ' . $item->county . ', ' . $item->postcode }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('property') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="contract_start"><span style="color: red;">*</span>Contract Start</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="contract_start" class="form-control datepicker" name="contract_start_display"
-                                                            value="{{ old('contract_start_display') }}" placeholder="DD/MM/YYYY">
-                                                        <input type="hidden" id="contract_start_hidden" name="contract_start"
-                                                            value="{{ old('contract_start') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('contract_start') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="contract_end"><span style="color: red;">*</span>Contract End</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="contract_end" class="form-control datepicker" name="contract_end_display"
-                                                            value="{{ old('contract_end_display') }}" placeholder="DD/MM/YYYY">
-                                                        <input type="hidden" id="contract_end_hidden" name="contract_end"
-                                                            value="{{ old('contract_end') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('contract_end') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="deposit">Deposit</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="deposit" class="form-control" placeholder="Enter deposit amount" name="deposit" value="{{ old('deposit') }}">
-                                                        <div class="form-control-position" style="top: -2px;">
-                                                            £ 
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('deposit'))
-                                                        <p class="text-danger">{{ $errors->first('deposit') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>                                            
-                                            
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="adjust">Adjust</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="adjust" class="form-control" placeholder="Enter adjustment" name="adjust" value="{{ old('adjust') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-balance-scale"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('adjust'))
-                                                        <p class="text-danger">{{ $errors->first('adjust') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>   
-                                            
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="date_left_property">Date Left Property</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date_left_property" class="form-control datepicker" placeholder="DD/MM/YYYY" name="date_left_property_display" value="{{ old('date_left_property_display') }}">
-                                                        <input type="hidden" id="date_left_property_hidden" name="date_left_property"
-                                                        value="{{ old('date_left_property') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('date_left_property'))
-                                                        <p class="text-danger">{{ $errors->first('date_left_property') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $property->note ?? '') }}</textarea>
-                                            @error('note') <span class="text-danger">{{ $message }}</span> @enderror
-                                        </div>
-
+                                        </div>                                       
 
                                         <div class="form-actions right">
-                                            <a href="{{ route('admin.settings.tenants') }}" class="theme-btn btn btn-primary">
+                                            <a href="{{ route('tenant.settings.tenants.edit', auth('tenant')->id()) }}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">
@@ -300,10 +296,12 @@
         </section>
     </div>
 @endsection
+
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".datepicker").forEach(function (element) {
@@ -369,8 +367,6 @@
     });
 </script>
 
-
-<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
 <script>
     $(function() {
         $('.select2').select2();
@@ -378,7 +374,7 @@
 </script>
 
 <script>
-    $(document).ready(function () {
+     $(document).ready(function () {
         $('#deposit').on('input', function () {
             $(this).val($(this).val().replace(/[^0-9.]|(\..*)\./g, '$1'));
         });
@@ -422,20 +418,6 @@
                             number: "Please enter a valid phone number",
                         }
                     });
-                } else if (fieldName == "work_phone") {
-                    $(this).rules("add", {
-                        number: true,
-                        messages: {
-                            number: "Please enter a valid work phone number",
-                        }
-                    });
-                }  else if (fieldName == "home_phone") {
-                    $(this).rules("add", {
-                        number: true,
-                        messages: {
-                            number: "Please enter a valid work home phone number",
-                        }
-                    });
                 }
             });
         });
@@ -451,8 +433,8 @@
         e.preventDefault();
 
         let newRow = $(".row.cloneable").first().clone(); // Clone first row
-        newRow.find("input").val(""); // Clear values
 
+        newRow.find("input").val(""); // Clear values
         newRow.find(".remove-row").remove(); // Remove existing delete button if any
         newRow.prepend('<div class="col-md-12"><button type="button" class="btn btn-danger remove-row" style="margin-bottom:0px; float: right;">X</button></div>');
 

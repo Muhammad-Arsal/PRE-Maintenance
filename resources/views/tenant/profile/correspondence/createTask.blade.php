@@ -1,4 +1,4 @@
-@extends('admin.partials.main')
+@extends('tenant.partials.main')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('dashboard/plugins/filter-multi-select-main/filter_multi_select.css') }}" />
@@ -29,7 +29,7 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <form method="post" enctype="multipart/form-data" id='addTaskForm'
-                                    action="{{ route('admin.tasks.cross.store') }}">
+                                    action="{{ route('tenant.tasks.cross.store') }}">
                                     @csrf
                                     <div class="form-body">
                                         <div class="form-group">
@@ -232,7 +232,7 @@
                                             
                                         </div>
                                         <div class="form-actions right">
-                                            <a href="{{ route('admin.tasks') }}" class="theme-btn btn btn-primary">
+                                            <a href="{{ route('tenant.settings.tenants.edit', auth('tenant')->id()) }}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">

@@ -106,7 +106,15 @@
                                             <td>{{ $j }}</td>
                                             <td>{{$data['id'] }}</td>
                                             <td>{{ $data['name'] }}</td>
-                                            <td><a href="{{route('admin.properties.show', $data->property->id)}}">{{$data->property->line1 . ', ' . $data->property->city .', '. $data->property->county . ', '. $data->property->postcode}}</a></td>
+                                            <td>
+                                                @if($data->property && $data->property->id)
+                                                    <a href="{{ route('admin.properties.show', $data->property->id) }}">
+                                                        {{ $data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode }}
+                                                    </a>
+                                                @else
+                                                    —
+                                                @endif
+                                            </td>                                            
                                             <td>{{ $data['contract_start'] ? date('d/m/Y', strtotime($data['contract_start'])) : '' }}</td>
                                             <td>{{ $data['contract_end'] ? date('d/m/Y', strtotime($data['contract_end'])) : '' }}</td>
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y, h:i') : '' }}</td>

@@ -369,10 +369,14 @@ class TenantsController extends Controller
         ]);
 
         if ($request->property) {
+            Property::where('tenant_id', $tenant->id)->update([
+                'tenant_id' => null
+            ]);
+        
             Property::where('id', $request->property)->update([
                 'tenant_id' => $tenant->id
             ]);
-        }
+        }        
 
         return redirect()
         ->route('admin.settings.tenants')

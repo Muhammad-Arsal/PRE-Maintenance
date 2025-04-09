@@ -105,8 +105,8 @@
                                     @forelse($landlords as $data)
                                         <tr>
                                             <td>{{ $j }}</td>
-                                            <td>{{$data['id'] }}</td>
-                                            <td>{{ $data['name'] }}</td>
+                                            <td>{{$data['id'] ?? '' }}</td>
+                                            <td>{{ $data['name'] ?? '' }}</td>
                                             <td>{{ !empty($data->profile) ? $data->profile->phone_number : '' }}</td>
                                             <td>{{$data->company_name ?? ''}}</td>
                                             <td>{{ $data['email'] ?? '' }}</td>

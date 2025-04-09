@@ -194,6 +194,22 @@ class TenantsController extends Controller
     
         return view('admin.tenants.edit', compact('page', 'tenant', 'properties', 'tenantDetails'));
     }
+
+    public function editProperty($id) 
+    {
+        $page['page_title'] = 'Manage Tenants';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Tenant';
+    
+        $tenant = Tenant::where('id', $id)->first();
+
+        $properties = Property::whereNull('tenant_id')->where('status', 'Active')->orWhere('tenant_id', $id)->get();
+
+        $tenantDetails = TenantDetails::where('tenant_id', $id)->get();
+    
+        return view('admin.tenants.property.index', compact('page', 'tenant', 'properties', 'tenantDetails'));
+    }
     
     public function update(Request $request, $id)
     {
@@ -204,9 +220,6 @@ class TenantsController extends Controller
             'status' => 'required',
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'property' => 'required',
-            'contract_start' =>'required',
-            'contract_end' => 'required',
         ]);
     
         if ($validator->fails()) {
@@ -229,25 +242,10 @@ class TenantsController extends Controller
         try {
             DB::beginTransaction();
 
-             // Validate that primary user email is unique before inserting
-
             $tenant->update([
                 'deleted_at' => $request->status == 'Active' ? null : now(),
                 'status' =>  $request->status,
-                'property_id' => $request->property,
-                'contract_start' => $request->contract_start,
-                'contract_end' => $request->contract_end,
-                'deposit' => $request->deposit,
-                'adjust' => $request->adjust,
-                'left_property' => $request->date_left_property,
-                'note' => $request->note,
             ]);
-
-            if ($request->property) {
-                Property::where('id', $request->property)->update([
-                    'tenant_id' => $tenant->id
-                ]);
-            }
 
             if ($request->filled('password')) {
                 $tenant->update([
@@ -330,7 +328,7 @@ class TenantsController extends Controller
                 }
             }
         
-            DB::commit(); // Commit the transaction
+            DB::commit();
         
             return redirect()
                 ->route('admin.settings.tenants')
@@ -346,30 +344,41 @@ class TenantsController extends Controller
         
     }    
 
+    public function storeProperty(Request $request, $id)
+    {
+        $tenant = Tenant::where('id', $id)->first();
 
-    // public function destroy($id)
-    // {
-    //     // Find the tenant including trashed ones
-    //     $tenant = Tenant::find($id);
+        $validator = Validator::make($request->all(), [
+            'property' => 'required',
+            'contract_start' =>'required',
+            'contract_end' => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-    //     if (!$tenant) {
-    //         return redirect()
-    //             ->route('admin.settings.tenants')
-    //             ->withFlashMessage('Tenant not found!')
-    //             ->withFlashType('errors');
-    //     }
+        $tenant->update([
+            'property_id' => $request->property,
+            'contract_start' => $request->contract_start,
+            'contract_end' => $request->contract_end,
+            'deposit' => $request->deposit,
+            'left_property' => $request->date_left_property,
+        ]);
 
-    //     // Check if the tenant is already trashed
-    //     if ($tenant->trashed()) {
-    //         $tenant->restore();
-    //     } else {
-    //         $tenant->delete();
-    //     }
-    //     return redirect()
-    //         ->route('admin.settings.tenants')
-    //         ->withFlashMessage('Tenant status changed successfully!')
-    //         ->withFlashType('success');
-    // }
+        if ($request->property) {
+            Property::where('id', $request->property)->update([
+                'tenant_id' => $tenant->id
+            ]);
+        }
+
+        return redirect()
+        ->route('admin.settings.tenants')
+        ->withFlashMessage('Tenant updated successfully!')
+        ->withFlashType('success');
+    }
 
     public function delete($id)
     {

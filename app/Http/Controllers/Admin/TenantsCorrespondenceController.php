@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Landlord;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\GeneralCorrespondenceCall;
 use App\Models\GeneralCorrespondenceFiles;
 use App\Models\GeneralCorrespondence;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -18,24 +17,13 @@ use App\Models\Admin;
 use App\Models\Landlord;
 use App\Models\TaskTray;
 use App\Models\Tasks;
+use App\Models\Tenant;
 use App\Models\EmailTemplate;
 use Validator;
 use PDF;
-use Illuminate\Support\Facades\Route;
 
-
-class LandlordCorrespondenceController extends Controller
+class TenantsCorrespondenceController extends Controller
 {
-    public function __construct()
-    {
-        $currentRouteId = request()->route('id')->id;
-        $authLandlordId = Auth::guard('landlord')->id();
-
-        if ($authLandlordId !== $currentRouteId) {
-            redirect()->route(Route::currentRouteName(), ['id' => $authLandlordId])->send();
-        }
-    }
-
     public function paginate($items, $base_url='', $perPage = 10, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
@@ -49,50 +37,52 @@ class LandlordCorrespondenceController extends Controller
         return $lap;
     }
 
-    public function index(Request $request, Landlord $id)
+    public function index(Request $request, Tenant $id)
     {
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('landlord.dashboard');
+        $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Correspondence';
-        $page['landlord_name'] = $id->name;
+        $page['tenant_name'] = $id->name;
 
         $filterType = $request->input('filterType', '');
 
-        $landlord = $id;
+        $tenant = $id;
+        $admin_id = auth()->guard('admin')->user()->id;
 
         if ($filterType === 'folder') { 
-            $data = GeneralCorrespondence::where("parent_id", 0)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
+            $data = GeneralCorrespondence::where("parent_id", 0)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('name')->get();
             $files = collect();
             $call = collect();
         } elseif ($filterType === 'file') { 
             $data = collect();
-            $files = GeneralCorrespondenceFiles::where("parent_id", 0)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('file_name')->get();
+            $files = GeneralCorrespondenceFiles::where("parent_id", 0)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('file_name')->get();
             $call = collect();
         } elseif ($filterType == 'call') {
             $data = collect();
             $files = collect();    
-            $call = GeneralCorrespondenceCall::where('landlord_id', $landlord->id)->where('landlord_id', $landlord->id)->where('type','landlord')->get();
+            $call = GeneralCorrespondenceCall::where('tenant_id', $tenant->id)->where('tenant_id', $tenant->id)->where('type','tenant')->get();
         } else {
-            $data = GeneralCorrespondence::where("parent_id", 0)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
-            $files = GeneralCorrespondenceFiles::where("parent_id", 0)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('file_name')->get();
-            $call = GeneralCorrespondenceCall::where('parent_id', 0)->where('landlord_id', $landlord->id)->where('type','landlord')->get();
+            $data = GeneralCorrespondence::where("parent_id", 0)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('name')->get();
+            $files = GeneralCorrespondenceFiles::where("parent_id", 0)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('file_name')->get();
+            $call = GeneralCorrespondenceCall::where('parent_id', 0)->where('tenant_id', $tenant->id)->where('type','tenant')->get();
         }
 
         $parent = 0;
         $all = $data->concat($files)->concat($call);
         $all = $all->sortByDesc('created_at');
-        $all = $this->paginate($all, route("landlord.landlords.correspondence", $landlord->id));
+        $all = $this->paginate($all, route("admin.tenants.correspondence", $tenant->id));
 
-        $landlords = Landlord::orderBy('name', 'asc')->get();
+        $tenants = Tenant::orderBy('name', 'asc')->get();
 
-        return view('landlord.profile.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'landlords', 'filterType'));
+        return view('admin.tenants.correspondence.index', compact('page', 'tenant', 'data', 'files', 'parent', 'all', 'tenants', 'filterType'));
     }
 
-    public function saveComment(Landlord $id, Request $request)
+    public function saveComment(Tenant $id, Request $request)
     {
         try {
             $data = $request->except('_token');
+            $admin_id = auth()->guard('admin')->user()->id;
 
             $documents = \DB::table('general_correspondence_files')->insert([
                 'parent_id'  =>   0,
@@ -100,9 +90,9 @@ class LandlordCorrespondenceController extends Controller
                 'created_at'    => Carbon::now(),
                 'updated_at'    => Carbon::now(),
                 'is_text'      => true,
-                'landlord_id' => $id->id,
-                'type' => 'landlord',
-                'landlord_id' => $id->id,
+                'tenant_id' => $id->id,
+                'type' => 'tenant',
+                'tenant_id' => $id->id,
             ]);
 
             if ($documents) {
@@ -119,7 +109,7 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function editComment(Landlord $id, Request $request)
+    public function editComment(Tenant $id, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'editCommentInput' => 'required',
@@ -152,13 +142,13 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function createFolder(Landlord $id, $parent_id, Request $request)
+    public function createFolder(Tenant $id, $parent_id, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'new_folder' => 'required',
         ]);
 
-        $landlord = $id;
+        $tenant = $id;
 
         if ($validator->fails()) {
             return response()->json(array(
@@ -171,7 +161,8 @@ class LandlordCorrespondenceController extends Controller
         $name = $request->new_folder;
         $name = str_replace(" ", "-", $name);
 
-        $check = GeneralCorrespondence::where('parent_id', $parent_id)->where('name', $name)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
+        $admin_id = auth()->guard('admin')->user()->id;
+        $check = GeneralCorrespondence::where('parent_id', $parent_id)->where('name', $name)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
         if (!empty($check)) {
             return response()->json(array(
                 'success' => false,
@@ -181,11 +172,12 @@ class LandlordCorrespondenceController extends Controller
             ), 400); // 400 being the HTTP code for an invalid request.
         }
 
-        $this->makeUserDirectory($landlord->id);
+        $this->makeUserDirectory($tenant->id);
 
+        $admin_id = auth()->guard('admin')->user()->id;
 
         if ($parent_id == 0) {
-            $directory = public_path('generalFileManager/landlord-' . $landlord->id . '/' . $name . '/');
+            $directory = public_path('generalFileManager/tenant-' . $tenant->id . '/' . $name . '/');
             if (!file_exists($directory)) mkdir($directory, 0777, true);
         } else {
             $parent = GeneralCorrespondence::find($parent_id);
@@ -194,7 +186,7 @@ class LandlordCorrespondenceController extends Controller
         }
 
         if ($parent_id == 0) {
-            $link = "generalFileManager/landlord-" . $landlord->id . '/' . $name;
+            $link = "generalFileManager/tenant-" . $tenant->id . '/' . $name;
         } else {
             $parent = GeneralCorrespondence::find($parent_id);
             $link = $parent->link . '/' . $name;
@@ -206,17 +198,17 @@ class LandlordCorrespondenceController extends Controller
             'parent_id' => $parent_id,
             'name'      => $name,
             'link'      => $link,
-            'type' => 'landlord',
-            'landlord_id' => $landlord->id,
+            'type' => 'tenant',
+            'tenant_id' => $tenant->id,
         ]);
 
         if ($folder) {
-            $data = GeneralCorrespondence::where('parent_id', $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
-            $files = GeneralCorrespondenceFiles::where("parent_id", $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->get();
+            $data = GeneralCorrespondence::where('parent_id', $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('name')->get();
+            $files = GeneralCorrespondenceFiles::where("parent_id", $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->get();
             $all = $data->merge($files);
             $all = $all->sortByDesc('created_at');
 
-            return view('landlord.profile.correspondence.table', compact('data', 'files', 'landlord', 'all'));
+            return view('admin.tenants.correspondence.table', compact('data', 'files', 'tenant', 'all'));
         } else {
             return response()->json(array(
                 'success' => false,
@@ -227,32 +219,35 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function makeUserDirectory($landlord_id)
+    public function makeUserDirectory($tenant_id)
     {
-        $directory = public_path('generalFileManager/landlord-' . $landlord_id);
+        $admin_id = auth()->guard('admin')->user()->id;
+
+        $directory = public_path('generalFileManager/tenant-' . $tenant_id);
 
         if (!file_exists($directory)) {
             mkdir($directory, 0777, true);
         }
     }
 
-    public function showUploadFileForm(Landlord $id, $parent_id, Request $request)
+    public function showUploadFileForm(Tenant $id, $parent_id, Request $request)
     {
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('landlord.dashboard');
+        $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Upload Files';
-        $page['landlord_name'] = $id->name;
+        $page['tenant_name'] = $id->name;
 
-        $landlord = $id;
+        $tenant = $id;
         $parent_id = $parent_id;
 
-        return view('landlord.profile.correspondence.uploadFiles', compact('page', 'landlord', 'parent_id'));
+        return view('admin.tenants.correspondence.uploadFiles', compact('page', 'tenant', 'parent_id'));
     }
 
-    public function uploadFiles(Landlord $id, $parent_id, Request $request)
+    public function uploadFiles(Tenant $id, $parent_id, Request $request)
     {
-        $landlord = $id;
+        $tenant = $id;
+        $admin_id = auth()->guard('admin')->user()->id;
 
         $parent = GeneralCorrespondence::find($parent_id);
 
@@ -271,7 +266,7 @@ class LandlordCorrespondenceController extends Controller
                     $this->makeUserDirectory($id->id);
 
                     if ($parent_id == 0) {
-                        $directory = public_path('generalFileManager/landlord-' . $id->id . '/');
+                        $directory = public_path('generalFileManager/tenant-' . $id->id . '/');
                     } else {
                         $parent = GeneralCorrespondence::find($parent_id);
                         $directory = public_path($parent->link . '/');
@@ -282,7 +277,7 @@ class LandlordCorrespondenceController extends Controller
                     $file_name =  base64_encode($key . '-file-' . time()) . '.' . $ext;
                     $file->move($directory, $file_name);
 
-                    $sameName = \DB::table('general_correspondence_files')->where('file_name', $filename . '.' . $ext)->where('parent_id', $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->get();
+                    $sameName = \DB::table('general_correspondence_files')->where('file_name', $filename . '.' . $ext)->where('parent_id', $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->get();
                     $count = $sameName->count();
 
                     if ($count > 0) {
@@ -292,8 +287,8 @@ class LandlordCorrespondenceController extends Controller
                     }
 
                     if ($parent_id == 0) {
-                        $link = "generalFileManager/landlord-" . $id->id . '/' . $filename;
-                        $original_link = "generalFileManager/landlord-" . $id->id . '/' . $file_name;
+                        $link = "generalFileManager/tenant-" . $id->id . '/' . $filename;
+                        $original_link = "generalFileManager/tenant-" . $id->id . '/' . $file_name;
                     } else {
                         $parent = GeneralCorrespondence::find($parent_id);
                         $link = $parent->link . '/' . $filename;
@@ -309,28 +304,28 @@ class LandlordCorrespondenceController extends Controller
                         'link'          => $link,
                         'file_description' => $request->description,
                         'original_link' => $original_link,
-                        'landlord_id' => $id->id,
-                        'type' => 'landlord',
+                        'tenant_id' => $id->id,
+                        'type' => 'tenant',
                     ]);
                 }
             }
         }
     }
 
-    public function showTaskPage(Landlord $id, Request $request){
+    public function showTaskPage(Tenant $id, Request $request){
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('landlord.dashboard');
+        $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'New Task';
-        $page['landlord_name'] = $id->name;
+        $page['tenant_name'] = $id->name;
 
         $platform_users = Admin::orderBy('name', 'desc')->get();
         $taskTray = TaskTray::orderBy('name', 'asc')->get();
-        $landlords = Landlord::where('id', $id->id)->first();
+        $tenants = Tenant::where('id', $id->id)->first();
 
  
-        $landlord = $id;
-        return view('landlord.profile.correspondence.createTask', compact('page', 'landlord',  'platform_users', 'taskTray', 'landlords'));
+        $tenant = $id;
+        return view('admin.tenants.correspondence.createTask', compact('page', 'tenant',  'platform_users', 'taskTray', 'tenants'));
     }
 
     public function storeTask(Tasks $task, Request $request)
@@ -354,6 +349,7 @@ class LandlordCorrespondenceController extends Controller
         $task->due_date = $due_date;
         $task->priority = $data['priority'];
         $task->platform_user = $data['platform_users'];
+        $task->admin_id = auth()->guard('admin')->user()->id;
         $task->status = $data['status'];
         $task->notes = $data['notes'];
         $task->task_tray_id = $data['task_tray'];
@@ -368,8 +364,8 @@ class LandlordCorrespondenceController extends Controller
 
         if ($task->save()) {
             GeneralCorrespondenceCall::create([
-                'landlord_id' => $data['contact'] ??  null,
-                'type' => 'landlord',
+                'tenant_id' => $data['contact'] ??  null,
+                'type' => 'tenant',
                 'task_id' => $task->id,
                 'is_task' => 'yes',
             ]);
@@ -455,49 +451,50 @@ class LandlordCorrespondenceController extends Controller
             }
             
         }
-        return redirect()->route('landlord.landlords.correspondence',$task->contact_id)
+        return redirect()->route('admin.tenants.correspondence',$task->contact_id)
         ->withFlashMessage('Task added successfully!')
         ->withFlashType('success');          
     }
 
-    public function showChild(Request $request, Landlord $id, $parent_id)
+    public function showChild(Request $request, Tenant $id, $parent_id)
     {
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('landlord.dashboard');
+        $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Correspondence';
-        $page['landlord_name'] = $id->name;
+        $page['tenant_name'] = $id->name;
 
-        $landlord = $id;
+        $tenant = $id;
+        $admin_id = auth()->guard('admin')->user()->id;
 
         $filterType = $request->input('filterType', '');
 
         if ($filterType === 'folder') { 
-            $data = GeneralCorrespondence::where("parent_id", $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
+            $data = GeneralCorrespondence::where("parent_id", $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('name')->get();
             $files = collect();
             $call = collect();
         } elseif ($filterType === 'file') { 
             $data = collect();
-            $files = GeneralCorrespondenceFiles::where("parent_id", $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('file_name')->get();
+            $files = GeneralCorrespondenceFiles::where("parent_id", $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('file_name')->get();
             $call = collect();
         } elseif ($filterType == 'call') {
             $data = collect();
             $files = collect();    
-            $call = GeneralCorrespondenceCall::where('landlord_id', $landlord->id)->where('type','landlord')->where('parent_id', $parent_id)->get();
+            $call = GeneralCorrespondenceCall::where('tenant_id', $tenant->id)->where('type','tenant')->where('parent_id', $parent_id)->get();
         } else {
-            $data = GeneralCorrespondence::where("parent_id", $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
-            $files = GeneralCorrespondenceFiles::where("parent_id", $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('file_name')->get();
-            $call = GeneralCorrespondenceCall::where('landlord_id', $landlord->id)->where('type','landlord')->where('parent_id', $parent_id)->get();
+            $data = GeneralCorrespondence::where("parent_id", $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('name')->get();
+            $files = GeneralCorrespondenceFiles::where("parent_id", $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->orderBy('file_name')->get();
+            $call = GeneralCorrespondenceCall::where('tenant_id', $tenant->id)->where('type','tenant')->where('parent_id', $parent_id)->get();
         }
-        $parent = GeneralCorrespondence::where('id', $parent_id)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
+        $parent = GeneralCorrespondence::where('id', $parent_id)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
 
         $all = $data->concat($files)->concat($call);
         $all = $all->sortByDesc('created_at');
-        $all = $this->paginate($all, route("landlord.landlords.correspondence.child", ['id' => $landlord->id, 'parent_id' => $parent_id]));
+        $all = $this->paginate($all, route("admin.tenants.correspondence.child", ['id' => $tenant->id, 'parent_id' => $parent_id]));
 
-        $landlords = Landlord::orderBy('name', 'asc')->get();
+        $tenants = Tenant::orderBy('name', 'asc')->get();
 
-        return view('landlord.profile.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'filterType', 'landlords'));
+        return view('admin.tenants.correspondence.index', compact('page', 'tenant', 'data', 'files', 'parent', 'all', 'filterType', 'tenants'));
     }
 
     public function delete(Request $request)
@@ -516,10 +513,9 @@ class LandlordCorrespondenceController extends Controller
                 GeneralCorrespondenceCall::where('id', $val[0])->delete();
             } else if($val[1] == 'meeting') {
                 GeneralCorrespondenceCall::where('id', $val[0])->delete();
-            }  else if($val[1] == 'task') {
+            } else if($val[1] == 'task') {
                 GeneralCorrespondenceCall::where('id', $val[0])->delete();
-            }
-             else {
+            } else {
                 $find = \DB::table('general_correspondence_files')->where('id', $val[0])->first();
                 if($find->is_email != 'yes') {
                     $directory = public_path($find->original_link);
@@ -533,7 +529,7 @@ class LandlordCorrespondenceController extends Controller
         return back();
     }
 
-    public function moveFile(Landlord $id, $parent_id, Request $request)
+    public function moveFile(Tenant $id, $parent_id, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'move_link' => 'required',
@@ -541,7 +537,7 @@ class LandlordCorrespondenceController extends Controller
             'move_link' => "This field is required",
         ]);
 
-        $landlord = $id;
+        $tenant = $id;
 
 
         if ($validator->fails()) {
@@ -575,28 +571,29 @@ class LandlordCorrespondenceController extends Controller
             $fileType = $fileName[1];
             $fileName = $fileName[2];
 
+            $admin_id = auth()->guard('admin')->user()->id;
             if ($fileType == 'file') {
-                $file = \DB::table('general_correspondence_files')->where('id', $fileId)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
+                $file = \DB::table('general_correspondence_files')->where('id', $fileId)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
 
                 if ($move_link == '/') {
-                    $saveDir = "generalFileManager/landlord-" . $landlord->id . '/' . $file->file_name;
-                    $originalDir = "generalFileManager/landlord-" . $landlord->id . '/' . $file->original_name;
+                    $saveDir = "generalFileManager/tenant-" . $tenant->id . '/' . $file->file_name;
+                    $originalDir = "generalFileManager/tenant-" . $tenant->id . '/' . $file->original_name;
                 } else {
-                    $saveDir = "generalFileManager/landlord-" . $landlord->id . "/" . $move_link . '/' . $file->file_name;
-                    $originalDir = "generalFileManager/landlord-" . $landlord->id . "/" . $move_link . '/' . $file->original_name;
+                    $saveDir = "generalFileManager/tenant-" . $tenant->id . "/" . $move_link . '/' . $file->file_name;
+                    $originalDir = "generalFileManager/tenant-" . $tenant->id . "/" . $move_link . '/' . $file->original_name;
                 }
 
                 if ($move_link == '/') {
-                    $directory = public_path("generalFileManager/landlord-" . $landlord->id . "/" . $file->original_name);
+                    $directory = public_path("generalFileManager/tenant-" . $tenant->id . "/" . $file->original_name);
                 } else {
-                    $directory = public_path("generalFileManager/landlord-" . $landlord->id . "/" . $move_link . "/" . $file->original_name);
+                    $directory = public_path("generalFileManager/tenant-" . $tenant->id . "/" . $move_link . "/" . $file->original_name);
                 }
 
                 if ($parent_id == 0) {
 
                     if ($move_link != '/') {
-                        $getParent = "generalFileManager/landlord-" . $landlord->id . '/' . $move_link;
-                        $parent = GeneralCorrespondence::where('link', "generalFileManager/landlord-" . $landlord->id . '/' . $move_link)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
+                        $getParent = "generalFileManager/tenant-" . $tenant->id . '/' . $move_link;
+                        $parent = GeneralCorrespondence::where('link', "generalFileManager/tenant-" . $tenant->id . '/' . $move_link)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
                         if (empty($parent)) {
                             return response()->json(array(
                                 'success' => false,
@@ -607,13 +604,13 @@ class LandlordCorrespondenceController extends Controller
                             ), 400); // 400 being the HTTP code for an invalid request.
                         }
                     } else {
-                        $getParent = "generalFileManager/landlord-" . $landlord->id;
+                        $getParent = "generalFileManager/tenant-" . $tenant->id;
                     }
                 } else {
 
                     if ($move_link != '/') {
 
-                        $parent = GeneralCorrespondence::where('link', "generalFileManager/landlord-" . $landlord->id . '/' . $move_link)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
+                        $parent = GeneralCorrespondence::where('link', "generalFileManager/tenant-" . $tenant->id . '/' . $move_link)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
                         if (empty($parent)) {
                             return response()->json(array(
                                 'success' => false,
@@ -625,7 +622,7 @@ class LandlordCorrespondenceController extends Controller
                         }
                         $getParent = $parent->link;
                     } else {
-                        $getParent = "generalFileManager/landlord-" . $landlord->id;
+                        $getParent = "generalFileManager/tenant-" . $tenant->id;
                     }
                 }
 
@@ -638,8 +635,8 @@ class LandlordCorrespondenceController extends Controller
 
                 if ($move_link != '/') {
 
-                    $parentIdToUpdate = GeneralCorrespondence::where("link", $getParent)->where('name', $parentFolderName)->where('landlord_id', $landlord->id)->where('type','landlord')->first();
-                    $checkNames = \DB::table("general_correspondence_files")->where('parent_id', $parentIdToUpdate->id)->where('file_name', $fileName)->where('landlord_id', $landlord->id)->where('type','landlord')->get();
+                    $parentIdToUpdate = GeneralCorrespondence::where("link", $getParent)->where('name', $parentFolderName)->where('tenant_id', $tenant->id)->where('type','tenant')->first();
+                    $checkNames = \DB::table("general_correspondence_files")->where('parent_id', $parentIdToUpdate->id)->where('file_name', $fileName)->where('tenant_id', $tenant->id)->where('type','tenant')->get();
                     $count = $checkNames->count();
 
                     if ($count > 0) {
@@ -652,7 +649,7 @@ class LandlordCorrespondenceController extends Controller
                         ), 400); // 400 being the HTTP code for an invalid request.
                     } else {
                         if (rename(public_path($file->original_link), $directory)) {
-                            \DB::table('general_correspondence_files')->where('id', $fileId)->where('landlord_id', $landlord->id)->where('type','landlord')->update([
+                            \DB::table('general_correspondence_files')->where('id', $fileId)->where('tenant_id', $tenant->id)->where('type','tenant')->update([
                                 'link'  => $saveDir,
                                 'parent_id' => $parentIdToUpdate->id,
                                 'original_link' => $originalDir,
@@ -690,9 +687,9 @@ class LandlordCorrespondenceController extends Controller
         ), 200); // 400 being the HTTP code for an invalid request.
     }
 
-    public function newCall(Request $request, Landlord $id, $parent_id)
+    public function newCall(Request $request, Tenant $id, $parent_id)
     {
-        $landlord = $id;
+        $tenant = $id;
 
         $validator = Validator::make($request->all(),[
             'date' => 'required',
@@ -720,12 +717,12 @@ class LandlordCorrespondenceController extends Controller
 
         $feeType = GeneralCorrespondenceCall::create([
             'parent_id' => $parent_id,
-            'landlord_id' => $landlord->id,
+            'tenant_id' => $tenant->id,
             'description' => $data['description'],
             'date' => $date,
             'call_type'   => $request->call_type,
             'is_call' => 'yes',
-            'type' => 'landlord',
+            'type' => 'tenant',
         ]);
 
         
@@ -747,9 +744,9 @@ class LandlordCorrespondenceController extends Controller
     }
 
     //saving meeting in the correspondence call table
-    public function storeMeeting(Request $request, Landlord $id, $parent_id)
+    public function storeMeeting(Request $request, Tenant $id, $parent_id)
     {
-        $landlord = $id;
+        $tenant = $id;
 
         $validator = Validator::make($request->all(),[
             'meeting_date' => 'required',
@@ -783,9 +780,8 @@ class LandlordCorrespondenceController extends Controller
             'date' => $meeting_date,
             'call_type'   => null,
             'is_call' => 'no',
-            'assigned_landlord' => $request->landlord,
-            'type' => 'landlord',
-            'landlord_id' => $landlord->id,
+            'type' => 'tenant',
+            'tenant_id' => $tenant->id,
         ]);
 
         
@@ -820,10 +816,10 @@ class LandlordCorrespondenceController extends Controller
         ]);
 
         if ($file) {
-            return redirect()->route('landlord.landlords.correspondence', $id)->withFlashMessage('File Description Edited Successfully')
+            return redirect()->route('admin.tenants.correspondence', $id)->withFlashMessage('File Description Edited Successfully')
             ->withFlashType('success');
         } else {
-            return redirect()->route('landlord.landlords.correspondence', $id)->withFlashMessage('Oops! Something went wrong')
+            return redirect()->route('admin.tenants.correspondence', $id)->withFlashMessage('Oops! Something went wrong')
             ->withFlashType('errors');
         }
     }

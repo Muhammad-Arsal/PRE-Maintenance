@@ -28,6 +28,22 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-content">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs nav-underline no-hover-bg">
+                                    <li class="nav-item">
+                                        <a class="nav-link active disabled" id="overview" data-toggle="tab"
+                                            aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.tenants.edit.property', $tenant->id)}}">Property</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.tenants.correspondence', $tenant->id)}}">Correspondence</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="card-body">
                                 @include('admin.partials.flashes')
                                 <form method="post" enctype="multipart/form-data" id='managetenant' action="{{ route('admin.settings.tenants.update', $tenant->id) }}">
@@ -52,7 +68,7 @@
                                                     </div>
                                                     <div class="form-group form-check">
                                                         <input class="form-check-input primary-user-checkbox" type="checkbox" name="primary_user[0]" id="primary_0" checked>
-                                                        <label for="primary_user">Primary User</label>
+                                                        <label for="primary_user">Lead Tenant</label>
                                                         <div class="primary_user_error error"></div>
                                                     </div>
                                                 </div>
@@ -132,7 +148,7 @@
                                                         </div>
                                                         <div class="form-group form-check">
                                                             <input class="form-check-input primary-user-checkbox" type="checkbox" name="primary_user[{{ $i }}]" id="primary_{{ $i }}">
-                                                            <label for="primary_user">Primary User</label>
+                                                            <label for="primary_user">Lead Tenant</label>
                                                             <div class="primary_user_error error"></div>
                                                         </div>
                                                     </div>
@@ -260,107 +276,7 @@
                                             @if ($errors->has('profile_image'))
                                                <p class="text-danger">{{ $errors->first('profile_image') }}</p>
                                             @endif
-                                        </div>
-
-
-                                        <h3 class="mt-3 mb-2"><strong>Property</strong></h3>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="property"><span style="color: red;">*</span>Property</label>
-                                                    <select id="property" name="property" class="form-control">
-                                                        <option value="">Select Property</option>
-                                                        @foreach($properties as $item)
-                                                            <option value="{{ $item->id }}" {{ $tenant->property_id == $item->id ? 'selected' : '' }}>
-                                                                {{ $item->line1 . ', ' . $item->city . ', ' . $item->county . ', ' . $item->postcode }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('property') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="contract_start"><span style="color: red;">*</span>Contract Start</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="contract_start" class="form-control datepicker" name="contract_start_display"
-                                                            value="{{ old('contract_start_display', \Carbon\Carbon::parse($tenant->contract_start)->format('d/m/Y')) }}" placeholder="DD/MM/YYYY">
-                                                        <input type="hidden" id="contract_start_hidden" name="contract_start"
-                                                            value="{{ old('contract_start', $tenant->contract_start) }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('contract_start') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="contract_end"><span style="color: red;">*</span>Contract End</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="contract_end" class="form-control datepicker" name="contract_end_display"
-                                                            value="{{ old('contract_end_display', \Carbon\Carbon::parse($tenant->contract_end)->format('d/m/Y')) }}" placeholder="DD/MM/YYYY">
-                                                        <input type="hidden" id="contract_end_hidden" name="contract_end"
-                                                            value="{{ old('contract_end', $tenant->contract_end) }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('contract_end') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="deposit">Deposit</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="deposit" class="form-control" placeholder="Enter deposit amount" name="deposit"
-                                                            value="{{ old('deposit', $tenant->deposit) }}">
-                                                    </div>
-                                                    @error('deposit') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                            
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="adjust">Adjust</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="adjust" class="form-control" placeholder="Enter adjustment amount" name="adjust"
-                                                            value="{{ old('adjust', $tenant->adjust) }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-balance-scale"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('adjust') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="date_left_property">Date Left Property</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date_left_property" class="form-control datepicker" placeholder="DD/MM/YYYY" name="date_left_property_display"
-                                                            value="{{ old('date_left_property_display', $tenant->left_property ? \Carbon\Carbon::parse($tenant->left_property)->format('d/m/Y') : '') }}">
-                                                        <input type="hidden" id="date_left_property_hidden" name="date_left_property"
-                                                            value="{{ old('date_left_property', $tenant->left_property) }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('date_left_property') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $tenant->note ?? '') }}</textarea>
-                                            @error('note') <span class="text-danger">{{ $message }}</span> @enderror
-                                        </div>                                        
+                                        </div>                                       
 
                                         <div class="form-actions right">
                                             <a href="{{ route('admin.settings.tenants') }}" class="theme-btn btn btn-primary">
@@ -442,7 +358,7 @@
                 var primaryUserCheckbox = $(".primary-user-checkbox:checked").length;
                 console.log(primaryUserCheckbox);
                 if (primaryUserCheckbox == 0) {
-                    $("#primary_0").last().closest('.form-check').append("<p class='text-danger primary_user_error'>At least one user should be selected as the primary user</p>");
+                    $("#primary_0").last().closest('.form-check').append("<p class='text-danger primary_user_error'>At least one user should be selected as the Lead Tenant</p>");
                     return false;
                 }
                 form.submit();

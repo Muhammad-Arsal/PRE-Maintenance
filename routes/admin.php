@@ -16,10 +16,12 @@ use App\Http\Controllers\Admin\PropertyTypeController;
 use App\Http\Controllers\Admin\JobsController;
 use App\Http\Controllers\Admin\InvoicesController;
 use App\Http\Controllers\Admin\LandlordsCorrespondenceController;
+use App\Http\Controllers\Admin\TenantsCorrespondenceController;
 use App\Http\Controllers\Admin\TaskTrayController;
 use App\Http\Controllers\Admin\TasksController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\CalendarController;
+
 
 
 Route::get('/',  [AdminAuthController::class, 'login'])->name('admin.login');
@@ -73,7 +75,9 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/tenants/create', [TenantsController::class, 'create'])->name('admin.settings.tenants.create');
     Route::post('/tenants/store', [TenantsController::class, 'store'])->name('admin.settings.tenants.store');
     Route::get('/tenants/{id}/edit', [TenantsController::class, 'edit'])->name('admin.settings.tenants.edit');
+    Route::get('/tenants/{id}/edit/property', [TenantsController::class, 'editProperty'])->name('admin.settings.tenants.edit.property');
     Route::put('/tenants/{id}/update', [TenantsController::class, 'update'])->name('admin.settings.tenants.update');
+    Route::put('/tenants/{id}/update/property', [TenantsController::class, 'storeProperty'])->name('admin.settings.tenants.update.property');
     Route::post('tenants/{id}/destroy', [TenantsController::class, 'destroy'])->name('admin.settings.tenants.destroy');
     Route::post('/tenants/{id}/delete', [TenantsController::class, 'delete'])->name('admin.settings.tenants.delete');
     Route::get('/tenants/search', [TenantsController::class, 'searchData'])->name('admin.settings.tenants.search');
@@ -220,6 +224,22 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('diary/{id}/meeting/{type}', [CalendarController::class, 'storeMeetingForm'])->name('admin.diary.meeting.update');
 
 
+    //Tenant Correspondence Routes
+    Route::get('/tenant/{id}/correspondence', [TenantsCorrespondenceController::class, 'index'])->name('admin.tenants.correspondence');
+    Route::get('/tenant/{id}/correspondence/{parent_id}/view', [TenantsCorrespondenceController::class, 'showChild'])->name('admin.tenants.correspondence.child');
+    Route::post('/tenant/{id}/correspondence/delete', [TenantsCorrespondenceController::class, 'delete'])->name('admin.tenants.correspondence.delete');
+    Route::post('/tenant/{id}/correspondence/{parent_id}/move_file', [TenantsCorrespondenceController::class, 'moveFile'])->name('admin.tenants.correspondence.moveFile');
+    Route::post('/tenant/{id}/correspondence/fileVault', [TenantsCorrespondenceController::class, 'fileVault'])->name('admin.tenants.correspondence.fileVault');
+    Route::post('/tenant/{id}/correspondence/{parent_id}/new_folder', [TenantsCorrespondenceController::class, 'createFolder'])->name('admin.tenants.correspondence.newFolder');
+    Route::get('/tenant/{id}/correspondence/{parent_id}/upload', [TenantsCorrespondenceController::class, 'showUploadFileForm'])->name('admin.tenants.correspondence.uploadFilesForm');
+    Route::post('/tenant/{id}/correspondence/{parent_id}/upload', [TenantsCorrespondenceController::class, 'uploadFiles'])->name('admin.tenants.correspondence.uploadFiles');
+    Route::post('/tenant/{id}/correspondence/ajax/addComment', [TenantsCorrespondenceController::class, 'saveComment'])->name('admin.tenants.correspondence.ajax-add-comment');
+    Route::post('/tenant/{id}/correspondence/ajax/editComment', [TenantsCorrespondenceController::class, 'editComment'])->name('admin.tenants.correspondence.ajax-edit-comment');
+    Route::post('/tenant/{id}/correspondence/file/description', [TenantsCorrespondenceController::class, 'add_edit_description'])->name('admin.tenants.correspondence.add-edit-description');
+    Route::post('/tenant/{id}/correspondence/{parent_id}/new-call', [TenantsCorrespondenceController::class, 'newCall'])->name('admin.tenants.correspondence.newCall');
+    Route::post('/tenant/{id}/correspondence/{parent_id}/new-meeting', [TenantsCorrespondenceController::class, 'storeMeeting'])->name('admin.tenants.correspondence.newMeeting');
+    Route::get('/tenant/{id}/correspondence/task', [TenantsCorrespondenceController::class, 'showTaskPage'])->name('admin.suppliers.correspondence.task');
+    Route::post('/tenant/tasks/create/task', [TenantsCorrespondenceController::class, 'storeTask'])->name('admin.tasks.cross.store');
 });
 
 

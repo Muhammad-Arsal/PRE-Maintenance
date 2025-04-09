@@ -199,7 +199,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="contract_start"><span style="color: red;">*</span>Contract Start</label>
+                                                    <label for="contract_start">Contract Start</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="contract_start" class="form-control datepicker" name="contract_start_display"
                                                             value="{{ old('contract_start_display') }}" placeholder="DD/MM/YYYY">
@@ -241,22 +241,7 @@
                                                         <p class="text-danger">{{ $errors->first('deposit') }}</p>
                                                     @endif
                                                 </div>
-                                            </div>                                            
-                                            
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="adjust">Adjust</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="adjust" class="form-control" placeholder="Enter adjustment" name="adjust" value="{{ old('adjust') }}">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-balance-scale"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('adjust'))
-                                                        <p class="text-danger">{{ $errors->first('adjust') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>   
+                                            </div>                                             
                                             
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -274,11 +259,6 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $property->note ?? '') }}</textarea>
-                                            @error('note') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
 
 
@@ -331,7 +311,6 @@
                     number: true
                 },
                 "property": { required: true },
-                "contract_start_hidden": { required: true, date: true },
                 "contract_end_hidden": { required: true, date: true }
             },
             messages: {
@@ -339,10 +318,6 @@
                     number: "Please enter a valid number" // Correct the message to match the rule
                 },
                 "property": { required: "Property is required" },
-                "contract_start_hidden": { 
-                    required: "Contract start date is required", 
-                    date: "Please enter a valid date" 
-                },
                 "contract_end_hidden": { 
                     required: "Contract end date is required", 
                     date: "Please enter a valid date" 

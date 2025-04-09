@@ -54,7 +54,7 @@ Route::middleware(['tenant', 'verified:tenant.login'])->group(function(){
     Route::post('profile/{id}/correspondence/{parent_id}/new-call', [TenantCorrespondenceController::class, 'newCall'])->name('tenant.tenants.correspondence.newCall');
     Route::post('profile/{id}/correspondence/{parent_id}/new-meeting', [TenantCorrespondenceController::class, 'storeMeeting'])->name('tenant.tenants.correspondence.newMeeting');
     Route::get('profile/{id}/correspondence/task', [TenantCorrespondenceController::class, 'showTaskPage'])->name('tenant.suppliers.correspondence.task');
-    Route::post('profile/tasks/create/task', [TenantCorrespondenceController::class, 'storeTask'])->name('tenant.tasks.cross.store');
+    Route::post('profile/tasks/create/task/{id}', [TenantCorrespondenceController::class, 'storeTask'])->name('tenant.tasks.cross.store');
 
 });
 

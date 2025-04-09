@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+
 
 class ProfileController extends Controller
 {
+    public function __construct(){
+        if(Auth::guard('tenant')->id() != (int)Route::current()->id){
+            redirect()->route(Route::current()->getName(), auth('tenant')->id())->send();
+        }
+    }
     public function showProfileForm() {
         $page['page_title'] = 'Manage Tenant Profile';
 

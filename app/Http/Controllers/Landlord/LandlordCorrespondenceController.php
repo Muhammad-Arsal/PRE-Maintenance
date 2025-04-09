@@ -26,13 +26,14 @@ use Illuminate\Support\Facades\Route;
 
 class LandlordCorrespondenceController extends Controller
 {
+
     public function __construct()
     {
-        $currentRouteId = request()->route('id')->id;
-        $authLandlordId = Auth::guard('landlord')->id();
+        $currentRouteId = (int)Route::current()->id;
+        $authTenantId = Auth::guard('landlord')->id();
 
-        if ($authLandlordId !== $currentRouteId) {
-            redirect()->route(Route::currentRouteName(), ['id' => $authLandlordId])->send();
+        if ($authTenantId !== $currentRouteId) {
+            redirect()->route(Route::currentRouteName(), ['id' => $authTenantId])->send();
         }
     }
 
@@ -49,8 +50,12 @@ class LandlordCorrespondenceController extends Controller
         return $lap;
     }
 
-    public function index(Request $request, Landlord $id)
+    public function index(Request $request,$id)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('landlord.dashboard');
@@ -58,8 +63,6 @@ class LandlordCorrespondenceController extends Controller
         $page['landlord_name'] = $id->name;
 
         $filterType = $request->input('filterType', '');
-
-        $landlord = $id;
 
         if ($filterType === 'folder') { 
             $data = GeneralCorrespondence::where("parent_id", 0)->where('landlord_id', $landlord->id)->where('type','landlord')->orderBy('name')->get();
@@ -86,11 +89,16 @@ class LandlordCorrespondenceController extends Controller
 
         $landlords = Landlord::orderBy('name', 'asc')->get();
 
+
         return view('landlord.profile.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'landlords', 'filterType'));
     }
 
-    public function saveComment(Landlord $id, Request $request)
+    public function saveComment($id, Request $request)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+        
         try {
             $data = $request->except('_token');
 
@@ -119,8 +127,12 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function editComment(Landlord $id, Request $request)
+    public function editComment($id, Request $request)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $validator = Validator::make($request->all(), [
             'editCommentInput' => 'required',
         ], [
@@ -152,8 +164,12 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function createFolder(Landlord $id, $parent_id, Request $request)
+    public function createFolder($id, $parent_id, Request $request)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $validator = Validator::make($request->all(), [
             'new_folder' => 'required',
         ]);
@@ -236,23 +252,28 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function showUploadFileForm(Landlord $id, $parent_id, Request $request)
+    public function showUploadFileForm($id, $parent_id, Request $request)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('landlord.dashboard');
         $page['page_current'] = 'Upload Files';
         $page['landlord_name'] = $id->name;
 
-        $landlord = $id;
         $parent_id = $parent_id;
 
         return view('landlord.profile.correspondence.uploadFiles', compact('page', 'landlord', 'parent_id'));
     }
 
-    public function uploadFiles(Landlord $id, $parent_id, Request $request)
+    public function uploadFiles($id, $parent_id, Request $request)
     {
-        $landlord = $id;
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
 
         $parent = GeneralCorrespondence::find($parent_id);
 
@@ -317,7 +338,11 @@ class LandlordCorrespondenceController extends Controller
         }
     }
 
-    public function showTaskPage(Landlord $id, Request $request){
+    public function showTaskPage($id, Request $request){
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('landlord.dashboard');
@@ -327,15 +352,15 @@ class LandlordCorrespondenceController extends Controller
         $platform_users = Admin::orderBy('name', 'desc')->get();
         $taskTray = TaskTray::orderBy('name', 'asc')->get();
         $landlords = Landlord::where('id', $id->id)->first();
+        $id = $landlord->id;
 
- 
-        $landlord = $id;
-        return view('landlord.profile.correspondence.createTask', compact('page', 'landlord',  'platform_users', 'taskTray', 'landlords'));
+        return view('landlord.profile.correspondence.createTask', compact('page', 'landlord',  'platform_users', 'taskTray', 'landlords', 'id'));
     }
 
-    public function storeTask(Tasks $task, Request $request)
+    public function storeTask($id, Request $request)
     {
-       
+        $task = new Tasks;
+
         $request->validate([
             'description' => 'required',
             // 'task_type' => 'required',
@@ -349,7 +374,6 @@ class LandlordCorrespondenceController extends Controller
             $due_date = Carbon::createFromFormat("d/m/Y", $data['due_date'])
             ->format('Y-m-d H:i:s');
         }
-
         $task->description = $data['description'];
         $task->due_date = $due_date;
         $task->priority = $data['priority'];
@@ -460,15 +484,17 @@ class LandlordCorrespondenceController extends Controller
         ->withFlashType('success');          
     }
 
-    public function showChild(Request $request, Landlord $id, $parent_id)
+    public function showChild(Request $request,$id, $parent_id)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('landlord.dashboard');
         $page['page_current'] = 'Correspondence';
         $page['landlord_name'] = $id->name;
-
-        $landlord = $id;
 
         $filterType = $request->input('filterType', '');
 
@@ -497,11 +523,23 @@ class LandlordCorrespondenceController extends Controller
 
         $landlords = Landlord::orderBy('name', 'asc')->get();
 
+
+        $routeId = request()->route('id')->id;
+        $authId = Auth::guard('landlord')->id();
+
+        if ($authId !== $routeId) {
+            redirect()->route(Route::currentRouteName(), ['id' => $authId])->send();
+        }
+
         return view('landlord.profile.correspondence.index', compact('page', 'landlord', 'data', 'files', 'parent', 'all', 'filterType', 'landlords'));
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request,$id)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $checks = $request->check;
         foreach ($checks as $c) {
             $val = explode("+", $c);
@@ -533,8 +571,12 @@ class LandlordCorrespondenceController extends Controller
         return back();
     }
 
-    public function moveFile(Landlord $id, $parent_id, Request $request)
+    public function moveFile($id, $parent_id, Request $request)
     {
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
+
         $validator = Validator::make($request->all(), [
             'move_link' => 'required',
         ], [
@@ -690,9 +732,11 @@ class LandlordCorrespondenceController extends Controller
         ), 200); // 400 being the HTTP code for an invalid request.
     }
 
-    public function newCall(Request $request, Landlord $id, $parent_id)
+    public function newCall(Request $request,$id, $parent_id)
     {
-        $landlord = $id;
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
 
         $validator = Validator::make($request->all(),[
             'date' => 'required',
@@ -747,9 +791,11 @@ class LandlordCorrespondenceController extends Controller
     }
 
     //saving meeting in the correspondence call table
-    public function storeMeeting(Request $request, Landlord $id, $parent_id)
+    public function storeMeeting(Request $request, $id, $parent_id)
     {
-        $landlord = $id;
+        $landlord = Landlord::where('id',$id)->first();
+
+        $id = $landlord;
 
         $validator = Validator::make($request->all(),[
             'meeting_date' => 'required',

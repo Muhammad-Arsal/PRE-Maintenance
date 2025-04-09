@@ -21,9 +21,20 @@ use App\Models\Tenant;
 use App\Models\EmailTemplate;
 use Validator;
 use PDF;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 class TenantCorrespondenceController extends Controller
 {
+    public function __construct()
+    {
+        $currentRouteId = (int)Route::current()->id;
+        $authTenantId = Auth::guard('tenant')->id();
+
+        if ($authTenantId !== $currentRouteId) {
+            redirect()->route(Route::currentRouteName(), ['id' => $authTenantId])->send();
+        }
+    }
     public function paginate($items, $base_url='', $perPage = 10, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
@@ -37,8 +48,11 @@ class TenantCorrespondenceController extends Controller
         return $lap;
     }
 
-    public function index(Request $request, Tenant $id)
+    public function index(Request $request,$id)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('tenant.dashboard');
@@ -77,8 +91,11 @@ class TenantCorrespondenceController extends Controller
         return view('tenant.profile.correspondence.index', compact('page', 'tenant', 'data', 'files', 'parent', 'all', 'tenants', 'filterType'));
     }
 
-    public function saveComment(Tenant $id, Request $request)
+    public function saveComment($id, Request $request)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         try {
             $data = $request->except('_token');
 
@@ -107,8 +124,11 @@ class TenantCorrespondenceController extends Controller
         }
     }
 
-    public function editComment(Tenant $id, Request $request)
+    public function editComment($id, Request $request)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $validator = Validator::make($request->all(), [
             'editCommentInput' => 'required',
         ], [
@@ -140,8 +160,11 @@ class TenantCorrespondenceController extends Controller
         }
     }
 
-    public function createFolder(Tenant $id, $parent_id, Request $request)
+    public function createFolder($id, $parent_id, Request $request)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $validator = Validator::make($request->all(), [
             'new_folder' => 'required',
         ]);
@@ -223,23 +246,27 @@ class TenantCorrespondenceController extends Controller
         }
     }
 
-    public function showUploadFileForm(Tenant $id, $parent_id, Request $request)
+    public function showUploadFileForm($id, $parent_id, Request $request)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+        
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('tenant.dashboard');
         $page['page_current'] = 'Upload Files';
         $page['tenant_name'] = $id->name;
 
-        $tenant = $id;
         $parent_id = $parent_id;
 
         return view('tenant.profile.correspondence.uploadFiles', compact('page', 'tenant', 'parent_id'));
     }
 
-    public function uploadFiles(Tenant $id, $parent_id, Request $request)
+    public function uploadFiles($id, $parent_id, Request $request)
     {
-        $tenant = $id;
+        $tenant = Tenant::where('id', $id)->first();
+
+        $id = $tenant; 
 
         $parent = GeneralCorrespondence::find($parent_id);
 
@@ -304,7 +331,10 @@ class TenantCorrespondenceController extends Controller
         }
     }
 
-    public function showTaskPage(Tenant $id, Request $request){
+    public function showTaskPage($id, Request $request){
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('tenant.dashboard');
@@ -314,15 +344,15 @@ class TenantCorrespondenceController extends Controller
         $platform_users = Admin::orderBy('name', 'desc')->get();
         $taskTray = TaskTray::orderBy('name', 'asc')->get();
         $tenants = Tenant::where('id', $id->id)->first();
+        $id = $tenant->id;
 
- 
-        $tenant = $id;
-        return view('tenant.profile.correspondence.createTask', compact('page', 'tenant',  'platform_users', 'taskTray', 'tenants'));
+        return view('tenant.profile.correspondence.createTask', compact('page', 'tenant',  'platform_users', 'taskTray', 'tenants', 'id'));
     }
 
-    public function storeTask(Tasks $task, Request $request)
+    public function storeTask(Request $request, $id)
     {
-       
+        $task = new Tasks;
+
         $request->validate([
             'description' => 'required',
             // 'task_type' => 'required',
@@ -447,8 +477,11 @@ class TenantCorrespondenceController extends Controller
         ->withFlashType('success');          
     }
 
-    public function showChild(Request $request, Tenant $id, $parent_id)
+    public function showChild(Request $request,$id, $parent_id)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $page['page_title'] = 'Manage Correspondence';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('tenant.dashboard');
@@ -487,8 +520,11 @@ class TenantCorrespondenceController extends Controller
         return view('tenant.profile.correspondence.index', compact('page', 'tenant', 'data', 'files', 'parent', 'all', 'filterType', 'tenants'));
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request,$id)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $checks = $request->check;
         foreach ($checks as $c) {
             $val = explode("+", $c);
@@ -519,8 +555,11 @@ class TenantCorrespondenceController extends Controller
         return back();
     }
 
-    public function moveFile(Tenant $id, $parent_id, Request $request)
+    public function moveFile($id, $parent_id, Request $request)
     {
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
+
         $validator = Validator::make($request->all(), [
             'move_link' => 'required',
         ], [
@@ -676,9 +715,10 @@ class TenantCorrespondenceController extends Controller
         ), 200); // 400 being the HTTP code for an invalid request.
     }
 
-    public function newCall(Request $request, Tenant $id, $parent_id)
+    public function newCall(Request $request,$id, $parent_id)
     {
-        $tenant = $id;
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
 
         $validator = Validator::make($request->all(),[
             'date' => 'required',
@@ -733,9 +773,10 @@ class TenantCorrespondenceController extends Controller
     }
 
     //saving meeting in the correspondence call table
-    public function storeMeeting(Request $request, Tenant $id, $parent_id)
+    public function storeMeeting(Request $request, $id, $parent_id)
     {
-        $tenant = $id;
+        $tenant = Tenant::where('id', $id)->first();
+        $id = $tenant; 
 
         $validator = Validator::make($request->all(),[
             'meeting_date' => 'required',

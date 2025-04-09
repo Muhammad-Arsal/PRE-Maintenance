@@ -68,7 +68,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="contract_start"><span style="color: red;">*</span>Contract Start</label>
+                                                    <label for="contract_start">Contract Start</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="contract_start" class="form-control datepicker" name="contract_start_display"
                                                             value="{{ old('contract_start_display', \Carbon\Carbon::parse($tenant->contract_start)->format('d/m/Y')) }}" placeholder="DD/MM/YYYY">

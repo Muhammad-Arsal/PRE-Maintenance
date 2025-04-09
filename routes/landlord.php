@@ -55,6 +55,6 @@ Route::middleware(['landlord', 'verified:landlord.login'])->group(function(){
     Route::post('/profile/{id}/correspondence/{parent_id}/new-call', [LandlordCorrespondenceController::class, 'newCall'])->name('landlord.landlords.correspondence.newCall');
     Route::post('/profile/{id}/correspondence/{parent_id}/new-meeting', [LandlordCorrespondenceController::class, 'storeMeeting'])->name('landlord.landlords.correspondence.newMeeting');
     Route::get('profile/{id}/correspondence/task', [LandlordCorrespondenceController::class, 'showTaskPage'])->name('landlord.suppliers.correspondence.task');
-    Route::post('tasks/create/task', [LandlordCorrespondenceController::class, 'storeTask'])->name('landlord.tasks.cross.store');
+    Route::post('tasks/create/task/{id}', [LandlordCorrespondenceController::class, 'storeTask'])->name('landlord.tasks.cross.store');
 });
 ?>

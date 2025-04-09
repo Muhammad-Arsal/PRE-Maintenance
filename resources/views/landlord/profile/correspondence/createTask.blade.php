@@ -28,8 +28,8 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
-                                <form method="post" enctype="multipart/form-data" id='addTaskForm'
-                                    action="{{ route('landlord.tasks.cross.store') }}">
+                                <form method="POST" enctype="multipart/form-data" id='addTaskForm'
+                                    action="{{ route('landlord.tasks.cross.store', $id) }}">
                                     @csrf
                                     <div class="form-body">
                                         <div class="form-group">

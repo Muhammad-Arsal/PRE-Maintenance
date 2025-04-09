@@ -51,7 +51,6 @@ class TenantsController extends Controller
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048', // Optional, check for image
             'property' => 'required',
-            'contract_start' =>'required',
             'contract_end' => 'required',
         ]);
     
@@ -95,9 +94,7 @@ class TenantsController extends Controller
                 'contract_start' => $request->contract_start,
                 'contract_end' => $request->contract_end,
                 'deposit' => $request->deposit,
-                'adjust' => $request->adjust,
                 'left_property' => $request->date_left_property,
-                'note' => $request->note,
             ]);
 
             if ($request->property) {
@@ -350,7 +347,6 @@ class TenantsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'property' => 'required',
-            'contract_start' =>'required',
             'contract_end' => 'required',
         ]);
     

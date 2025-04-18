@@ -29,7 +29,7 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <form method="post" enctype="multipart/form-data" id='addTaskForm'
-                                    action="{{ route('admin.landlord.tasks.cross.store') }}">
+                                    action="{{ route('admin.tasks.cross.store') }}">
                                     @csrf
                                     <div class="form-body">
                                         <div class="form-group">
@@ -121,7 +121,7 @@
                                                     <label for="contact">Contacts</label>
                                                     <div class="position-relative has-icon-left">
                                                         <select id="contact" name="contact" class="form-control {{ $errors->has('contact') ? 'error' : '' }}">
-                                                            <option value="{{$landlords->id}}">{{$landlords->name}}</option>    
+                                                            <option value="{{$tenants->id}}">{{$tenants->name}}</option>    
                                                         </select>
                                                         <div class="form-control-position">
                                                             <i class="la la-users"></i>

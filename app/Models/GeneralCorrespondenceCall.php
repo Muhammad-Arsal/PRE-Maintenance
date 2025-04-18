@@ -11,5 +11,5 @@ class GeneralCorrespondenceCall extends Model
 
     protected $table = 'general_correspondence_call';
 
-    protected $fillable = ['is_task','task_id','type','landlord_id', 'admin_id', 'description','date', 'call_type', 'is_call', 'parent_id', 'time', 'time_to', 'copy_to_correspondence', 'tenant_id'];
+    protected $fillable = ['is_task','task_id','type','landlord_id', 'admin_id', 'description','date', 'call_type', 'is_call', 'parent_id', 'time', 'time_to', 'copy_to_correspondence', 'tenant_id', 'property_id'];
 }

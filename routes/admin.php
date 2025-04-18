@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\TaskTrayController;
 use App\Http\Controllers\Admin\TasksController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\CalendarController;
+use App\Http\Controllers\Admin\ProperptyCorrespondenceController;
 
 
 
@@ -115,14 +116,20 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('admin.properties.create');
     Route::post('/properties/store', [PropertyController::class, 'store'])->name('admin.properties.store');
     Route::get('/properties/{id}/edit', [PropertyController::class, 'edit'])->name('admin.properties.edit');
+    Route::get('/properties/{id}/edit/address', [PropertyController::class, 'editAddress'])->name('admin.properties.edit.address');
     Route::post('/properties/{id}/update', [PropertyController::class, 'update'])->name('admin.properties.update');
+    Route::post('/properties/{id}/update/address', [PropertyController::class, 'updateAddress'])->name('admin.properties.update.address');
     Route::post('properties/{id}/destroy', [PropertyController::class, 'destroy'])->name('admin.properties.destroy');
     Route::get('properties/{id}/show', [PropertyController::class, 'show'])->name('admin.properties.show');
     Route::get('/properties/search', [PropertyController::class,'searchData'])->name('admin.properties.search');
     Route::get('properties/{id}/diary', [PropertyController::class, 'diary'])->name('admin.properties.diary');
+    Route::put('/properties/diary/{id}', [PropertyController::class, 'updateDiary'])->name('admin.properties.diaryUpdate');
     Route::post('properties/{id}/editDiary', [PropertyController::class, 'diaryStore'])->name('admin.properties.diaryStore');
     Route::post('properties/{id}/deleteDiary', [PropertyController::class, 'diaryDelete'])->name('admin.properties.diaryDelete');
     Route::get('properties/{id}/view/jobs', [PropertyController::class, 'jobs'])->name('admin.properties.viewjobs');
+    Route::get('properties/{id}/past_tenant', [PropertyController::class, 'pastTenant'])->name('admin.properties.past.tenant');
+    Route::get('properties/{id}/current_tenant', [PropertyController::class, 'currentTenant'])->name('admin.properties.current.tenant');
+    
 
     // Property Types
     Route::get('settings/propertyType', [PropertyTypeController::class, 'index'])->name('admin.settings.propertyType');
@@ -161,21 +168,21 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');
 
     //Landlord Correspondence Routes
-    Route::get('/landlord/{id}/correspondence', [LandlordsCorrespondenceController::class, 'index'])->name('admin.landlords.correspondence');
-    Route::get('/landlord/{id}/correspondence/{parent_id}/view', [LandlordsCorrespondenceController::class, 'showChild'])->name('admin.landlords.correspondence.child');
-    Route::post('/landlord/{id}/correspondence/delete', [LandlordsCorrespondenceController::class, 'delete'])->name('admin.landlords.correspondence.delete');
-    Route::post('/landlord/{id}/correspondence/{parent_id}/move_file', [LandlordsCorrespondenceController::class, 'moveFile'])->name('admin.landlords.correspondence.moveFile');
-    Route::post('/landlord/{id}/correspondence/fileVault', [LandlordsCorrespondenceController::class, 'fileVault'])->name('admin.landlords.correspondence.fileVault');
-    Route::post('/landlord/{id}/correspondence/{parent_id}/new_folder', [LandlordsCorrespondenceController::class, 'createFolder'])->name('admin.landlords.correspondence.newFolder');
-    Route::get('/landlord/{id}/correspondence/{parent_id}/upload', [LandlordsCorrespondenceController::class, 'showUploadFileForm'])->name('admin.landlords.correspondence.uploadFilesForm');
-    Route::post('/landlord/{id}/correspondence/{parent_id}/upload', [LandlordsCorrespondenceController::class, 'uploadFiles'])->name('admin.landlords.correspondence.uploadFiles');
-    Route::post('/landlord/{id}/correspondence/ajax/addComment', [LandlordsCorrespondenceController::class, 'saveComment'])->name('admin.landlords.correspondence.ajax-add-comment');
-    Route::post('/landlord/{id}/correspondence/ajax/editComment', [LandlordsCorrespondenceController::class, 'editComment'])->name('admin.landlords.correspondence.ajax-edit-comment');
-    Route::post('/landlord/{id}/correspondence/file/description', [LandlordsCorrespondenceController::class, 'add_edit_description'])->name('admin.landlords.correspondence.add-edit-description');
-    Route::post('/landlord/{id}/correspondence/{parent_id}/new-call', [LandlordsCorrespondenceController::class, 'newCall'])->name('admin.landlords.correspondence.newCall');
-    Route::post('/landlord/{id}/correspondence/{parent_id}/new-meeting', [LandlordsCorrespondenceController::class, 'storeMeeting'])->name('admin.landlords.correspondence.newMeeting');
-    Route::get('landlord/{id}/correspondence/task', [LandlordsCorrespondenceController::class, 'showTaskPage'])->name('admin.suppliers.correspondence.task');
-    Route::post('tasks/create/task', [LandlordsCorrespondenceController::class, 'storeTask'])->name('admin.tasks.cross.store');
+    Route::get('/landlords/{id}/correspondence', [LandlordsCorrespondenceController::class, 'index'])->name('admin.landlords.correspondence');
+    Route::get('/landlords/{id}/correspondence/{parent_id}/view', [LandlordsCorrespondenceController::class, 'showChild'])->name('admin.landlords.correspondence.child');
+    Route::post('/landlords/{id}/correspondence/delete', [LandlordsCorrespondenceController::class, 'delete'])->name('admin.landlords.correspondence.delete');
+    Route::post('/landlords/{id}/correspondence/{parent_id}/move_file', [LandlordsCorrespondenceController::class, 'moveFile'])->name('admin.landlords.correspondence.moveFile');
+    Route::post('/landlords/{id}/correspondence/fileVault', [LandlordsCorrespondenceController::class, 'fileVault'])->name('admin.landlords.correspondence.fileVault');
+    Route::post('/landlords/{id}/correspondence/{parent_id}/new_folder', [LandlordsCorrespondenceController::class, 'createFolder'])->name('admin.landlords.correspondence.newFolder');
+    Route::get('/landlords/{id}/correspondence/{parent_id}/upload', [LandlordsCorrespondenceController::class, 'showUploadFileForm'])->name('admin.landlords.correspondence.uploadFilesForm');
+    Route::post('/landlords/{id}/correspondence/{parent_id}/upload', [LandlordsCorrespondenceController::class, 'uploadFiles'])->name('admin.landlords.correspondence.uploadFiles');
+    Route::post('/landlords/{id}/correspondence/ajax/addComment', [LandlordsCorrespondenceController::class, 'saveComment'])->name('admin.landlords.correspondence.ajax-add-comment');
+    Route::post('/landlords/{id}/correspondence/ajax/editComment', [LandlordsCorrespondenceController::class, 'editComment'])->name('admin.landlords.correspondence.ajax-edit-comment');
+    Route::post('/landlords/{id}/correspondence/file/description', [LandlordsCorrespondenceController::class, 'add_edit_description'])->name('admin.landlords.correspondence.add-edit-description');
+    Route::post('/landlords/{id}/correspondence/{parent_id}/new-call', [LandlordsCorrespondenceController::class, 'newCall'])->name('admin.landlords.correspondence.newCall');
+    Route::post('/landlords/{id}/correspondence/{parent_id}/new-meeting', [LandlordsCorrespondenceController::class, 'storeMeeting'])->name('admin.landlords.correspondence.newMeeting');
+    Route::get('landlords/{id}/correspondence/task', [LandlordsCorrespondenceController::class, 'showTaskPage'])->name('admin.landlord.correspondence.task');
+    Route::post('tasks/create/task', [LandlordsCorrespondenceController::class, 'storeTask'])->name('admin.landlord.tasks.cross.store');
 
     //Task Tray
     Route::get('settings/task-tray', [TaskTrayController::class, 'index'])->name('admin.settings.taskTray');
@@ -225,21 +232,38 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
 
 
     //Tenant Correspondence Routes
-    Route::get('/tenant/{id}/correspondence', [TenantsCorrespondenceController::class, 'index'])->name('admin.tenants.correspondence');
-    Route::get('/tenant/{id}/correspondence/{parent_id}/view', [TenantsCorrespondenceController::class, 'showChild'])->name('admin.tenants.correspondence.child');
-    Route::post('/tenant/{id}/correspondence/delete', [TenantsCorrespondenceController::class, 'delete'])->name('admin.tenants.correspondence.delete');
-    Route::post('/tenant/{id}/correspondence/{parent_id}/move_file', [TenantsCorrespondenceController::class, 'moveFile'])->name('admin.tenants.correspondence.moveFile');
-    Route::post('/tenant/{id}/correspondence/fileVault', [TenantsCorrespondenceController::class, 'fileVault'])->name('admin.tenants.correspondence.fileVault');
-    Route::post('/tenant/{id}/correspondence/{parent_id}/new_folder', [TenantsCorrespondenceController::class, 'createFolder'])->name('admin.tenants.correspondence.newFolder');
-    Route::get('/tenant/{id}/correspondence/{parent_id}/upload', [TenantsCorrespondenceController::class, 'showUploadFileForm'])->name('admin.tenants.correspondence.uploadFilesForm');
-    Route::post('/tenant/{id}/correspondence/{parent_id}/upload', [TenantsCorrespondenceController::class, 'uploadFiles'])->name('admin.tenants.correspondence.uploadFiles');
-    Route::post('/tenant/{id}/correspondence/ajax/addComment', [TenantsCorrespondenceController::class, 'saveComment'])->name('admin.tenants.correspondence.ajax-add-comment');
-    Route::post('/tenant/{id}/correspondence/ajax/editComment', [TenantsCorrespondenceController::class, 'editComment'])->name('admin.tenants.correspondence.ajax-edit-comment');
-    Route::post('/tenant/{id}/correspondence/file/description', [TenantsCorrespondenceController::class, 'add_edit_description'])->name('admin.tenants.correspondence.add-edit-description');
-    Route::post('/tenant/{id}/correspondence/{parent_id}/new-call', [TenantsCorrespondenceController::class, 'newCall'])->name('admin.tenants.correspondence.newCall');
-    Route::post('/tenant/{id}/correspondence/{parent_id}/new-meeting', [TenantsCorrespondenceController::class, 'storeMeeting'])->name('admin.tenants.correspondence.newMeeting');
-    Route::get('/tenant/{id}/correspondence/task', [TenantsCorrespondenceController::class, 'showTaskPage'])->name('admin.suppliers.correspondence.task');
-    Route::post('/tenant/tasks/create/task', [TenantsCorrespondenceController::class, 'storeTask'])->name('admin.tasks.cross.store');
+    Route::get('/tenants/{id}/correspondence', [TenantsCorrespondenceController::class, 'index'])->name('admin.tenants.correspondence');
+    Route::get('/tenants/{id}/correspondence/{parent_id}/view', [TenantsCorrespondenceController::class, 'showChild'])->name('admin.tenants.correspondence.child');
+    Route::post('/tenants/{id}/correspondence/delete', [TenantsCorrespondenceController::class, 'delete'])->name('admin.tenants.correspondence.delete');
+    Route::post('/tenants/{id}/correspondence/{parent_id}/move_file', [TenantsCorrespondenceController::class, 'moveFile'])->name('admin.tenants.correspondence.moveFile');
+    Route::post('/tenants/{id}/correspondence/fileVault', [TenantsCorrespondenceController::class, 'fileVault'])->name('admin.tenants.correspondence.fileVault');
+    Route::post('/tenants/{id}/correspondence/{parent_id}/new_folder', [TenantsCorrespondenceController::class, 'createFolder'])->name('admin.tenants.correspondence.newFolder');
+    Route::get('/tenants/{id}/correspondence/{parent_id}/upload', [TenantsCorrespondenceController::class, 'showUploadFileForm'])->name('admin.tenants.correspondence.uploadFilesForm');
+    Route::post('/tenants/{id}/correspondence/{parent_id}/upload', [TenantsCorrespondenceController::class, 'uploadFiles'])->name('admin.tenants.correspondence.uploadFiles');
+    Route::post('/tenants/{id}/correspondence/ajax/addComment', [TenantsCorrespondenceController::class, 'saveComment'])->name('admin.tenants.correspondence.ajax-add-comment');
+    Route::post('/tenants/{id}/correspondence/ajax/editComment', [TenantsCorrespondenceController::class, 'editComment'])->name('admin.tenants.correspondence.ajax-edit-comment');
+    Route::post('/tenants/{id}/correspondence/file/description', [TenantsCorrespondenceController::class, 'add_edit_description'])->name('admin.tenants.correspondence.add-edit-description');
+    Route::post('/tenants/{id}/correspondence/{parent_id}/new-call', [TenantsCorrespondenceController::class, 'newCall'])->name('admin.tenants.correspondence.newCall');
+    Route::post('/tenants/{id}/correspondence/{parent_id}/new-meeting', [TenantsCorrespondenceController::class, 'storeMeeting'])->name('admin.tenants.correspondence.newMeeting');
+    Route::get('/tenants/{id}/correspondence/task', [TenantsCorrespondenceController::class, 'showTaskPage'])->name('admin.suppliers.correspondence.task');
+    Route::post('/tenants/tasks/create/task', [TenantsCorrespondenceController::class, 'storeTask'])->name('admin.tasks.cross.store');
+
+    //Properties Correspondence Routes
+    Route::get('properties/{id}/correspondence', [ProperptyCorrespondenceController::class, 'index'])->name('admin.propertys.correspondence');
+    Route::get('properties/{id}/correspondence/{parent_id}/view', [ProperptyCorrespondenceController::class, 'showChild'])->name('admin.propertys.correspondence.child');
+    Route::post('properties/{id}/correspondence/delete', [ProperptyCorrespondenceController::class, 'delete'])->name('admin.propertys.correspondence.delete');
+    Route::post('properties/{id}/correspondence/{parent_id}/move_file', [ProperptyCorrespondenceController::class, 'moveFile'])->name('admin.propertys.correspondence.moveFile');
+    Route::post('properties/{id}/correspondence/fileVault', [ProperptyCorrespondenceController::class, 'fileVault'])->name('admin.propertys.correspondence.fileVault');
+    Route::post('properties/{id}/correspondence/{parent_id}/new_folder', [ProperptyCorrespondenceController::class, 'createFolder'])->name('admin.propertys.correspondence.newFolder');
+    Route::get('properties/{id}/correspondence/{parent_id}/upload', [ProperptyCorrespondenceController::class, 'showUploadFileForm'])->name('admin.propertys.correspondence.uploadFilesForm');
+    Route::post('properties/{id}/correspondence/{parent_id}/upload', [ProperptyCorrespondenceController::class, 'uploadFiles'])->name('admin.propertys.correspondence.uploadFiles');
+    Route::post('properties/{id}/correspondence/ajax/addComment', [ProperptyCorrespondenceController::class, 'saveComment'])->name('admin.propertys.correspondence.ajax-add-comment');
+    Route::post('properties/{id}/correspondence/ajax/editComment', [ProperptyCorrespondenceController::class, 'editComment'])->name('admin.propertys.correspondence.ajax-edit-comment');
+    Route::post('properties/{id}/correspondence/file/description', [ProperptyCorrespondenceController::class, 'add_edit_description'])->name('admin.propertys.correspondence.add-edit-description');
+    Route::post('properties/{id}/correspondence/{parent_id}/new-call', [ProperptyCorrespondenceController::class, 'newCall'])->name('admin.propertys.correspondence.newCall');
+    Route::post('properties/{id}/correspondence/{parent_id}/new-meeting', [ProperptyCorrespondenceController::class, 'storeMeeting'])->name('admin.propertys.correspondence.newMeeting');
+    Route::get('properties/{id}/correspondence/task', [ProperptyCorrespondenceController::class, 'showTaskPage'])->name('admin.propertys.correspondence.task');
+    Route::post('properties/tasks/create/task', [ProperptyCorrespondenceController::class, 'storeTask'])->name('admin.propertys.tasks.cross.store');
 });
 
 

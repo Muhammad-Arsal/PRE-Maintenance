@@ -177,30 +177,30 @@
                                             <td>{{ $data->created_at->format('d/m/Y, h:i') }}</td>
                                              <td>{{ $data->updated_at->format('d/m/Y, h:i') }}</td>
                                             <td>
-                                                <a href="{{ route('admin.properties.show', $data->id) }}" 
+                                                {{-- <a href="{{ route('admin.properties.show', $data->id) }}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="More Details">
                                                      <span style="padding:0.5rem 0.75rem" data-row-id="" 
                                                            class="d-inline-block rounded bg-primary text-white">
                                                          <i class="la la-eye"></i>
                                                      </span>
-                                                 </a>    
-                                                 <a href="{{route('admin.properties.diary', $data->id)}}" 
+                                                 </a>     --}}
+                                                 {{-- <a href="{{route('admin.properties.diary', $data->id)}}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="Diary">
                                                      <span style="padding:0.5rem 0.75rem" data-row-id="" 
                                                            class="d-inline-block rounded bg-success text-white">
                                                          <i class="la la-book"></i>
                                                      </span>
-                                                 </a>
-                                                 <a href="{{route('admin.properties.viewjobs', $data->id)}}" 
+                                                 </a> --}}
+                                                 {{-- <a href="{{route('admin.properties.viewjobs', $data->id)}}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="View Jobs">
                                                      <span style="padding:0.5rem 0.75rem" data-row-id="" 
                                                            class="d-inline-block rounded bg-secondary text-white">
                                                          <i class="la la-wrench"></i>
                                                      </span>
-                                                 </a>                                             
+                                                 </a>                                              --}}
                                                 <a href="{{route('admin.properties.edit', $data->id)}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit Property"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id=""

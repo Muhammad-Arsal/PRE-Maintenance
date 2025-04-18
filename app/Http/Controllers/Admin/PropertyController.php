@@ -10,6 +10,8 @@ use App\Models\Tenant;
 use App\Models\PropertyType;
 use App\Models\Diary;
 use App\Models\Jobs;
+use App\Models\PastTenantDetails;
+
 
 class PropertyController extends Controller
 {
@@ -109,6 +111,16 @@ class PropertyController extends Controller
 
         return view('admin.properties.edit', compact('page', 'property', 'landlords', 'property_types'));
     }
+    public function editAddress($id){
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Property';
+
+        $property = Property::find($id);
+
+        return view('admin.properties.address.index', compact('page', 'property'));
+    }
 
     public function update(Request $request, Property $id)
     {
@@ -116,10 +128,6 @@ class PropertyController extends Controller
         $request->validate([
             'monthly_rent' => 'required',
             'landlord' => 'required|integer',
-            'address_line_1' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'county' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
         ]);
 
         $property->landlord_id = $request->landlord;
@@ -133,8 +141,31 @@ class PropertyController extends Controller
         $property->rent_safe_month = $request->rent_safe_month;
         $property->monthly_rent = $request->monthly_rent;
         $property->number_of_floors = $request->number_of_floors;
-        $property->note = $request->note;
         $property->status = $request->status;
+
+        $property->gas_certificate_due = $request->gas_certificate_due;
+        $property->eicr_due = $request->eicr_due;
+        $property->epc_due = $request->epc_due;
+        $property->epc_rate = $request->epc_rate;
+
+        if ($property->save()) {
+            return redirect()
+                ->route('admin.properties')
+                ->withFlashMessage('Property updated successfully!')
+                ->withFlashType('success');
+        } else {
+            return back()->withFlashMessage('Failed to update property.')->withFlashType('danger');
+        }
+    }
+    public function updateAddress(Request $request, Property $id)
+    {
+        $property = $id;
+        $request->validate([
+            'address_line_1' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'county' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:20',
+        ]);
 
         $property->line1 = $request->address_line_1;
         $property->line2 = $request->address_line_2;
@@ -143,11 +174,7 @@ class PropertyController extends Controller
         $property->county = $request->county;
         $property->postcode = $request->postal_code;
         $property->country = $request->country;
-
-        $property->gas_certificate_due = $request->gas_certificate_due;
-        $property->eicr_due = $request->eicr_due;
-        $property->epc_due = $request->epc_due;
-        $property->epc_rate = $request->epc_rate;
+        $property->note = $request->note;
 
         if ($property->save()) {
             return redirect()
@@ -242,7 +269,7 @@ class PropertyController extends Controller
         $diary = Diary::where('property_id', $id)->with('admin', 'property')->paginate(10);
         $property_id = $id;
 
-        return view('admin.properties.diary', compact('page','diary', 'property_id'));
+        return view('admin.properties.diary.index', compact('page','diary', 'property_id'));
     }
 
     public function diaryStore(Request $request, $id)
@@ -283,6 +310,45 @@ class PropertyController extends Controller
         $jobs = Jobs::where('property_id',$id)->with('property', 'contractor')->paginate(10);
         $property_id = $id;
 
-        return view('admin.properties.jobs', compact('page', 'jobs', 'property_id'));
+        return view('admin.properties.jobs.index', compact('page', 'jobs', 'property_id'));
     }
+
+    public function pastTenant($id)
+    {
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Property Past Tenant';
+
+        $pastTenant = PastTenantDetails::where('property_id', $id)->with('property', 'tenant')->paginate(10);
+        $property_id = $id;
+
+        return view('admin.properties.tenants.past-tennat', compact('page','pastTenant', 'property_id'));
+    }
+
+    public function currentTenant($id)
+    {
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Property Current Tenant';
+
+        $property_id = $id;
+        $currentTenant = Tenant::where('property_id', $id)->paginate(1);
+
+        return view('admin.properties.tenants.current-tenant', compact('page','currentTenant', 'property_id'));
+    }
+
+    public function updateDiary(Request $request, $id)
+    {
+        $diary = Diary::findOrFail($id);
+        $diary->entry = $request->description;
+        $diary->save();
+
+        return redirect()
+        ->back()
+        ->withFlashMessage('Description updated successfully!')
+        ->withFlashType('success');
+    }
+
 }

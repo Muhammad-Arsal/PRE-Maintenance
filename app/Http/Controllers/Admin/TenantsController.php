@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Models\TenantProfile;
 use App\Models\Property;
 use App\Models\TenantDetails;
+use App\Models\PastTenantDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -356,6 +357,18 @@ class TenantsController extends Controller
                 ->withInput();
         }
 
+        $isChangingProperty = $request->property != $tenant->property_id;
+
+        if ($isChangingProperty && $tenant->property_id) {
+            PastTenantDetails::create([
+                'property_id' => $tenant->property_id,
+                'tenant_id' => $tenant->id,
+                'contract_start' => $tenant->contract_start,
+                'contract_end' => $tenant->contract_end,
+                'left_property' => $tenant->left_property,
+            ]);
+        }
+
         $tenant->update([
             'property_id' => $request->property,
             'contract_start' => $request->contract_start,
@@ -368,6 +381,7 @@ class TenantsController extends Controller
             Property::where('tenant_id', $tenant->id)->update([
                 'tenant_id' => null
             ]);
+            
         
             Property::where('id', $request->property)->update([
                 'tenant_id' => $tenant->id

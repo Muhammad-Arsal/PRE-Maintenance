@@ -20,7 +20,7 @@
 @section('content')
     <div class="content-header row">
         <div class="content-header-left col-12 mb-2 breadcrumb-new">
-            <h3 class="mb-0 d-inline-block">{{ $page['page_title'] }} | {{ $page['landlord_name'] }}</h3>
+            <h3 class="mb-0 d-inline-block">{{ $page['page_title'] }} | {{ $page['property_name'] }}</h3>
         </div>
     </div>
     <div class="content-body">
@@ -33,23 +33,31 @@
                                 <ul class="nav nav-tabs nav-underline no-hover-bg">
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.landlords.edit', $landlord->id)}}">Overview</a>
+                                            href="{{ route('admin.properties.edit', $property->id) }}">Overview</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.landlord.address', $landlord->id)}}">Address</a>
+                                            href="{{ route('admin.properties.edit.address', $property->id) }}">Address</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.landlord.bank', $landlord->id)}}">Bank Details</a>
+                                            href="{{ route('admin.properties.diary', $property->id) }}">Diary</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.landlord.properties', $landlord->id)}}">Properties</a>
+                                            href="{{ route('admin.properties.viewjobs', $property->id) }}">Jobs</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
                                             aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.past.tenant', $property->id) }}">Past Tenants</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.current.tenant', $property->id) }}">Current Tenant</a>
                                     </li>
                                 </ul>
                             </div>
@@ -76,7 +84,7 @@
                                                                     <button type="submit" class="btn btn-primary basic-btn mr-1"
                                                                         ><i class="la la-search"></i>
                                                                         Search</button>
-                                                                    <a href="{{ route('admin.landlords.correspondence', $landlord->id) }}" class="btn btn-primary basic-btn"
+                                                                    <a href="{{ route('admin.propertys.correspondence', $property->id) }}" class="btn btn-primary basic-btn"
                                                                         ><i class="la la-refresh"></i>
                                                                         Reset</a>
                                                                 </div>
@@ -99,7 +107,7 @@
     @include('admin.partials.flashes')
     <section id="manageTransactionsSection">
         <div class="card">
-            <form id="delSubmit" action="{{ route('admin.landlords.correspondence.delete', ['id' => $landlord->id]) }}"
+            <form id="delSubmit" action="{{ route('admin.propertys.correspondence.delete', ['id' => $property->id]) }}"
                 method="post">
                 @csrf
                 <div class="card-body" style="padding:0">
@@ -107,7 +115,7 @@
                         <div class="1iconsContainer d-flex align-items-center">
                             <div class="" style="color:#fff">
                                 <a data-target="#newComment" data-toggle="modal"
-                                    data-action="{{ route('admin.landlords.correspondence.ajax-add-comment', ['id' => $landlord->id]) }}"
+                                    data-action="{{ route('admin.propertys.correspondence.ajax-add-comment', ['id' => $property->id]) }}"
                                     class="theme-btn btn btn-secondary" style="cursor:pointer; display: flex; align-items: center;" role="button" id="">
                                     <i style="padding-right: 0.2em;" class="la la-plus"></i>
                                     New Comment
@@ -123,7 +131,7 @@
                                     <i style="padding-left: 0.2em;" class="la la-phone"></i>
                                 </a>
                             </div>
-                            <div class="ml-1" style="color:#fff">
+                            {{-- <div class="ml-1" style="color:#fff">
                                 <a data-toggle="modal" data-target="#meetingModal"
                                 id="openMeetingModal"
                                     class="theme-btn btn btn-secondary" style="cursor:pointer; display: flex; align-items: center;" role="button" id="">
@@ -133,7 +141,7 @@
                                 </a>
                             </div>
                             <div class="ml-1" style="color:#fff">
-                                <a href="{{route('admin.landlord.correspondence.task', ['id' => $landlord->id])}}"
+                                <a href="{{route('admin.suppliers.correspondence.task', ['id' => $property->id])}}"
                                     class="theme-btn btn btn-secondary" 
                                     style="cursor:pointer; display: flex; align-items: center;" 
                                     role="button">
@@ -141,7 +149,7 @@
                                     New Task
                                     <i style="padding-left: 0.2em;" class="la la-tasks"></i>
                                 </a>
-                            </div>                            
+                            </div>                             --}}
                         </div>
                         <div class="2iconsContainer d-flex" style="align-items: center">
 
@@ -159,7 +167,7 @@
                             } else {
                                 $parent_id = 0;
                             } ?>
-                            <a href="{{ route('admin.landlords.correspondence.uploadFilesForm', ['id' => $landlord->id, 'parent_id' => $parent_id]) }}"
+                            <a href="{{ route('admin.propertys.correspondence.uploadFilesForm', ['id' => $property->id, 'parent_id' => $parent_id]) }}"
                                 class="d-flex align-items-center upload_file"
                                 style="color: #6B6F82; text-decoration: none;">
                                 <i class="la la-upload"></i>
@@ -258,7 +266,7 @@
                                                 {{ isset($d->created_at) ? date('d/m/Y H:i', strtotime($d->created_at)) : null }}
                                             </td>
                                             <td style="width: 40%;"><a style="color: black; text-decoration: none;"
-                                                href="{{ route('admin.landlords.correspondence.child', ['id' => $landlord->id, 'parent_id' => $d['id']]) }}">{{ $d['name'] }}</a></td>
+                                                href="{{ route('admin.propertys.correspondence.child', ['id' => $property->id, 'parent_id' => $d['id']]) }}">{{ $d['name'] }}</a></td>
                                             <td style="wdith: 50%;">
                                                 Folder
                                             </td>
@@ -340,9 +348,9 @@
                 <div class="card-footer">
                     <div class="form-actions left">
                         <a href="<?php if ($parent->parent_id != 0) {
-                            echo route('admin.landlords.correspondence.child', ['id' => $landlord->id, 'parent_id' => $parent->parent_id]);
+                            echo route('admin.propertys.correspondence.child', ['id' => $property->id, 'parent_id' => $parent->parent_id]);
                         } else {
-                            echo route('admin.landlords.correspondence', ['id' => $landlord->id]);
+                            echo route('admin.propertys.correspondence', ['id' => $property->id]);
                         } ?>" class="theme-btn btn btn-primary">
                             <i class="la la-arrow-left" style="vertical-align: bottom;"></i> Go Back
                         </a>
@@ -352,7 +360,7 @@
         </div>
         <div class="card">
             <div class="form-actions right" style="padding: 3em 2em 3em 0em; text-align: right;">
-                <a href="{{ route('admin.settings.landlords') }}" class="theme-btn btn btn-primary">
+                <a href="{{ route('admin.properties') }}" class="theme-btn btn btn-primary">
                     <i class="la la-times"></i> Cancel
                 </a>
             </div>   
@@ -364,9 +372,9 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <form action="<?php if (Request::segment(5)) {
-                    echo route('admin.landlords.correspondence.newFolder', ['id' => $landlord->id, 'parent_id' => Request::segment(5)]);
+                    echo route('admin.propertys.correspondence.newFolder', ['id' => $property->id, 'parent_id' => Request::segment(5)]);
                 } else {
-                    echo route('admin.landlords.correspondence.newFolder', ['id' => $landlord->id, 'parent_id' => 0]);
+                    echo route('admin.propertys.correspondence.newFolder', ['id' => $property->id, 'parent_id' => 0]);
                 } ?>" id="newFolder" method="post">
                     <div class="modal-header">
                         <h5 class="modal-title">New Folder</h5>
@@ -425,7 +433,7 @@
     <div class="modal" id="editDescriptionFilesModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form method="post" action="{{ route('admin.landlords.correspondence.add-edit-description', ['id' => $landlord->id]) }}" class="editDescriptionForm" id="editDescriptionForm">
+                <form method="post" action="{{ route('admin.propertys.correspondence.add-edit-description', ['id' => $property->id]) }}" class="editDescriptionForm" id="editDescriptionForm">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title">Add/Edit Description</h5>
@@ -455,7 +463,7 @@
     <div class="modal" id="editCommentModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form method="post" action="<?php echo route('admin.landlords.correspondence.ajax-edit-comment', $landlord->id) ?>" class="editCommentForm" id="editCommentForm">
+                <form method="post" action="<?php echo route('admin.propertys.correspondence.ajax-edit-comment', $property->id) ?>" class="editCommentForm" id="editCommentForm">
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Comment</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -507,9 +515,9 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <form action="<?php if (Request::segment(5)) {
-                    echo route('admin.landlords.correspondence.moveFile', ['id' => $landlord->id, 'parent_id' => Request::segment(5)]);
+                    echo route('admin.propertys.correspondence.moveFile', ['id' => $property->id, 'parent_id' => Request::segment(5)]);
                 } else {
-                    echo route('admin.landlords.correspondence.moveFile', ['id' => $landlord->id, 'parent_id' => 0]);
+                    echo route('admin.propertys.correspondence.moveFile', ['id' => $property->id, 'parent_id' => 0]);
                 } ?>" id="move_file" method="post">
                     <div class="modal-header">
                         <h5 class="modal-title">Move File</h5>
@@ -539,7 +547,7 @@
     <div class="modal" id="copyToFilesModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action="{{ route('admin.landlords.correspondence.fileVault', $landlord->id) }}" id="copy_to_files" method="post">
+                <form action="{{ route('admin.propertys.correspondence.fileVault', $property->id) }}" id="copy_to_files" method="post">
                     <div class="modal-header">
                         <h5 class="modal-title">Copy To File Vault</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -561,7 +569,7 @@
     {{-- <div class="modal" id="copyToCrossModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action="{{route('landlord.corres.add', ['id' => $landlord->id])}}" id="copy_to_cross" method="post">
+                <form action="{{route('tenant.corres.add', ['id' => $tenant->id])}}" id="copy_to_cross" method="post">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title">Copy To Correspondence</h5>
@@ -587,7 +595,7 @@
     <div class="modal" id="feeEntryModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form action="{{ route('admin.landlords.correspondence.newCall', ['id' => $landlord->id, 'parent_id' => $parent_id]) }}" id="feeTypeForm"
+                <form action="{{ route('admin.propertys.correspondence.newCall', ['id' => $property->id, 'parent_id' => $parent_id]) }}" id="feeTypeForm"
                     method="post">
                     <div class="modal-header">
                         <h5 class="modal-title">New Call</h5>
@@ -631,10 +639,10 @@
         </div>
     </div>
 
-    <div class="modal" id="meetingModal" tabindex="-1" role="dialog">
+    {{-- <div class="modal" id="meetingModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form action="{{ route('admin.landlords.correspondence.newMeeting', ['id' => $landlord->id, 'parent_id' => $parent_id]) }}" id="meetingForm"
+                <form action="{{ route('admin.propertys.correspondence.newMeeting', ['id' => $property->id, 'parent_id' => $parent_id]) }}" id="meetingForm"
                     method="post">
                     <div class="modal-header">
                         <h5 class="modal-title">New Meeting</h5>
@@ -672,11 +680,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Landlord</label>
-                            <select name="landlord" class="form-control" id="landlord">
-                                <option value="">Choose Landlord</option>
-                                @foreach ($landlords as $item)
-                                    <option {{ $landlord->id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->name }}</option>
+                            <label>Tenant</label>
+                            <select name="tenant" class="form-control" id="tenant">
+                                <option value="">Choose Tenant</option>
+                                @foreach ($tenants as $item)
+                                    <option {{ $tenant->id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -694,7 +702,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
     
     <div class="modal" id="viewMeetingModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">

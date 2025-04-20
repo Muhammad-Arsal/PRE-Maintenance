@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\TasksController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\ProperptyCorrespondenceController;
+use App\Http\Controllers\Admin\ContractorCorrespondenceController;
 
 
 
@@ -105,7 +106,9 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/contractors/create', [ContractorsController::class, 'create'])->name('admin.settings.contractors.create');
     Route::post('/contractors/store', [ContractorsController::class, 'store'])->name('admin.settings.contractors.store');
     Route::get('/contractors/{id}/edit', [ContractorsController::class, 'edit'])->name('admin.settings.contractors.edit');
+    Route::get('/contractors/{id}/edit/address', [ContractorsController::class, 'editAddress'])->name('admin.settings.contractors.edit.address');
     Route::put('/contractors/{id}/update', [ContractorsController::class, 'update'])->name('admin.settings.contractors.update');
+    Route::put('/contractors/{id}/update/address', [ContractorsController::class, 'updateAddress'])->name('admin.settings.contractors.update.address');
     Route::post('contractors/{id}/destroy', [ContractorsController::class, 'destroy'])->name('admin.settings.contractors.destroy');
     Route::post('/contractors/{id}/delete', [ContractorsController::class, 'delete'])->name('admin.settings.contractors.delete');
     Route::get('/contractors/search', [ContractorsController::class, 'searchData'])->name('admin.settings.contractors.search');
@@ -264,6 +267,23 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('properties/{id}/correspondence/{parent_id}/new-meeting', [ProperptyCorrespondenceController::class, 'storeMeeting'])->name('admin.propertys.correspondence.newMeeting');
     Route::get('properties/{id}/correspondence/task', [ProperptyCorrespondenceController::class, 'showTaskPage'])->name('admin.propertys.correspondence.task');
     Route::post('properties/tasks/create/task', [ProperptyCorrespondenceController::class, 'storeTask'])->name('admin.propertys.tasks.cross.store');
+
+    //Contractor Correspondence Routes
+    Route::get('contractors/{id}/correspondence', [ContractorCorrespondenceController::class, 'index'])->name('admin.contractors.correspondence');
+    Route::get('contractors/{id}/correspondence/{parent_id}/view', [ContractorCorrespondenceController::class, 'showChild'])->name('admin.contractors.correspondence.child');
+    Route::post('contractors/{id}/correspondence/delete', [ContractorCorrespondenceController::class, 'delete'])->name('admin.contractors.correspondence.delete');
+    Route::post('contractors/{id}/correspondence/{parent_id}/move_file', [ContractorCorrespondenceController::class, 'moveFile'])->name('admin.contractors.correspondence.moveFile');
+    Route::post('contractors/{id}/correspondence/fileVault', [ContractorCorrespondenceController::class, 'fileVault'])->name('admin.contractors.correspondence.fileVault');
+    Route::post('contractors/{id}/correspondence/{parent_id}/new_folder', [ContractorCorrespondenceController::class, 'createFolder'])->name('admin.contractors.correspondence.newFolder');
+    Route::get('contractors/{id}/correspondence/{parent_id}/upload', [ContractorCorrespondenceController::class, 'showUploadFileForm'])->name('admin.contractors.correspondence.uploadFilesForm');
+    Route::post('contractors/{id}/correspondence/{parent_id}/upload', [ContractorCorrespondenceController::class, 'uploadFiles'])->name('admin.contractors.correspondence.uploadFiles');
+    Route::post('contractors/{id}/correspondence/ajax/addComment', [ContractorCorrespondenceController::class, 'saveComment'])->name('admin.contractors.correspondence.ajax-add-comment');
+    Route::post('contractors/{id}/correspondence/ajax/editComment', [ContractorCorrespondenceController::class, 'editComment'])->name('admin.contractors.correspondence.ajax-edit-comment');
+    Route::post('contractors/{id}/correspondence/file/description', [ContractorCorrespondenceController::class, 'add_edit_description'])->name('admin.contractors.correspondence.add-edit-description');
+    Route::post('contractors/{id}/correspondence/{parent_id}/new-call', [ContractorCorrespondenceController::class, 'newCall'])->name('admin.contractors.correspondence.newCall');
+    Route::post('contractors/{id}/correspondence/{parent_id}/new-meeting', [ContractorCorrespondenceController::class, 'storeMeeting'])->name('admin.contractors.correspondence.newMeeting');
+    Route::get('contractors/{id}/correspondence/task', [ContractorCorrespondenceController::class, 'showTaskPage'])->name('admin.contractors.correspondence.task');
+    Route::post('contractors/tasks/create/task', [ContractorCorrespondenceController::class, 'storeTask'])->name('admin.contractors.tasks.cross.store');
 });
 
 

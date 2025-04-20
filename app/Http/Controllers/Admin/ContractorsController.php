@@ -132,6 +132,18 @@ class ContractorsController extends Controller
         return view('admin.contractors.edit', compact('page', 'contractor'));
     }
 
+    public function editAddress($id) 
+    {
+        $page['page_title'] = 'Manage Contractors';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Contractor';
+
+        $contractor = Contractor::where('id', $id)->first();
+
+        return view('admin.contractors.address.index', compact('page', 'contractor'));
+    }
+
     public function update(Request $request, $id)
     {
         $contractor = Contractor::where('id', $id)->first();
@@ -144,10 +156,6 @@ class ContractorsController extends Controller
             'status' => 'required',
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'address_line_1' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'county' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
             'title' => 'required',
             'contact_type' => 'required',
         ]);
@@ -162,15 +170,7 @@ class ContractorsController extends Controller
             'name' => $request->fname . ' ' . $request->lname,
             'email' => $request->email,
             'deleted_at' => $request->status == 'Active' ? null : now(),
-            'country' => $request->country,
-            'line1' => $request->address_line_1,
-            'line2' => $request->address_line_2,
-            'line3' => $request->address_line_3,
-            'city' => $request->city,
-            'county' => $request->county,
-            'postcode' => $request->postal_code, 
             'status' => $request->status,
-            'note' => $request->note, 
             'company_name' => $request->company_name,
             'work_phone' => $request->work_phone,
             'fax' => $request->fax,
@@ -216,6 +216,39 @@ class ContractorsController extends Controller
             ]);
         }
 
+        return redirect()
+            ->route('admin.settings.contractors')
+            ->withFlashMessage('Contractor updated successfully!')
+            ->withFlashType('success');
+    }
+    public function updateAddress(Request $request, $id)
+    {
+        $contractor = Contractor::where('id', $id)->first();
+
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'address_line_1' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'county' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $contractor->update([
+            'country' => $request->country,
+            'line1' => $request->address_line_1,
+            'line2' => $request->address_line_2,
+            'line3' => $request->address_line_3,
+            'city' => $request->city,
+            'county' => $request->county,
+            'postcode' => $request->postal_code, 
+            'note' => $request->note, 
+        ]);
         return redirect()
             ->route('admin.settings.contractors')
             ->withFlashMessage('Contractor updated successfully!')
@@ -315,6 +348,6 @@ class ContractorsController extends Controller
         $jobs = Jobs::where('contractor_id',$id)->with('property', 'contractor')->paginate(10);
         $contractor_id = $id;
 
-        return view('admin.contractors.jobs', compact('page', 'jobs', 'contractor_id'));
+        return view('admin.contractors.jobs.index', compact('page', 'jobs', 'contractor_id'));
     }
 }

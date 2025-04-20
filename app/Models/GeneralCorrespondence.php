@@ -12,6 +12,6 @@ class GeneralCorrespondence extends Model
     protected $table = 'general_correspondence';
 
     protected $fillable = [
-        'parent_id', 'name', 'admin_id', 'link', 'landlord_id', 'type', 'copy_to_correspondence', 'tenant_id', 'property_id'
+        'parent_id', 'name', 'admin_id', 'link', 'landlord_id', 'type', 'copy_to_correspondence', 'tenant_id', 'property_id', 'contractor_id'
     ];
 }

@@ -255,30 +255,6 @@ class ContractorsController extends Controller
             ->withFlashType('success');
     }
 
-    // public function destroy($id)
-    // {
-    //     // Find the contractor including trashed ones
-    //     $contractor = Contractor::find($id);
-
-    //     if (!$contractor) {
-    //         return redirect()
-    //             ->route('admin.settings.contractors')
-    //             ->withFlashMessage('Contractor not found!')
-    //             ->withFlashType('errors');
-    //     }
-
-    //     // Check if the contractor is already trashed
-    //     if ($contractor->trashed()) {
-    //         $contractor->restore();
-    //     } else {
-    //         $contractor->delete();
-    //     }
-    //     return redirect()
-    //         ->route('admin.settings.contractors')
-    //         ->withFlashMessage('Contractor status changed successfully!')
-    //         ->withFlashType('success');
-    // }
-
     public function delete($id)
     {
         $contractor = Contractor::where('id', $id)->first();

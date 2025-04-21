@@ -114,14 +114,14 @@
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y, h:i') : '' }}</td>
                                             <td>{{ isset($data['updated_at']) ? \Carbon\Carbon::parse($data['updated_at'])->format('d/m/Y, h:i') : '' }}</td>
                                             <td>
-                                                <a href="{{route('admin.contractors.viewjobs', $data->id)}}" 
+                                                {{-- <a href="{{route('admin.contractors.viewjobs', $data->id)}}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="View Jobs">
                                                         <span style="padding:0.5rem 0.75rem" data-row-id="" 
                                                             class="d-inline-block rounded bg-secondary text-white">
                                                             <i class="la la-wrench"></i>
                                                         </span>
-                                                </a> 
+                                                </a>  --}}
                                                 <a href="{{ route('admin.settings.contractors.edit', ['id' => $data['id']]) }}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit contractor"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id="{{ $data['id'] }}"

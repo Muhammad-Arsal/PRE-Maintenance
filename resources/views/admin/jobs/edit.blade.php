@@ -31,7 +31,18 @@
                                 @include('admin.partials.flashes')
                                 <form method="POST" enctype="multipart/form-data" id="manageJobs" action="{{ route('admin.jobs.update', $job->id) }}">
                                     @csrf
-                                    
+                                    <div class="card-header">
+                                        <ul class="nav nav-tabs nav-underline no-hover-bg">
+                                            <li class="nav-item">
+                                                <a class="nav-link active disabled" id="overview" data-toggle="tab"
+                                                    aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link"
+                                                    href="{{ route('admin.jobs.edit.contractorList', $job->id) }}">Contractor List</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                     <div class="form-body">
                                         <h3 class="mb-2"><strong>Job Details</strong></h3>
                                 
@@ -75,29 +86,7 @@
                                                 </div>                                              
                                             </div>                                                                                                                             
                                         </div>
-                                
-                                        <div class="row mb-2">
-                                            <div class="col-md-6 d-flex flex-column">
-                                                <label for="contractor">Contractor:</label>
-                                                <select id="contractor" name="contractor_id" class="form-control select2">
-                                                    <option value="">Select Contractor</option>
-                                                    @foreach($contractors as $contractor)
-                                                        <option value="{{ $contractor->id }}" {{ old('contractor_id', $job->contractor_id) == $contractor->id ? 'selected' : '' }}>
-                                                            {{ $contractor->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                
-                                            <div class="col-md-6 d-flex flex-column justify-content-end">
-                                                <div class="d-flex align-items-center">
-                                                    <label class="mb-0 mr-2">
-                                                        <span class="text-danger" style="font-size: 1.2rem;">🏅</span> Won contract?
-                                                    </label>
-                                                    <input type="radio" name="won_contract" value="yes" {{ old('won_contract', $job->won_contract) == 'yes' ? 'checked' : '' }}>
-                                                </div>
-                                            </div>
-                                        </div>                                        
+                                      
                                                                         
                                         <div class="form-group">
                                             <label for="description"><span style="color: red;">*</span> Description</label>

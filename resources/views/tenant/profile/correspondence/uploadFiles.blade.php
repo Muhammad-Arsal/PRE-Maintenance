@@ -31,20 +31,6 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('tenant.settings.tenants.edit', $tenant->id)}}">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('tenant.settings.tenants.edit.property', $tenant->id)}}">Property</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
-                                            aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
-                                    </li>
-                                </ul>
                             </div>
                             <div class="card-body">
                                 <div id="alertContainer" class="alert alert-success d-none" role="alert">

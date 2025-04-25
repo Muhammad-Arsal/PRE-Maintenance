@@ -58,7 +58,7 @@ class LandlordAuthController extends Controller
 
             Landlord::where('id',Auth::guard('landlord')->user()->id)->update(['last_logged_in'=>now()]);
             
-            return redirect()->route('landlord.dashboard')->withSuccess($welcome);
+            return redirect()->route('landlord.settings.landlords.edit', auth('landlord')->id())->withSuccess($welcome);
         }
 
         return redirect()->route('landlord.login')->with('error', 'Email or Password is incorrect!');

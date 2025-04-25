@@ -76,26 +76,41 @@ class JobsController extends Controller
         $request->validate([
             'status' => 'required|string',
             'property_id' => 'required',
-            'contractor_id' => 'nullable',
-            'won_contract' => 'nullable|string', 
             'description' => 'required|string',
-            'other_information' => 'nullable|string'
+            'other_information' => 'nullable|string',
+            'contractors.*.contractor_id' => 'nullable|exists:contractors,id',
         ]);
+    
+        // Prepare contractor details JSON
+        $contractorsInput = $request->input('contractors', []);
+        $wonIndex = $request->input('won_contract_global');
+    
+        $contractorDetails = [];
+    
+        foreach ($contractorsInput as $index => $contractor) {
+            if (empty($contractor['contractor_id'])) {
+                continue; // Skip empty rows
+            }
+    
+            $contractorDetails[] = [
+                'contractor_id' => $contractor['contractor_id'],
+                'won_contract' => ((string) $wonIndex === (string) $index) ? 'yes' : 'no',
+            ];
+        }
     
         $job = Jobs::create([
             'status' => $request->status,
             'property_id' => $request->property_id,
-            'contractor_id' => $request->contractor_id,
-            'won_contract' => $request->has('won_contract') ? "yes" : "no",
             'description' => $request->description,
             'other_information' => $request->other_information,
+            'contractor_details' => json_encode($contractorDetails),
         ]);
-
+    
         return redirect()
-        ->route('admin.jobs')
-        ->withFlashMessage('Job added successfully!')
-        ->withFlashType('success');
-    }
+            ->route('admin.jobs')
+            ->withFlashMessage('Job added successfully!')
+            ->withFlashType('success');
+    }    
 
     /**
      * Display the specified resource.
@@ -131,8 +146,22 @@ class JobsController extends Controller
         $job = Jobs::where('id', $id)->first();
         $properties = Property::where('status', 'Active')->get();
         $contractors = Contractor::where('status', 'Active')->get();
+        $contractorDetails = json_decode($job->contractor_details, true);
 
-        return view('admin.jobs.edit', compact('page', 'job', 'properties', 'contractors'));
+        return view('admin.jobs.edit', compact('page', 'job', 'properties', 'contractors', 'contractorDetails'));
+    }
+    public function editContractorList($id)
+    {
+        $page['page_title'] = 'Manage Jobs';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Job';
+
+        $job = Jobs::where('id', $id)->first();
+        $contractors = Contractor::where('status', 'Active')->get();
+        $contractorDetails = json_decode($job->contractor_details, true);
+
+        return view('admin.jobs.contractorList.index', compact('page', 'job', 'contractorDetails', 'contractors'));
     }
 
     /**
@@ -146,9 +175,7 @@ class JobsController extends Controller
     {
         $request->validate([
             'status' => 'required|string',
-            'property_id' => 'required',
-            'contractor_id' => 'nullable',
-            'won_contract' => 'nullable|string', 
+            'property_id' => 'required', 
             'description' => 'required|string',
             'other_information' => 'nullable|string'
         ]);
@@ -156,10 +183,43 @@ class JobsController extends Controller
         $job = Jobs::where('id', $id)->first();
         $job->status = $request->status;
         $job->property_id = $request->property_id;
-        $job->contractor_id = $request->contractor_id;
-        $job->won_contract = $request->has('won_contract')? "yes" : "no";
         $job->description = $request->description;
         $job->other_information = $request->other_information;
+        $job->save();
+
+        return redirect()
+        ->route('admin.jobs')
+        ->withFlashMessage('Job Updated successfully!')
+        ->withFlashType('success');
+    }
+
+
+    public function updateContractorList(Request $request, $id)
+    {
+        $request->validate([
+            'contractors.*.contractor_id' => 'nullable|exists:contractors,id',
+        ]);
+
+        $job = Jobs::findOrFail($id);
+
+        $contractorsInput = $request->input('contractors', []);
+        $wonIndex = $request->input('won_contract_global');
+
+        $contractorDetails = [];
+
+        foreach ($contractorsInput as $index => $contractor) {
+            if (empty($contractor['contractor_id'])) {
+                continue;
+            }
+
+            $contractorDetails[] = [
+                'contractor_id' => $contractor['contractor_id'],
+                'won_contract' => ((string) $wonIndex === (string) $index) ? 'yes' : 'no',
+            ];
+        }
+
+        $job->contractor_details = json_encode($contractorDetails);
+
         $job->save();
 
         return redirect()

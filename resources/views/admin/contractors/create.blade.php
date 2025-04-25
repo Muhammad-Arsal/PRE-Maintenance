@@ -236,6 +236,29 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="contractorTypes">Contractor Type</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <select id="contractorTypes" name="contractorTypes" class="form-control"
+                                                            data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                            data-title="Contractor Type" data-original-title="" title="">
+                                                            <option value="">Select Contractor Type</option>
+                                                            @foreach ($contractorTypes as $item)
+                                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <div class="form-control-position">
+                                                            <i class="la la-building"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('contractorTypes'))
+                                                        <p class="text-danger">{{ $errors->first('contractorTypes') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>                                            
+                                        </div>
                                         
                                         <div class="form-group">
                                             <label for="confirmPassword">Profile image</label>
@@ -412,8 +435,10 @@
                 },
                 title: { required:true },
                 company_name : { required: true},
+                contractorTypes: 'required',
             },
             messages: {
+                contractorTypes: 'The Contractor Type field is required',
                 fname: 'The first name field is required',
                 lname: 'The last name field is required',
                 email: 'The email field is required',

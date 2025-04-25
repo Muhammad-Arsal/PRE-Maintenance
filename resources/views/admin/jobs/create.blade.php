@@ -73,25 +73,31 @@
                                             </div>                                                                                                                             
                                         </div>
 
-                                        <div class="row mb-2">
-                                            <div class="col-md-6 d-flex flex-column">
-                                                <label for="contractor">Contractor:</label>
-                                                <select id="contractor" name="contractor_id" class="form-control select2">
-                                                    <option value="">Select Contractor</option>
-                                                    @foreach($contractors as $contractor)
-                                                        <option value="{{ $contractor->id }}">{{ $contractor->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6 d-flex flex-column justify-content-end">
-                                                <div class="d-flex align-items-center">
-                                                    <label class="mb-0 mr-2">
-                                                        <span class="text-danger" style="font-size: 1.2rem;">🏅</span> Won contract?
-                                                    </label>
-                                                    <input type="radio" name="won_contract" value="yes">
+                                        <div id="contractor-rows">
+                                            {{-- First empty row --}}
+                                            <div class="contractor-row d-flex mb-2">
+                                                <div class="col-md-6 p-0">
+                                                    <label for="contractor_0">Contractor:</label>
+                                                    <select name="contractors[0][contractor_id]" class="form-control contractor-select select2">
+                                                        <option value="">Select Contractor</option>
+                                                        @foreach($contractors as $contractor)
+                                                            <option value="{{ $contractor->id }}">{{ $contractor->name }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
+                                                <div class="col-md-4 d-flex align-items-center" style="padding-top: 25px;">
+                                                    <label class="mb-0 mr-2 d-flex align-items-center">
+                                                        <span class="text-danger mr-1" style="font-size: 1.2rem;">🏅</span> Won contract?
+                                                    </label>
+                                                    <input type="radio" name="won_contract_global" value="0" class="won-contract-radio">
+                                                </div>                                                
                                             </div>
-                                        </div>                                        
+                                        </div>
+                                        
+                                        {{-- Add Button --}}
+                                        <div class="mb-3">
+                                            <button type="button" class="btn btn-sm btn-primary" id="add-contractor">+ Add Contractor</button>
+                                        </div>                                                                               
                                         
                                         <div class="form-group">
                                             <label for="description"><span style="color: red;">*</span> Description</label>
@@ -168,5 +174,58 @@
         });
     });
 </script>
+
+
+<script>
+    let contractorIndex = 1;
+
+    document.getElementById('add-contractor').addEventListener('click', function () {
+        const container = document.getElementById('contractor-rows');
+
+        const newRow = document.createElement('div');
+        newRow.classList.add('contractor-row', 'd-flex', 'mb-2');
+
+        newRow.innerHTML = `
+            <div class="col-md-6 p-0">
+                <select name="contractors[${contractorIndex}][contractor_id]" class="form-control contractor-select select2">
+                    <option value="">Select Contractor</option>
+                    @foreach($contractors as $contractor)
+                        <option value="{{ $contractor->id }}">{{ $contractor->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-center">
+                <label class="mb-0 mr-2 d-flex align-items-center">
+                    <span class="text-danger mr-1" style="font-size: 1.2rem;">🏅</span> Won contract?
+                </label>
+                <input type="radio" name="won_contract_global" value="0" class="won-contract-radio">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+            </div>
+        `;
+
+        container.appendChild(newRow);
+
+        if ($.fn.select2) {
+            $(newRow).find('select').select2();
+        }
+
+        contractorIndex++;
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('remove-row')) {
+            const row = e.target.closest('.contractor-row');
+            const radio = row.querySelector('.won-contract-radio');
+            if (radio && radio.checked) {
+                radio.checked = false;
+            }
+            row.remove();
+        }
+    });
+</script>
+
 
 @endsection

@@ -28,12 +28,12 @@ Route::middleware(['landlord', 'verified:landlord.login'])->group(function(){
     Route::post('/profile/edit',[ProfileController::class, 'updateProfile'])->name('landlord.profile.update');
 
     // Landlords
-    Route::get('profile/{id}/edit', [ProfileController::class, 'edit'])->name('landlord.settings.landlords.edit');
-    Route::get('profile/{id}/address', [ProfileController::class, 'address'])->name('landlord.settings.landlord.address');
+    Route::get('overview/{id}/edit', [ProfileController::class, 'edit'])->name('landlord.settings.landlords.edit');
+    Route::get('address/{id}/edit', [ProfileController::class, 'address'])->name('landlord.settings.landlord.address');
     Route::post('profile/{id}/address/store', [ProfileController::class, 'updateAddress'])->name('landlord.settings.landlord.address.store');
-    Route::get('profile/{id}/bank_details', [ProfileController::class, 'bankDetails'])->name('landlord.settings.landlord.bank');
+    Route::get('bank_details/{id}/edit', [ProfileController::class, 'bankDetails'])->name('landlord.settings.landlord.bank');
     Route::post('profile/{id}/bank_details/store', [ProfileController::class, 'updateBankDetails'])->name('landlord.settings.landlord.bank.store');
-    Route::get('profile/{id}/properties', [ProfileController::class, 'properties'])->name('landlord.settings.landlord.properties');
+    Route::get('properties/{id}/edit', [ProfileController::class, 'properties'])->name('landlord.settings.landlord.properties');
     Route::put('profile/{id}/update', [ProfileController::class, 'update'])->name('landlord.settings.landlords.update');
     Route::post('profile/{id}/destroy', [ProfileController::class, 'destroy'])->name('landlord.settings.landlords.destroy');
     Route::post('profile/{id}/delete', [ProfileController::class, 'delete'])->name('landlord.settings.landlords.delete');
@@ -41,20 +41,20 @@ Route::middleware(['landlord', 'verified:landlord.login'])->group(function(){
     Route::get('profile/{id}/show', [ProfileController::class, 'show'])->name('landlord.settings.landlords.show');
 
     //Landlord Correspondence Routes
-    Route::get('/profile/{id}/correspondence', [LandlordCorrespondenceController::class, 'index'])->name('landlord.landlords.correspondence');
-    Route::get('/profile/{id}/correspondence/{parent_id}/view', [LandlordCorrespondenceController::class, 'showChild'])->name('landlord.landlords.correspondence.child');
-    Route::post('/profile/{id}/correspondence/delete', [LandlordCorrespondenceController::class, 'delete'])->name('landlord.landlords.correspondence.delete');
-    Route::post('/profile/{id}/correspondence/{parent_id}/move_file', [LandlordCorrespondenceController::class, 'moveFile'])->name('landlord.landlords.correspondence.moveFile');
-    Route::post('/profile/{id}/correspondence/fileVault', [LandlordCorrespondenceController::class, 'fileVault'])->name('landlord.landlords.correspondence.fileVault');
-    Route::post('/profile/{id}/correspondence/{parent_id}/new_folder', [LandlordCorrespondenceController::class, 'createFolder'])->name('landlord.landlords.correspondence.newFolder');
-    Route::get('/profile/{id}/correspondence/{parent_id}/upload', [LandlordCorrespondenceController::class, 'showUploadFileForm'])->name('landlord.landlords.correspondence.uploadFilesForm');
-    Route::post('/profile/{id}/correspondence/{parent_id}/upload', [LandlordCorrespondenceController::class, 'uploadFiles'])->name('landlord.landlords.correspondence.uploadFiles');
-    Route::post('/profile/{id}/correspondence/ajax/addComment', [LandlordCorrespondenceController::class, 'saveComment'])->name('landlord.landlords.correspondence.ajax-add-comment');
-    Route::post('/profile/{id}/correspondence/ajax/editComment', [LandlordCorrespondenceController::class, 'editComment'])->name('landlord.landlords.correspondence.ajax-edit-comment');
-    Route::post('/profile/{id}/correspondence/file/description', [LandlordCorrespondenceController::class, 'add_edit_description'])->name('landlord.landlords.correspondence.add-edit-description');
-    Route::post('/profile/{id}/correspondence/{parent_id}/new-call', [LandlordCorrespondenceController::class, 'newCall'])->name('landlord.landlords.correspondence.newCall');
-    Route::post('/profile/{id}/correspondence/{parent_id}/new-meeting', [LandlordCorrespondenceController::class, 'storeMeeting'])->name('landlord.landlords.correspondence.newMeeting');
-    Route::get('profile/{id}/correspondence/task', [LandlordCorrespondenceController::class, 'showTaskPage'])->name('landlord.suppliers.correspondence.task');
+    Route::get('/correspondence/{id}/edit', [LandlordCorrespondenceController::class, 'index'])->name('landlord.landlords.correspondence');
+    Route::get('/correspondence/{id}/edit/{parent_id}/view', [LandlordCorrespondenceController::class, 'showChild'])->name('landlord.landlords.correspondence.child');
+    Route::post('/correspondence/{id}/edit/delete', [LandlordCorrespondenceController::class, 'delete'])->name('landlord.landlords.correspondence.delete');
+    Route::post('/correspondence/{id}/edit/{parent_id}/move_file', [LandlordCorrespondenceController::class, 'moveFile'])->name('landlord.landlords.correspondence.moveFile');
+    Route::post('/correspondence/{id}/edit/fileVault', [LandlordCorrespondenceController::class, 'fileVault'])->name('landlord.landlords.correspondence.fileVault');
+    Route::post('/correspondence/{id}/edit/{parent_id}/new_folder', [LandlordCorrespondenceController::class, 'createFolder'])->name('landlord.landlords.correspondence.newFolder');
+    Route::get('/correspondence/{id}/edit/{parent_id}/upload', [LandlordCorrespondenceController::class, 'showUploadFileForm'])->name('landlord.landlords.correspondence.uploadFilesForm');
+    Route::post('/correspondence/{id}/edit/{parent_id}/upload', [LandlordCorrespondenceController::class, 'uploadFiles'])->name('landlord.landlords.correspondence.uploadFiles');
+    Route::post('/correspondence/{id}/edit/ajax/addComment', [LandlordCorrespondenceController::class, 'saveComment'])->name('landlord.landlords.correspondence.ajax-add-comment');
+    Route::post('/correspondence/{id}/edit/ajax/editComment', [LandlordCorrespondenceController::class, 'editComment'])->name('landlord.landlords.correspondence.ajax-edit-comment');
+    Route::post('/correspondence/{id}/edit/file/description', [LandlordCorrespondenceController::class, 'add_edit_description'])->name('landlord.landlords.correspondence.add-edit-description');
+    Route::post('/correspondence/{id}/edit/{parent_id}/new-call', [LandlordCorrespondenceController::class, 'newCall'])->name('landlord.landlords.correspondence.newCall');
+    Route::post('/correspondence/{id}/edit/{parent_id}/new-meeting', [LandlordCorrespondenceController::class, 'storeMeeting'])->name('landlord.landlords.correspondence.newMeeting');
+    Route::get('correspondence/{id}/edit/task', [LandlordCorrespondenceController::class, 'showTaskPage'])->name('landlord.suppliers.correspondence.task');
     Route::post('tasks/create/task/{id}', [LandlordCorrespondenceController::class, 'storeTask'])->name('landlord.tasks.cross.store');
 });
 ?>

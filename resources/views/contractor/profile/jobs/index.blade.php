@@ -27,26 +27,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-content">
-                            <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.settings.contractors.edit', $contractor_id) }}">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.settings.contractors.edit.address', $contractor_id) }}">Address</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="jobs" data-toggle="tab"
-                                            aria-controls="jobs" href="#jobs" aria-expanded="true">Jobs</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.contractors.correspondence', $contractor_id) }}">Correspondence</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12">
@@ -77,7 +58,20 @@
                                                                 <td>{{$item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</td>
                                                                 <td>{{$item->description}}</td>
                                                                 <td>{{$item->status}}</td>
-                                                                <td>{{$item->won_contract == "yes" ? "Yes" : "no"}}</td>
+                                                                @php
+                                                                    $status = 'No';
+                                                                    $contractors = json_decode($item->contractor_details, true); // decode to array
+
+                                                                    foreach ($contractors as $contractor) {
+                                                                        if ($contractor['contractor_id'] == auth('contractor')->id() && $contractor['won_contract'] === 'yes') {
+                                                                            $status = 'Yes';
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                @endphp
+
+                                                                <td>{{ $status }}</td>
+
                                                                 <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            
                                                             </tr>
@@ -100,7 +94,7 @@
                                     </div>
                                 </div>
                                 <div class="form-actions right">
-                                    <a href="{{route('contractor.dashboard')}}" class="theme-btn btn btn-primary">
+                                    <a href="{{route('contractor.settings.contractors.edit', auth('contractor')->user()->id)}}" class="theme-btn btn btn-primary">
                                         <i class="la la-times"></i> Back
                                     </a>
                                 </div>

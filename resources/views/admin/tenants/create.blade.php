@@ -214,7 +214,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="contract_end"><span style="color: red;">*</span>Contract End</label>
+                                                    <label for="contract_end">Contract End</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="contract_end" class="form-control datepicker" name="contract_end_display"
                                                             value="{{ old('contract_end_display') }}" placeholder="DD/MM/YYYY">
@@ -311,25 +311,20 @@
                     number: true
                 },
                 "property": { required: true },
-                "contract_end_hidden": { required: true, date: true }
             },
             messages: {
                 "deposit": { 
                     number: "Please enter a valid number" // Correct the message to match the rule
                 },
                 "property": { required: "Property is required" },
-                "contract_end_hidden": { 
-                    required: "Contract end date is required", 
-                    date: "Please enter a valid date" 
-                }
             },
             errorPlacement: function (error, element) {
-                if (element.attr("name") === "contract_start_hidden" || element.attr("name") === "contract_end_hidden") {
-                    // Place error message after the visible field's container
-                    error.insertAfter(element.closest('.position-relative'));
-                } else {
-                    error.insertAfter(element);
-                }
+                // if (element.attr("name") === "contract_start_hidden" || element.attr("name") === "contract_end_hidden") {
+                //     // Place error message after the visible field's container
+                //     error.insertAfter(element.closest('.position-relative'));
+                // } else {
+                //     error.insertAfter(element);
+                // }
             },
             submitHandler: function (form) {
                 var primaryUserCheckbox = $(".primary-user-checkbox:checked").length;

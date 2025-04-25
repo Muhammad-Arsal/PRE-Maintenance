@@ -52,7 +52,6 @@ class TenantsController extends Controller
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048', // Optional, check for image
             'property' => 'required',
-            'contract_end' => 'required',
         ]);
     
         if ($validator->fails()) {
@@ -348,7 +347,6 @@ class TenantsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'property' => 'required',
-            'contract_end' => 'required',
         ]);
     
         if ($validator->fails()) {
@@ -461,5 +459,19 @@ class TenantsController extends Controller
         $tenant = Tenant::where('id', $id)->with('profile','details', 'property')->first();
         
         return view('admin.tenants.show', compact('page', 'tenant'));
+    }
+
+    public function pastTenancy($id)
+    {
+        $page['page_title'] = 'Manage Tenants';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Past Tenancy';
+
+        $pastTenant = PastTenantDetails::where('tenant_id', $id)->with('property', 'tenant')->paginate(10);
+
+        $tenant_id = $id;
+
+        return view('admin.tenants.past.past-tennat', compact('page','pastTenant', 'tenant_id'));
     }
 }

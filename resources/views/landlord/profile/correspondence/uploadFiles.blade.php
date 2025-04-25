@@ -31,28 +31,6 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlords.edit', $landlord->id)}}">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.address', $landlord->id)}}">Address</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.bank', $landlord->id)}}">Bank Details</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.properties', $landlord->id)}}">Properties</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
-                                            aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
-                                    </li>
-                                </ul>
                             </div>
                             <div class="card-body">
                                 <div id="alertContainer" class="alert alert-success d-none" role="alert">

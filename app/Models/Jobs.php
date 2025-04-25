@@ -16,6 +16,7 @@ class Jobs extends Model
         'won_contract',
         'description',
         'other_information',
+        'contractor_details'
     ];
 
     public function property()

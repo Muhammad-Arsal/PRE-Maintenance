@@ -30,28 +30,6 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlords.edit', $landlord->id)}}">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.address', $landlord->id)}}">Address</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.bank', $landlord->id)}}">Bank Details</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.properties', $landlord->id)}}">Properties</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
-                                            aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
-                                    </li>
-                                </ul>
                             </div>
                             <div class="card-body" style="padding-top:0">
                                 <div class="clearfix"></div>
@@ -352,7 +330,7 @@
         </div>
         <div class="card">
             <div class="form-actions right" style="padding: 3em 2em 3em 0em; text-align: right;">
-                <a href="{{ route('landlord.dashboard') }}" class="theme-btn btn btn-primary">
+                <a href="{{ route('landlord.settings.landlords.edit', auth('landlord')->id()) }}" class="theme-btn btn btn-primary">
                     <i class="la la-times"></i> Cancel
                 </a>
             </div>   

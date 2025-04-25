@@ -28,22 +28,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-content">
-                            <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('tenant.settings.tenants.edit', $tenant->id)}}">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="property" data-toggle="tab"
-                                            aria-controls="property" href="#property" aria-expanded="true">Property</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('tenant.tenants.correspondence', $tenant->id)}}">Correspondence</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            
                             <div class="card-body">
                                 @include('tenant.partials.flashes')
                                 <form method="post" enctype="multipart/form-data" id='managetenant' action="{{ route('tenant.settings.tenants.update.property', $tenant->id) }}">

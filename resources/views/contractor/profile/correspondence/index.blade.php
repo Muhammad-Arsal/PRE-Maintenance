@@ -30,24 +30,6 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="overview" data-toggle="tab"
-                                            aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.settings.contractors.edit.address', $contractor->id) }}">Address</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.contractors.viewjobs', $contractor->id) }}">Jobs</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.contractors.correspondence', $contractor->id) }}">Correspondence</a>
-                                    </li>
-                                </ul>
                             </div>
                             <div class="card-body" style="padding-top:0">
                                 <div class="clearfix"></div>
@@ -348,8 +330,8 @@
         </div>
         <div class="card">
             <div class="form-actions right" style="padding: 3em 2em 3em 0em; text-align: right;">
-                <a href="{{ route('contractor.dashboard') }}" class="theme-btn btn btn-primary">
-                    <i class="la la-times"></i> Cancel
+                <a href="{{route('contractor.settings.contractors.edit', auth('contractor')->user()->id)}}" class="theme-btn btn btn-primary">
+                    <i class="la la-times"></i> Back
                 </a>
             </div>   
         </div>    ~

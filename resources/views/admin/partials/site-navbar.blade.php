@@ -48,7 +48,8 @@
           <li class=""><a class="menu-item {{ Request::segment(3) == 'admins' ? 'active' :''}}" href="{{ route('admin.settings.admins') }}">Admins</a></li>
           <li class=""><a class="menu-item {{ Request::segment(3) == 'emailTemplate' ? 'active' :''}}" href="{{ route('admin.emailTemplate.index') }}">Email Templates</a></li>
           <li class=""><a class="menu-item {{ Request::segment(3) == 'themeOptions' ? 'active' :''}}" href="{{ route('admin.settings.themeOptions') }}">Theme Options</a></li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'propertyType' ? 'active' :''}}" href="{{ route('admin.settings.propertyType') }}">Property Type</a></li>
+          <li class=""><a class="menu-item {{ Request::segment(3) == 'propertyType' ? 'active' :''}}" href="{{ route('admin.settings.propertyType') }}">Property Types</a></li>
+          <li class=""><a class="menu-item {{ Request::segment(3) == 'contractorType' ? 'active' :''}}" href="{{ route('admin.settings.contractorType') }}">Contractor Types</a></li>
           <li class="">
             <a class="menu-item {{ (Request::segment(3) == 'task-tray') ? 'active' :''}}" href="{{ route('admin.settings.taskTray') }}">Task Tray</a>
           </li>

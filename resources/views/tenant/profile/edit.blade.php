@@ -29,20 +29,7 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="overview" data-toggle="tab"
-                                            aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('tenant.settings.tenants.edit.property', $tenant->id)}}">Property</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('tenant.tenants.correspondence', $tenant->id)}}">Correspondence</a>
-                                    </li>
-                                </ul>
+                        
                             </div>
                             <div class="card-body">
                                 @include('tenant.partials.flashes')

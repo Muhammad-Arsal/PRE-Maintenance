@@ -272,7 +272,9 @@ class ProfileController extends Controller
         $page['page_parent_link'] = route('contractor.dashboard');
         $page['page_current'] = 'View Contractor Jobs';
 
-        $jobs = Jobs::where('contractor_id',$id)->with('property', 'contractor')->paginate(10);
+        $jobs = Jobs::whereJsonContains('contractor_details', [
+            'contractor_id' => (string) $id
+        ])->with('property', 'contractor')->paginate(10);     
         $contractor_id = $id;
 
         return view('contractor.profile.jobs.index', compact('page', 'jobs', 'contractor_id'));

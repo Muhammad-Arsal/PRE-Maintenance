@@ -31,24 +31,6 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="overview" data-toggle="tab"
-                                            aria-controls="overview" href="#overview" aria-expanded="true">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.settings.contractors.edit.address', $contractor->id) }}">Address</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.contractors.viewjobs', $contractor->id) }}">Jobs</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('contractor.contractors.correspondence', $contractor->id) }}">Correspondence</a>
-                                    </li>
-                                </ul>
                             </div>
                             <div class="card-body">
                                 <div id="alertContainer" class="alert alert-success d-none" role="alert">
@@ -68,9 +50,8 @@
                                     </div>
 
                                     <div class="form-actions left">
-                                        <a href="<?php if($parent_id != 0) { echo route('contractor.contractors.correspondence.child', ['id' => $contractor->id, 'parent_id' => $parent_id]); } else { echo route('contractor.contractors.correspondence', ['id' => $contractor->id]); } ?>"
-                                            class="theme-btn btn btn-primary">
-                                            <i class="la la-arrow-left" style="vertical-align: bottom;"></i> Go Back
+                                        <a href="{{route('contractor.settings.contractors.edit', auth('contractor')->user()->id)}}" class="theme-btn btn btn-primary">
+                                            <i class="la la-times"></i> Back
                                         </a>
                                         <button type="button" class="theme-btn btn btn-primary submitBtn">
                                             <i class="la la-check-square-o"></i> Save

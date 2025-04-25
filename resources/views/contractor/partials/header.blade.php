@@ -54,7 +54,7 @@
                 <span class="avatar avatar-online">
                   <img src="{{ isset(Auth::guard('contractor')->user()->profile->profile_image) ? asset('uploads/contractor-' . Auth::guard('contractor')->user()->id . '/' . Auth::guard('contractor')->user()->profile->profile_image) : asset('/dashboard/images/avatar.png') }}" alt="avatar"><i></i></span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="{{ route('contractor.profile') }}"><i class="ft-user"></i> Edit Profile</a>
+              <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="{{ route('contractor.settings.contractors.edit', auth('contractor')->user()->id) }}"><i class="ft-user"></i> Edit Profile</a>
 
                 <div class="dropdown-divider"></div><a class="dropdown-item" href="{{ route('contractor.logout') }}"><i class="ft-power"></i> Logout</a>
               </div>

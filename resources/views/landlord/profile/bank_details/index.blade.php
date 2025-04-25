@@ -32,30 +32,6 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-content">
-                            <div class="card-header">
-                                <ul class="nav nav-tabs nav-underline no-hover-bg">
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlords.edit', $landlord->id)}}">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.address', $landlord->id)}}">Address</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="bankDetails" data-toggle="tab"
-                                            aria-controls="bankDetails" href="#bankDetails" aria-expanded="true">Bank Details</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.settings.landlord.properties', $landlord->id)}}">Properties</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{route('landlord.landlords.correspondence', $landlord->id)}}">Correspondence</a>
-                                    </li>
-                                </ul>
-                            </div>
                             <div class="card-body">
                                 @include('admin.partials.flashes')
                                 <form method="post" enctype="multipart/form-data" id='managelandlord' action="{{ route('landlord.settings.landlord.bank.store', auth('landlord')->id()) }}">
@@ -127,7 +103,7 @@
                                         </div>                                        
 
                                         <div class="form-actions right">
-                                            <a href="{{ route('landlord.dashboard') }}" class="theme-btn btn btn-primary">
+                                            <a href="{{ route('landlord.settings.landlords.edit', auth('landlord')->id()) }}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">

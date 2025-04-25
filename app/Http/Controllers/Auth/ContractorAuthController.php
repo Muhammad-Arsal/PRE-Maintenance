@@ -58,7 +58,7 @@ class ContractorAuthController extends Controller
 
             Contractor::where('id',Auth::guard('contractor')->user()->id)->update(['last_logged_in'=>now()]);
             
-            return redirect()->route('contractor.dashboard')->withSuccess($welcome);
+            return redirect()->route('contractor.settings.contractors.edit', auth('contractor')->user()->id)->withSuccess($welcome);
         }
 
         return redirect()->route('contractor.login')->with('error', 'Email or Password is incorrect!');

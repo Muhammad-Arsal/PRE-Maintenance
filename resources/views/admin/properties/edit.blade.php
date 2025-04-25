@@ -150,30 +150,6 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="rent_safe_month">Rent Safe Month</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <select id="rent_safe_month" name="rent_safe_month" class="form-control">
-                                                            <option value="">Select Rent Safe Month</option>
-                                                            @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                                                <option value="{{ $month }}" {{ old('rent_safe_month', $property->rent_safe_month ?? '') == $month ? 'selected' : '' }}>
-                                                                    {{ $month }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        <div class="form-control-position">
-                                                            <i class="la la-calendar"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('rent_safe_month'))
-                                                        <p class="text-danger">{{ $errors->first('rent_safe_month') }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
                                                     <label for="gas_certificate_due">Gas Certificate Due</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="gas_certificate_due" class="form-control datepicker" name="gas_certificate_due_display"
@@ -188,7 +164,9 @@
                                                     @error('gas_certificate_due') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
-                                        
+                                        </div>
+
+                                        <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="eicr_due">EICR Due</label>
@@ -222,10 +200,7 @@
                                                     @error('epc_due') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
-                                        </div>
-                                        
 
-                                        <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="epc_rate">EPC Rate</label>
@@ -247,6 +222,10 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                        </div>
+                                        
+
+                                        <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="status">Status</label>

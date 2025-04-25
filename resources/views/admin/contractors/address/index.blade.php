@@ -155,12 +155,7 @@
                                             </div>                                            
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $contractor->note ?? '') }}</textarea>
-                                            @error('note') <span class="text-danger">{{ $message }}</span> @enderror
-                                        </div>
-
+                                       
                                         <div class="form-actions right">
                                             <a href="{{ route('admin.settings.contractors') }}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel

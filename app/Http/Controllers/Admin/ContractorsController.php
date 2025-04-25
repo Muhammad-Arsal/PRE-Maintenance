@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contractor;
 use App\Models\ContractorProfile;
 use App\Models\Jobs;
+use App\Models\ContractorType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,12 +22,15 @@ class ContractorsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Contractors';
 
-        $contractors = Contractor::orderBy('name', 'asc')->with('profile')->paginate(10);
+        $contractors = Contractor::orderBy('name', 'asc')->with('profile', 'contractorType')->paginate(10);
+
+        $contractorTypes = ContractorType::all();
 
         $keywords = "";
         $status = "";
+        $contractorType = "";
 
-        return view('admin.contractors.index', compact('page', 'contractors', 'status', 'keywords'));
+        return view('admin.contractors.index', compact('page', 'contractors', 'status', 'keywords', 'contractorTypes', 'contractorType'));
     }
 
     public function create() 
@@ -36,7 +40,9 @@ class ContractorsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Add Contractor';
 
-        return view('admin.contractors.create', compact('page'));
+        $contractorTypes = ContractorType::all();
+
+        return view('admin.contractors.create', compact('page', 'contractorTypes'));
     }
 
     public function store(Request $request)
@@ -54,6 +60,7 @@ class ContractorsController extends Controller
             'postal_code' => 'required|string|max:20',
             'title' => 'required',
             'contact_type' => 'required',
+            'contractorTypes' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -81,6 +88,7 @@ class ContractorsController extends Controller
             'fax' => $request->fax,
             'contact_type' => $request->contact_type,
             'title' => $request->title,
+            'contractor_type_id' => $request->contractorTypes,
         ]);
 
         if (!$contractor) {
@@ -129,7 +137,9 @@ class ContractorsController extends Controller
 
         $contractor = Contractor::where('id', $id)->first();
 
-        return view('admin.contractors.edit', compact('page', 'contractor'));
+        $contractorTypes = ContractorType::all();
+
+        return view('admin.contractors.edit', compact('page', 'contractor', 'contractorTypes'));
     }
 
     public function editAddress($id) 
@@ -158,6 +168,7 @@ class ContractorsController extends Controller
             'profile_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'title' => 'required',
             'contact_type' => 'required',
+            'contractorTypes' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -176,6 +187,8 @@ class ContractorsController extends Controller
             'fax' => $request->fax,
             'contact_type' => $request->contact_type,
             'title' => $request->title,
+            'contractor_type_id' => $request->contractorTypes,
+            'note' => $request->note,
         ]);
 
         if ($request->filled('password')) {
@@ -246,8 +259,7 @@ class ContractorsController extends Controller
             'line3' => $request->address_line_3,
             'city' => $request->city,
             'county' => $request->county,
-            'postcode' => $request->postal_code, 
-            'note' => $request->note, 
+            'postcode' => $request->postal_code,  
         ]);
         return redirect()
             ->route('admin.settings.contractors')
@@ -291,11 +303,16 @@ class ContractorsController extends Controller
 
         $status = $request['status'];
         $keywords = $request['keywords'];
+        $contractorType = $request['contractorType'];
 
         $query = Contractor::with('profile')->orderBy('name', 'asc');
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        if ($contractorType) {
+            $query->where('contractor_type_id', $contractorType);
         }
 
         if ($keywords) {
@@ -311,7 +328,9 @@ class ContractorsController extends Controller
 
         $contractors = $query->orderBy('name', 'asc')->paginate(10);
 
-        return view('admin.contractors.index', compact('page', 'status', 'contractors', 'keywords'));
+        $contractorTypes = ContractorType::all();
+
+        return view('admin.contractors.index', compact('page', 'status', 'contractors', 'keywords', 'contractorType', 'contractorTypes'));
     }
 
     public function jobs($id)
@@ -321,7 +340,9 @@ class ContractorsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Contractor Jobs';
 
-        $jobs = Jobs::where('contractor_id',$id)->with('property', 'contractor')->paginate(10);
+        $jobs = Jobs::whereJsonContains('contractor_details', [
+            'contractor_id' => (string) $id
+        ])->with('property', 'contractor')->paginate(10); 
         $contractor_id = $id;
 
         return view('admin.contractors.jobs.index', compact('page', 'jobs', 'contractor_id'));

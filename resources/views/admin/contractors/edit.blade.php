@@ -251,6 +251,34 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="contractorTypes">Contractor Type</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <select id="contractorTypes" name="contractorTypes" class="form-control"
+                                                            data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                            data-title="Contractor Type" data-original-title="" title="">
+                                                            <option value="">Select Contractor Type</option>
+                                                            @foreach ($contractorTypes as $item)
+                                                                <option value="{{ $item->id }}" 
+                                                                    {{ old('contractorTypes', $contractor->contractor_type_id) == $item->id ? 'selected' : '' }}>
+                                                                    {{ $item->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <div class="form-control-position">
+                                                            <i class="la la-building"></i>
+                                                        </div>
+                                                    </div>
+                                                    @if ($errors->has('contractorTypes'))
+                                                        <p class="text-danger">{{ $errors->first('contractorTypes') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>                                            
+                                        </div>
+                                        
                                         <div class="form-group">
                                             <label for="profile_image">Profile Image</label>
                                             <br />
@@ -262,7 +290,14 @@
                                             @if ($errors->has('profile_image'))
                                                <p class="text-danger">{{ $errors->first('profile_image') }}</p>
                                             @endif
-                                        </div>                                      
+                                        </div> 
+                                        
+                                        <div class="form-group">
+                                            <label for="note">Note</label>
+                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $contractor->note ?? '') }}</textarea>
+                                            @error('note') <span class="text-danger">{{ $message }}</span> @enderror
+                                        </div>
+
                                     
 
                                         <div class="form-actions right">

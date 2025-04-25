@@ -129,21 +129,29 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                <a href="{{ $item->won_contract == "yes" ? route('admin.settings.contractors.edit', $item->contractor_id) : '#' }}">
-                                                    {{ $item->won_contract == "yes" ? $item->contractor->name : '' }}
-                                                </a>
-                                            </td>
+                                                @php
+                                                    $details = json_decode($item->contractor_details, true);
+                                                    $winner = collect($details)->firstWhere('won_contract', 'yes');
+                                                    $contractor = $winner ? \App\Models\Contractor::find($winner['contractor_id']) : null;
+                                                @endphp
+                                            
+                                                @if($contractor)
+                                                    <a href="{{ route('admin.settings.contractors.edit', $contractor->id) }}">
+                                                        {{ $contractor->name }}
+                                                    </a>
+                                                @endif
+                                            </td>                                            
                                             <td>{{ $item->created_at ? $item->created_at->format('d/m/Y, h:i') : 'N/A' }}</td>
                                             <td>{{ $item->updated_at ? $item->updated_at->format('d/m/Y, h:i') : 'N/A' }}</td>
                                             <td >
-                                                <a href="{{route('admin.jobs.show', $item->id)}}"
+                                                {{-- <a href="{{route('admin.jobs.show', $item->id)}}"
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="More Details">
                                                      <span style="padding:0.5rem 0.75rem" data-row-id="" 
                                                            class="d-inline-block rounded bg-primary text-white">
                                                          <i class="la la-eye"></i>
                                                      </span>
-                                                 </a>
+                                                 </a> --}}
                                                 <a href="{{route('admin.jobs.edit', $item->id)}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit Jobs"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id=""

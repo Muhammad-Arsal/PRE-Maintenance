@@ -36,11 +36,15 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active disabled" id="property" data-toggle="tab"
-                                            aria-controls="property" href="#property" aria-expanded="true">Property</a>
+                                            aria-controls="property" href="#property" aria-expanded="true">Current Property</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
                                             href="{{route('admin.tenants.correspondence', $tenant->id)}}">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.past.tenancy', $tenant->id) }}">Past Tenancy</a>
                                     </li>
                                 </ul>
                             </div>
@@ -84,7 +88,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="contract_end"><span style="color: red;">*</span>Contract End</label>
+                                                    <label for="contract_end">Contract End</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="contract_end" class="form-control datepicker" name="contract_end_display"
                                                             value="{{ old('contract_end_display', \Carbon\Carbon::parse($tenant->contract_end)->format('d/m/Y')) }}" placeholder="DD/MM/YYYY">
@@ -178,30 +182,20 @@
                     number: true
                 },
                 "property": { required: true },
-                "contract_start_hidden": { required: true, date: true },
-                "contract_end_hidden": { required: true, date: true }
             },
             messages: {
                 "deposit": { 
                     number: "Please enter a valid number"
                 },
                 "property": { required: "Property is required" },
-                "contract_start_hidden": { 
-                    required: "Contract start date is required", 
-                    date: "Please enter a valid date" 
-                },
-                "contract_end_hidden": { 
-                    required: "Contract end date is required", 
-                    date: "Please enter a valid date" 
-                }
             },
             errorPlacement: function (error, element) {
-                if (element.attr("name") === "contract_start_hidden" || element.attr("name") === "contract_end_hidden") {
-                    // Place error message after the visible field's container
-                    error.insertAfter(element.closest('.position-relative'));
-                } else {
-                    error.insertAfter(element);
-                }
+                // if (element.attr("name") === "contract_start_hidden" || element.attr("name") === "contract_end_hidden") {
+                //     // Place error message after the visible field's container
+                //     error.insertAfter(element.closest('.position-relative'));
+                // } else {
+                //     error.insertAfter(element);
+                // }
             },
         });
     });

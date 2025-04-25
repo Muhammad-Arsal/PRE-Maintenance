@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\LandlordsController;
 use App\Http\Controllers\Admin\ContractorsController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyTypeController;
+use App\Http\Controllers\Admin\ContractorTypeController;
 use App\Http\Controllers\Admin\JobsController;
 use App\Http\Controllers\Admin\InvoicesController;
 use App\Http\Controllers\Admin\LandlordsCorrespondenceController;
@@ -84,6 +85,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('/tenants/{id}/delete', [TenantsController::class, 'delete'])->name('admin.settings.tenants.delete');
     Route::get('/tenants/search', [TenantsController::class, 'searchData'])->name('admin.settings.tenants.search');
     Route::get('tenants/{id}/show', [TenantsController::class,'show'])->name('admin.settings.tenants.show');
+    Route::get('tenants/{id}/past_tenancy', [TenantsController::class, 'pastTenancy'])->name('admin.properties.past.tenancy');
     
     // Landlords
     Route::get('/landlords', [LandlordsController::class, 'index'])->name('admin.settings.landlords');
@@ -152,7 +154,9 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/jobs/custom/{id}/create', [JobsController::class, 'customCreate'])->name('admin.jobs.custom.create');
     Route::post('/jobs/store', [JobsController::class,'store'])->name('admin.jobs.store');
     Route::get('/jobs/{id}/edit', [JobsController::class, 'edit'])->name('admin.jobs.edit');
+    Route::get('/jobs/{id}/edit/contractor_list', [JobsController::class, 'editContractorList'])->name('admin.jobs.edit.contractorList');
     Route::post('/jobs/{id}/update', [JobsController::class, 'update'])->name('admin.jobs.update');
+    Route::post('/jobs/{id}/update/contractor_list', [JobsController::class, 'updateContractorList'])->name('admin.jobs.update.contractor_list');
     Route::post('jobs/{id}/destroy', [JobsController::class, 'destroy'])->name('admin.jobs.destroy');
     Route::get('jobs/{id}/show', [JobsController::class,'show'])->name('admin.jobs.show');
     Route::get('/jobs/search', [JobsController::class,'searchData'])->name('admin.jobs.search');
@@ -284,6 +288,15 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('contractors/{id}/correspondence/{parent_id}/new-meeting', [ContractorCorrespondenceController::class, 'storeMeeting'])->name('admin.contractors.correspondence.newMeeting');
     Route::get('contractors/{id}/correspondence/task', [ContractorCorrespondenceController::class, 'showTaskPage'])->name('admin.contractors.correspondence.task');
     Route::post('contractors/tasks/create/task', [ContractorCorrespondenceController::class, 'storeTask'])->name('admin.contractors.tasks.cross.store');
+
+
+    // Contractor Types
+    Route::get('settings/contractorType', [ContractorTypeController::class, 'index'])->name('admin.settings.contractorType');
+    Route::get('settings/contractorType/create', [ContractorTypeController::class, 'create'])->name('admin.settings.contractorType.create');
+    Route::post('settings/contractorType/store', [ContractorTypeController::class,'store'])->name('admin.settings.contractorType.store');
+    Route::get('settings/contractorType/{id}/edit', [ContractorTypeController::class, 'edit'])->name('admin.settings.contractorType.edit');
+    Route::post('settings/contractorType/{id}/update', [ContractorTypeController::class, 'update'])->name('admin.settings.contractorType.update');
+    Route::post('settings/contractorType/{id}/destroy', [ContractorTypeController::class, 'destroy'])->name('admin.settings.contractorType.destroy');
 });
 
 

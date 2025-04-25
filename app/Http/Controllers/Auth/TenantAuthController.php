@@ -57,7 +57,7 @@ class TenantAuthController extends Controller
             $welcome = 'Welcome '.$name[0].', great to see you again!';
 
             Tenant::where('id',Auth::guard('tenant')->user()->id)->update(['last_logged_in'=>now()]);
-            return redirect()->route('tenant.dashboard')->withSuccess($welcome);
+            return redirect()->route('tenant.settings.tenants.edit', auth('tenant')->id())->withSuccess($welcome);
         }
 
         return redirect()->route('tenant.login')->with('error', 'Email or Password is incorrect!');

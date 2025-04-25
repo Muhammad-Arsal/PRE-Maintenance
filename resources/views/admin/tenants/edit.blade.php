@@ -36,11 +36,15 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.tenants.edit.property', $tenant->id)}}">Property</a>
+                                            href="{{route('admin.settings.tenants.edit.property', $tenant->id)}}">Current Property</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
                                             href="{{route('admin.tenants.correspondence', $tenant->id)}}">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.past.tenancy', $tenant->id) }}">Past Tenancy</a>
                                     </li>
                                 </ul>
                             </div>

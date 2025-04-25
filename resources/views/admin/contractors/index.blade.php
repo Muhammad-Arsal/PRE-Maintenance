@@ -56,6 +56,16 @@
                                                         </select>
                                                     </div>
                                                 </div> 
+                                                <div class="col-12 col-md-4">
+                                                    <div class="form-group">
+                                                        <select name="contractorType" id="contractorType" style="width: 100%" class="form-control">
+                                                            <option value="">Select Contractor Type</option>
+                                                            @foreach ($contractorTypes as $item)
+                                                                <option value="{{ $item->id }}" {{ $item->id == $contractorType ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div> 
                                                 <div class="col-12 col-md-6">
                                                     <div class="form-group">
                                                         <div class="btn-group">
@@ -84,10 +94,11 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Contractor Type</th>
                                         <th>Contractor Id</th>
                                         <th>Name</th>
-                                        <th>Phone Number</th>
                                         <th>Company Name</th>
+                                        <th>Phone Number</th>
                                         <th>Email Address</th>
                                         <th>Last Logged In</th>
                                         <th>Created At</th>
@@ -105,10 +116,11 @@
                                     @forelse($contractors as $data)
                                         <tr>
                                             <td>{{ $j }}</td>
+                                            <td>{{ $data->contractorType->name }}</td>
                                             <td>{{$data['id'] }}</td>
                                             <td>{{ $data['name'] ?? '' }}</td>
-                                            <td>{{ !empty($data->profile) ? $data->profile->phone_number : '' }}</td>
                                             <td>{{$data->company_name ?? ''}}</td>
+                                            <td>{{ !empty($data->profile) ? $data->profile->phone_number : '' }}</td>
                                             <td>{{ $data['email'] ?? ""}}</td>
                                             <td>{{ $data['last_logged_in'] ? date('d/m/Y', strtotime($data['last_logged_in'])) : '' }}</td>
                                             <td>{{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d/m/Y, h:i') : '' }}</td>

@@ -40,11 +40,17 @@
                                                     <div class="position-relative has-icon-left">
                                                         <select id="status" name="status" class="form-control">
                                                             <option value="">Select Status</option>
-                                                            <option value="Open" {{ old('status', $job->status ?? '') == 'Open' ? 'selected' : '' }}>Open</option>
-                                                            <option value="Quote" {{ old('status', $job->status ?? '') == 'Quote' ? 'selected' : '' }}>Quote</option>
-                                                            <option value="Partial" {{ old('status', $job->status ?? '') == 'Partial' ? 'selected' : '' }}>Partial</option>
-                                                            <option value="Closed" {{ old('status', $job->status ?? '') == 'Closed' ? 'selected' : '' }}>Closed</option>
-                                                            <option value="Go Ahead" {{ old('status', $job->status ?? '') == 'Go Ahead' ? 'selected' : '' }}>Go Ahead</option>
+                                                            <option value="Quote required" {{ old('status', $job->status ?? '') == 'Quote required' ? 'selected' : '' }}>Quote required</option>
+                                                            <option value="1 quote received" {{ old('status', $job->status ?? '') == '1 quote received' ? 'selected' : '' }}>1 quote received</option>
+                                                            <option value="2 quotes received" {{ old('status', $job->status ?? '') == '2 quotes received' ? 'selected' : '' }}>2 quotes received</option>
+                                                            <option value="3 quotes received" {{ old('status', $job->status ?? '') == '3 quotes received' ? 'selected' : '' }}>3 quotes received</option>
+                                                            <option value="Additional quote requested" {{ old('status', $job->status ?? '') == 'Additional quote requested' ? 'selected' : '' }}>Additional quote requested</option>
+                                                            <option value="Quotes sent to landlord" {{ old('status', $job->status ?? '') == 'Quotes sent to landlord' ? 'selected' : '' }}>Quotes sent to landlord</option>
+                                                            <option value="Contractor completed" {{ old('status', $job->status ?? '') == 'Contractor completed' ? 'selected' : '' }}>Contractor completed</option>
+                                                            <option value="Contractor Invoiced" {{ old('status', $job->status ?? '') == 'Contractor Invoiced' ? 'selected' : '' }}>Contractor Invoiced</option>
+                                                            <option value="Closed - completed & paid" {{ old('status', $job->status ?? '') == 'Closed - completed & paid' ? 'selected' : '' }}>Closed - completed & paid</option>
+                                                            <option value="Closed - no response from tenant" {{ old('status', $job->status ?? '') == 'Closed - no response from tenant' ? 'selected' : '' }}>Closed - no response from tenant</option>
+                                                            <option value="Closed - other" {{ old('status', $job->status ?? '') == 'Closed - other' ? 'selected' : '' }}>Closed - other</option>
                                                         </select>
                                                         <div class="form-control-position">
                                                             <i class="la la-list"></i>

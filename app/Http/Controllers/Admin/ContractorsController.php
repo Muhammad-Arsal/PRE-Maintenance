@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\ContractorAdded;
-use App\Http\Controllers\Controller;
-use App\Models\Contractor;
-use App\Models\ContractorProfile;
 use App\Models\Jobs;
-use App\Models\ContractorType;
+use App\Models\Invoices;
+use App\Models\Contractor;
 use Illuminate\Http\Request;
+use App\Models\ContractorType;
+use App\Events\ContractorAdded;
+use App\Models\ContractorProfile;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -346,5 +347,18 @@ class ContractorsController extends Controller
         $contractor_id = $id;
 
         return view('admin.contractors.jobs.index', compact('page', 'jobs', 'contractor_id'));
+    }
+
+    public function invoices($id)
+    {
+        $page['page_title'] = 'Manage Contractors';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Contractor Invoices';
+
+        $invoices = Invoices::where('contractor_id', $id)->with('property', 'job')->paginate(10);
+        $contractor_id = $id;
+
+        return view('admin.contractors.invoices.index', compact('page', 'invoices', 'contractor_id'));
     }
 }

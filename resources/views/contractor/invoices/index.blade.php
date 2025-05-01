@@ -1,4 +1,4 @@
-@extends('admin.partials.main')
+@extends('contractor.partials.main')
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
@@ -22,7 +22,7 @@
         </div>
         <div class="content-header-right col-md-6 col-12">
             <div class="dropdown float-md-right">
-                <a href="{{route('admin.invoices.create')}}"
+                <a href="{{route('contractor.invoices.create')}}"
                     class="btn btn-primary basic-btn btn-min-width mr-1 mb-1" type="button">
                     <i class="la la-plus"></i>
                     Add Invoices
@@ -31,14 +31,14 @@
         </div>
     </div>
     <div class="content-body">
-        @include('admin.partials.flashes')
+        @include('contractor.partials.flashes')
             <section id="search-types">
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
-                                    <form id="searchForm" action="{{route('admin.invoices.search')}}">
+                                    <form id="searchForm" action="{{route('contractor.invoices.search')}}">
                                         <div class="form-body">
                                             <div class="row">
                                                 <div class="col-12 col-md-4">
@@ -81,7 +81,6 @@
                                         <th>Total</th>
                                         <th>Description</th>
                                         <th>Property</th>
-                                        <th>Contractor</th>
                                         <th>Date</th>
                                         <th>Created At</th>
                                         <th>Modified At</th>
@@ -102,13 +101,12 @@
                                             <td>{{$data->status}}</td>
                                             <td>{{$data->total}}</td>
                                             <td>{{$data->description}}</td>
-                                            <td><a href="{{route('admin.properties.edit',$data->property->id)}}">{{$data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode}}</a></td>
-                                            <td><a href="{{route('admin.settings.contractors.edit',$data->contractor->id)}}">{{$data->contractor->name}}</a></td>
+                                            <td>{{$data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode}}</td>
                                             <td>{{ \Carbon\Carbon::parse($data->date)->format('d/m/Y') }}</td>
                                             <td>{{ $data->created_at->format('d/m/Y,  h:i') }}</td>
                                             <td>{{ $data->updated_at->format('d/m/Y,  h:i') }}</td>
                                             <td>
-                                                <a href="{{route('admin.invoices.show', $data->id)}}" 
+                                                <a href="{{route('contractor.invoices.show', $data->id)}}" 
                                                     data-toggle="tooltip" data-trigger="hover" data-placement="top" 
                                                     data-title="More Details">
                                                      <span style="padding:0.5rem 0.75rem" data-row-id="" 
@@ -116,15 +114,7 @@
                                                          <i class="la la-eye"></i>
                                                      </span>
                                                  </a> 
-                                                <a href="{{route('admin.invoices.edit.status', $data->id)}}" 
-                                                    data-toggle="tooltip" data-trigger="hover" data-placement="top" 
-                                                    data-title="Update Status">
-                                                     <span style="padding:0.5rem 0.75rem" data-row-id="" 
-                                                           class="d-inline-block rounded bg-warning text-white">
-                                                         <i class="la la-pencil"></i>
-                                                     </span>
-                                                 </a> 
-                                                {{-- <a href="{{route('admin.invoices.edit', $data->id)}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                {{-- <a href="{{route('contractor.invoices.edit', $data->id)}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
                                                     data-title="Edit invoices"><span
                                                         style="padding:0.5rem 0.75rem" data-row-id=""
                                                         class="d-inline-block rounded bg-warning bg text-white"><i
@@ -133,7 +123,7 @@
                                                 <a href="#" style="word-wrap: nowrap; margin-right: 0.35rem;" 
                                                     class="clickDeleteFunction" 
                                                     data-modal="forceDelete"
-                                                    data-action="{{ route('admin.invoices.destroy', $data->id) }}" 
+                                                    data-action="{{ route('contractor.invoices.destroy', $data->id) }}" 
                                                     data-row-id="{{ $data->id }}">
                                                     <span style="padding:0.5rem 0.75rem" 
                                                             class="d-inline-block rounded bg-danger text-white">

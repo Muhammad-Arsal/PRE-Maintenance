@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Contractor;
 
 use Carbon\Carbon;
 use App\Models\Jobs;
@@ -8,33 +8,32 @@ use App\Models\Admin;
 use App\Models\Invoices;
 use App\Models\Landlord;
 use App\Models\Property;
-use App\Models\Contractor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\InvoiceEmailNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\InvoiceUpdateNotification;
 
 class InvoicesController extends Controller
 {
     public function index(){
         $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('contractor.settings.contractors.edit', auth('contractor')->user()->id);
         $page['page_current'] = 'Invoices';
 
-        $invoices = Invoices::with('contractor')->paginate(10);
+        $invoices = Invoices::where('contractor_id', auth('contractor')->user()->id)->with('property')->paginate(10);
         $keywords = '';
-        $admin = Auth::guard('admin')->user();
-        $allNotifications = $admin->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->update(['read_at' => Carbon::now()]);
+        $contractor = Auth::guard('contractor')->user();
+        $allNotifications = $contractor->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->update(['read_at' => Carbon::now()]);
 
-        return view('admin.invoices.index', compact('page', 'invoices', 'keywords'));
+        return view('contractor.invoices.index', compact('page', 'invoices', 'keywords'));
     }
 
     public function create(){
         $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('contractor.settings.contractors.edit', auth('contractor')->user()->id);
         $page['page_current'] = 'Add Invoice';
 
         $properties = Property::all();
@@ -44,7 +43,7 @@ class InvoicesController extends Controller
             'won_contract' => 'yes'
         ])->with('property', 'contractor')->get();
 
-        return view('admin.invoices.create', compact('page','properties', 'jobs'));
+        return view('contractor.invoices.create', compact('page','properties', 'jobs'));
     }
 
     public function store(Request $request)
@@ -58,6 +57,7 @@ class InvoicesController extends Controller
             'total' => 'required',
             'description' => 'required|string|max:1000',
             'address_option' => 'required|in:entered,property,landlord',
+            'job' => 'required',
         ], [
             'property.required' => 'The property field is required.',
             'property.exists' => 'The selected property is invalid.',
@@ -98,6 +98,9 @@ class InvoicesController extends Controller
         $invoice->country =  $request->country ?? null;
 
         $invoice->description = $request->description;
+        $invoice->job_id = $request->job;
+        $invoice->contractor_id = auth('contractor')->user()->id;
+        $invoice->status = 'unpaid';
 
         if($request->address_option == 'property')
         {
@@ -109,8 +112,23 @@ class InvoicesController extends Controller
             $invoice->landlord_address_id = $property->landlord->id;
         }
         if ($invoice->save()) {
+            $propertyDetails = Property::where('id', $request->property)->with('landlord')->first();
+            $landlordDetails = Landlord::where('id', $propertyDetails->landlord->id)->first();
+            $admin = Admin::all();
+            $notificationDetails = array(
+                'type' => 'invoice',
+                'message' => 'You have a <b>new invoice</b>',
+                'route' => route('landlord.invoices'),
+            );
+            $adminnotificationDetails = array(
+                'type' => 'invoice',
+                'message' => 'You have a <b>new invoice</b>',
+                'route' => route('admin.invoices'),
+            );
+            Notification::send($admin, new InvoiceEmailNotification($adminnotificationDetails));
+            Notification::send($landlordDetails, new InvoiceEmailNotification($notificationDetails));
             return redirect()
-                ->route('admin.invoices')
+                ->route('contractor.invoices')
                 ->withFlashMessage('Invoice Saved Successfully')
                 ->withFlashType('success');
         }
@@ -119,60 +137,13 @@ class InvoicesController extends Controller
     public function edit($id){
         $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('contractor.settings.contractors.edit', auth('contractor')->user()->id);
         $page['page_current'] = 'Edit Invoice';
 
         $invoice = Invoices::where('id', $id)->with('property')->first();
         $properties = Property::all();
 
-        return view('admin.invoices.edit', compact('page', 'invoice', 'properties'));
-    }
-
-    public function editStatus(Request $request, $id)
-    {
-        $page['page_title'] = 'Manage Account';
-        $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
-        $page['page_current'] = 'Edit Invoice';
-
-        $invoice = Invoices::where('id', $id)->with('property')->first();
-
-        return view('admin.invoices.status', compact('page', 'invoice'));
-    }
-    public function storeStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required',
-        ], [
-            'status.required' => 'The status field is required.',
-        ]);
-
-        $invoice = Invoices::find($id);
-
-        $invoice->status = $request->status;
-
-        if ($invoice->save()) {
-            $propertyDetails = Property::where('id', $invoice->property_id)->with('landlord')->first();
-            $landlordDetails = Landlord::where('id', $propertyDetails->landlord->id)->first();
-            
-            $contractorDetails = Contractor::where('id', $invoice->contractor_id)->first();
-            $notificationDetails = array(
-                'type' => 'invoice',
-                'message' => 'The invoice status has been updated',
-                'route' => route('landlord.invoices'),
-            );
-            $contractornotificationDetails = array(
-                'type' => 'invoice',
-                'message' => 'The invoice status has been updated',
-                'route' => route('contractor.invoices'),
-            );
-            Notification::send($contractorDetails, new InvoiceUpdateNotification($contractornotificationDetails));
-            Notification::send($landlordDetails, new InvoiceUpdateNotification($notificationDetails));
-            return redirect()
-                ->route('admin.invoices')
-                ->withFlashMessage('Invoice Updated Successfully')
-                ->withFlashType('success');
-        }
+        return view('contractor.invoices.edit', compact('page', 'invoice', 'properties'));
     }
 
     public function update(Request $request, $id)
@@ -230,7 +201,7 @@ class InvoicesController extends Controller
         }
         if ($invoice->save()) {
             return redirect()
-                ->route('admin.invoices')
+                ->route('contractor.invoices')
                 ->withFlashMessage('Invoice Updated Successfully')
                 ->withFlashType('success');
         }
@@ -241,7 +212,7 @@ class InvoicesController extends Controller
         $invoice = Invoices::find($id);
         if ($invoice->delete()) {
             return redirect()
-                ->route('admin.invoices')
+                ->route('contractor.invoices')
                 ->withFlashMessage('Invoice Deleted Successfully')
                 ->withFlashType('success');
         }
@@ -251,19 +222,19 @@ class InvoicesController extends Controller
     {
         $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('contractor.settings.contractors.edit', auth('contractor')->user()->id);
         $page['page_current'] = 'View Invoice';
 
         $invoice = Invoices::where('id', $id)->with('property')->first();
 
-        return view('admin.invoices.show', compact('page', 'invoice'));
+        return view('contractor.invoices.show', compact('page', 'invoice'));
     }
 
     public function searchData(Request $request)
     {
         $page['page_title'] = 'Manage Account';
         $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_parent_link'] = route('contractor.settings.contractors.edit', auth('contractor')->user()->id);
         $page['page_current'] = 'Invoice';
 
         $keywords = $request['keywords'];
@@ -284,13 +255,13 @@ class InvoicesController extends Controller
 
         $invoices = $query->orderBy('created_at', 'asc')->paginate(10);
 
-        return view('admin.invoices.index', compact('page', 'invoices', 'keywords'));
+        return view('contractor.invoices.index', compact('page', 'invoices', 'keywords'));
     }
 
     public function getAddressDetails(Request $request)
     {
-        $property = Property::find($request->property_id)->with('landlord')->first();
-
+        // dd($request->property_id);
+        $property = Property::where('id', $request->property_id)->with('landlord')->first();
         if (!$property) {
             return response()->json(['success' => false, 'message' => 'Property not found'], 404);
         }
@@ -329,4 +300,3 @@ class InvoicesController extends Controller
     }
 
 }
-

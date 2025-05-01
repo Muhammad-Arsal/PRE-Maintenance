@@ -3,6 +3,8 @@
       <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
         <li class="nav-item  {{ Request::segment(2) == 'overview' ? 'open' :''}}"><a href="{{ route('contractor.settings.contractors.edit', auth('contractor')->user()->id) }}" ><i class="la la-home"></i><span class="menu-title">Overview</span></a>
         </li>
+        <li class="nav-item  {{ Request::segment(2) == 'account' ? 'open' :''}}"><a href="{{ route('contractor.invoices') }}" ><i class="la la-file"></i><span class="menu-title">Account</span></a>
+        </li>
         <li class="nav-item  {{ Request::segment(2) == 'address' ? 'open' :''}}"><a href="{{ route('contractor.settings.contractors.edit.address', auth('contractor')->user()->id) }}" ><i class="la la-map-marker"></i><span class="menu-title">Address</span></a>
         </li>
         <li class="nav-item  {{ Request::segment(2) == 'jobs' ? 'open' :''}}"><a href="{{ route('contractor.contractors.viewjobs', auth('contractor')->user()->id) }}" ><i class="la la-suitcase"></i><span class="menu-title">Jobs</span></a>

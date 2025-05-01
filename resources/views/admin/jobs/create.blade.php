@@ -34,7 +34,7 @@
                                     <div class="form-body">
                                         <h3 class="mb-2"><strong>Job Details</strong></h3>
                                         <div class="row mb-2">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="status"><span style="color: red;">*</span>Status</label>
                                                     <div class="position-relative has-icon-left">
@@ -61,7 +61,7 @@
                                                     @enderror
                                                 </div>                                               
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="property"><span style="color: red;">*</span>Property</label>
                                                     <select id="property" name="property_id" class="form-control select2">
@@ -76,7 +76,46 @@
                                                         <span class="text-danger">{{ $message }}</span> 
                                                     @enderror
                                                 </div>                                              
-                                            </div>                                                                                                                             
+                                            </div> 
+                                            
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="priority"><span style="color: red;">*</span>Priority</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <select id="priority" name="priority" class="form-control">
+                                                            <option value="">Select Priority</option>
+                                            
+                                                            <option value="Risk to Life/ Property - 4 hours"
+                                                                {{ old('priority', $job->priority ?? '') == 'Risk to Life/ Property - 4 hours' ? 'selected' : '' }}>
+                                                                Risk to Life/ Property – 4 hours
+                                                            </option>
+                                            
+                                                            <option value="Emergency - 24 Hours"
+                                                                {{ old('priority', $job->priority ?? '') == 'Emergency - 24 Hours' ? 'selected' : '' }}>
+                                                                Emergency – 24 Hours
+                                                            </option>
+                                            
+                                                            <option value="Urgent - 5 days"
+                                                                {{ old('priority', $job->priority ?? '') == 'Urgent - 5 days' ? 'selected' : '' }}>
+                                                                Urgent – 5 days
+                                                            </option>
+                                            
+                                                            <option value="Routine - 28 days"
+                                                                {{ old('priority', $job->priority ?? '') == 'Routine - 28 days' ? 'selected' : '' }}>
+                                                                Routine – 28 days
+                                                            </option>
+                                                        </select>
+                                            
+                                                        <div class="form-control-position">
+                                                            <i class="la la-exclamation-triangle"></i>
+                                                        </div>
+                                                    </div>
+                                            
+                                                    @error('priority')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>                                            
                                         </div>
 
                                         <div id="contractor-rows">
@@ -151,22 +190,28 @@
                 status: {
                     required: true
                 },
+                priority: {
+                    required: true
+                },
                 property_id: {
                     required: true
                 },
                 description: {
-                    required: true,
+                    required: true
                 }
             },
             messages: {
                 status: {
                     required: "Please select a status."
                 },
+                priority: {
+                    required: "Please select a priority."
+                },
                 property_id: {
                     required: "Please select a property."
                 },
                 description: {
-                    required: "Please enter a description.",
+                    required: "Please enter a description."
                 }
             },
             errorPlacement: function (error, element) {
@@ -180,6 +225,7 @@
         });
     });
 </script>
+
 
 
 <script>

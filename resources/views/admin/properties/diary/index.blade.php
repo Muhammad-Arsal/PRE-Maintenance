@@ -45,6 +45,10 @@
                                         <a class="nav-link"
                                             href="{{ route('admin.properties.viewjobs', $property_id) }}">Jobs</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.invoices.index', $property_id) }}">Invoices</a>
+                                    </li>
                                     
                                     <li class="nav-item">
                                         <a class="nav-link"
@@ -52,11 +56,11 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{ route('admin.properties.past.tenant', $property_id) }}">Past Tenants</a>
+                                            href="{{ route('admin.properties.current.tenant', $property_id) }}">Current Tenant</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{ route('admin.properties.current.tenant', $property_id) }}">Current Tenant</a>
+                                            href="{{ route('admin.properties.past.tenant', $property_id) }}">Past Tenants</a>
                                     </li>
                                 </ul>
                             </div>

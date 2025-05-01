@@ -12,11 +12,11 @@ class Jobs extends Model
     protected $fillable = [
         'status',
         'property_id',
-        'contractor_id',
         'won_contract',
         'description',
         'other_information',
-        'contractor_details'
+        'contractor_details',
+        'priority',
     ];
 
     public function property()

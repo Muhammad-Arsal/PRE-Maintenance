@@ -12,6 +12,8 @@ class Invoices extends Model
 
     protected $fillable = [
         'property_id',
+        'contractor_id',
+        'job_id',
         'reference',
         'date',
         'subtotal',
@@ -31,5 +33,11 @@ class Invoices extends Model
 
     public function property(){
         return $this->belongsTo(Property::class);
+    }
+    public function contractor(){
+        return $this->belongsTo(Contractor::class);
+    }
+    public function job(){
+        return $this->belongsTo(Jobs::class);
     }
 }

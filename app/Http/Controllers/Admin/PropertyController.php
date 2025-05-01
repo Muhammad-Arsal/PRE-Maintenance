@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Property;
-use App\Models\Landlord;
-use App\Models\Tenant;
-use App\Models\PropertyType;
-use App\Models\Diary;
 use App\Models\Jobs;
+use App\Models\Diary;
+use App\Models\Tenant;
+use App\Models\Invoices;
+use App\Models\Landlord;
+use App\Models\Property;
+use App\Models\PropertyType;
+use Illuminate\Http\Request;
 use App\Models\PastTenantDetails;
+use App\Http\Controllers\Controller;
 
 
 class PropertyController extends Controller
@@ -305,7 +306,7 @@ class PropertyController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Properties Jobs';
 
-        $jobs = Jobs::where('property_id',$id)->with('property', 'contractor')->paginate(10);
+        $jobs = Jobs::where('property_id',$id)->with('property')->paginate(10);
         $property_id = $id;
 
         return view('admin.properties.jobs.index', compact('page', 'jobs', 'property_id'));
@@ -347,6 +348,18 @@ class PropertyController extends Controller
         ->back()
         ->withFlashMessage('Description updated successfully!')
         ->withFlashType('success');
+    }
+
+    public function invoices($id){
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Property Invoices';
+
+        $invoices = Invoices::where('property_id', $id)->with('property', 'contractor')->paginate(10);
+        $property_id = $id;
+
+        return view('admin.properties.invoices.index', compact('page','invoices', 'property_id'));
     }
 
 }

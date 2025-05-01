@@ -79,6 +79,7 @@ class JobsController extends Controller
             'description' => 'required|string',
             'other_information' => 'nullable|string',
             'contractors.*.contractor_id' => 'nullable|exists:contractors,id',
+            'priority' => 'required',
         ]);
     
         // Prepare contractor details JSON
@@ -104,6 +105,7 @@ class JobsController extends Controller
             'description' => $request->description,
             'other_information' => $request->other_information,
             'contractor_details' => json_encode($contractorDetails),
+            'priority' => $request->priority,
         ]);
     
         return redirect()
@@ -177,7 +179,8 @@ class JobsController extends Controller
             'status' => 'required|string',
             'property_id' => 'required', 
             'description' => 'required|string',
-            'other_information' => 'nullable|string'
+            'other_information' => 'nullable|string',
+            'priority' => 'required',
         ]);
 
         $job = Jobs::where('id', $id)->first();
@@ -185,6 +188,7 @@ class JobsController extends Controller
         $job->property_id = $request->property_id;
         $job->description = $request->description;
         $job->other_information = $request->other_information;
+        $job->priority = $request->priority;
         $job->save();
 
         return redirect()

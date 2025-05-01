@@ -1,4 +1,4 @@
-@extends('admin.partials.main')
+@extends('contractor.partials.main')
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -12,16 +12,16 @@
             <div class="row breadcrumbs-top d-inline-block">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ $page['page_parent_link'] }}"
-                                class="theme-color">{{ $page['page_parent'] }}</a>
+                        <li class="breadcrumb-item">
+                            <a href="{{ $page['page_parent_link'] }}" class="theme-color">{{ $page['page_parent'] }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ $page['page_current'] }}
-                        </li>
+                        <li class="breadcrumb-item active">{{ $page['page_current'] }}</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="content-body">
         <section id="search-landlords">
             <div class="row">
@@ -29,8 +29,8 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
-                                @include('admin.partials.flashes')
-                                <form method="post" enctype="multipart/form-data" id='manageInvoices'  action="{{route('admin.invoices.store')}}">
+                                @include('contractor.partials.flashes')
+                                <form method="post" enctype="multipart/form-data" id='manageInvoices'  action="{{route('contractor.invoices.update', $invoice->id)}}">
                                     @csrf
                                     <div class="form-body">
                                         <h3 class="mb-2"><strong>Details</strong></h3>
@@ -41,7 +41,9 @@
                                                     <select id="property" name="property" class="form-control select2">
                                                         <option value="">Select Property</option>
                                                         @foreach($properties as $item)
-                                                            <option value="{{$item->id }}">{{ $item->line1 . ', ' . $item->city . ', ' . $item->county . ', ' . $item->postcode }}</option>
+                                                            <option value="{{$item->id }}" {{ $invoice->property_id == $item->id ? 'selected' : '' }}>
+                                                                {{ $item->line1 . ', ' . $item->city . ', ' . $item->county . ', ' . $item->postcode }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     @error('property') <span class="text-danger">{{ $message }}</span> @enderror
@@ -51,7 +53,7 @@
                                                 <div class="form-group">
                                                     <label for="reference">Reference</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="reference" class="form-control" placeholder="Reference" name="reference" value="{{ old('reference', $property->reference ?? '') }}">
+                                                        <input type="text" id="reference" class="form-control" placeholder="Reference" name="reference" value="{{ $invoice->reference }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-tag"></i> 
                                                         </div>
@@ -64,29 +66,14 @@
                                                 <div class="form-group">
                                                     <label for="date"><span style="color: red;">*</span>Date</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date" class="form-control flatpickr" placeholder="DD/MM/YYYY" name="date" value="">
+                                                        <input type="text" id="date" class="form-control flatpickr" placeholder="DD/MM/YYYY" name="date" value="{{ \Carbon\Carbon::parse($invoice->date)->format('d/m/Y') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-calendar"></i>
                                                         </div>
                                                     </div>
                                                     @error('date') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="job"><span style="color: red;">*</span>Job</label>
-                                                    <select id="job" name="job" class="form-control select2">
-                                                        <option value="">Select Job</option>
-                                                        @foreach($jobs as $job)
-                                                            <option value="{{ $job->id }}">
-                                                                {{ $job->description . "  -  " . $job->property->line1 . ', ' . $job->property->city . ', ' . $job->property->county . ', ' . $job->property->postcode ?? 'Job #' . $job->id }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('job') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
+                                            </div>                                            
 
                                         </div>
                                         <h3 class="mb-2"><strong>Amount</strong></h3>
@@ -96,7 +83,8 @@
                                                     <label for="subtotal">Subtotal</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="subtotal" class="form-control pl-4 auto-format" placeholder="Subtotal" name="subtotal" value="0.00">
+                                                        <input type="text" id="subtotal" class="form-control pl-4" placeholder="Subtotal" name="subtotal" 
+                                                             value="{{ old('subtotal', isset($invoice->subtotal) ? number_format($invoice->subtotal, 2) : '0.00') }}">
 
                                                     </div>
                                                     @error('subtotal') <span class="text-danger">{{ $message }}</span> @enderror
@@ -122,7 +110,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
                                                         <input type="text" id="vat" class="form-control pl-4" placeholder="VAT" name="vat" 
-                                                            value="0.00">
+                                                            value="{{ old('vat', number_format($invoice->vat, 2)  ?? '') }}">
                                                     </div>
                                                     @error('vat') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
@@ -134,7 +122,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
                                                         <input type="text" id="total" class="form-control pl-4" placeholder="Total" name="total" 
-                                                            value="0.00">
+                                                            value="{{ old('total', number_format($invoice->total, 2)  ?? '') }}">
                                                     </div>
                                                     @error('total') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
@@ -145,7 +133,7 @@
                                                     <label for="vat_applicable">VAT Applicable</label>
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" id="vat_applicable" class="custom-control-input" name="vat_applicable" 
-                                                            value="yes" checked>
+                                                            value="yes" {{ old('vat_applicable', $invoice->vat_applicable ?? '') == 'yes' ? 'checked' : '' }}>
                                                         <label class="custom-control-label" for="vat_applicable">Is VAT applicable?</label>
                                                     </div>
                                                     @error('vat_applicable') <span class="text-danger">{{ $message }}</span> @enderror
@@ -154,44 +142,44 @@
                                             
                                         </div>
                                         <h3 class="mb-2"><strong>Address</strong></h3>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" id="entered_address" name="address_option" class="custom-control-input" 
-                                                                value="entered" checked>
-                                                            <label class="custom-control-label" for="entered_address">Use entered address?</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" id="property_address" name="address_option" class="custom-control-input" 
-                                                                value="property">
-                                                            <label class="custom-control-label" for="property_address">Use property's address?</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" id="landlord_address" name="address_option" class="custom-control-input" 
-                                                                value="landlord">
-                                                            <label class="custom-control-label" for="landlord_address">Use landlord's address?</label>
-                                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" id="entered_address" name="address_option" class="custom-control-input" 
+                                                            value="entered" {{ old('address_option', $invoice->address_option ?? '') == 'entered' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="entered_address">Use entered address?</label>
                                                     </div>
                                                 </div>
                                             </div>
+                                        
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" id="property_address" name="address_option" class="custom-control-input" 
+                                                            value="property" {{ old('address_option', $invoice->address_option ?? '') == 'property' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="property_address">Use property's address?</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" id="landlord_address" name="address_option" class="custom-control-input" 
+                                                            value="landlord" {{ old('address_option', $invoice->address_option ?? '') == 'landlord' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="landlord_address">Use landlord's address?</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="address_line_1"><span style="color: red;">*</span>Address Line 1</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_1" class="form-control" placeholder="Address Line 1" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
+                                                        <input type="text" id="address_line_1" class="form-control" placeholder="Address Line 1" name="address_line_1" value="{{ old('address_line_1', $invoice->line1 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -204,7 +192,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_2">Address Line 2</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_2" class="form-control" placeholder="Address Line 2" name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
+                                                        <input type="text" id="address_line_2" class="form-control" placeholder="Address Line 2" name="address_line_2" value="{{ old('address_line_2', $invoice->line2 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -217,7 +205,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_3">Address Line 3</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_3" class="form-control" placeholder="Address Line 3" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
+                                                        <input type="text" id="address_line_3" class="form-control" placeholder="Address Line 3" name="address_line_3" value="{{ old('address_line_3', $invoice->line3 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -232,7 +220,7 @@
                                                 <div class="form-group">
                                                     <label for="city"><span style="color: red;">*</span>City</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="city" class="form-control" placeholder="City" name="city" value="{{ old('city', $property->city ?? '') }}">
+                                                        <input type="text" id="city" class="form-control" placeholder="City" name="city" value="{{ old('city', $invoice->city ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
                                                         </div>
@@ -245,7 +233,7 @@
                                                 <div class="form-group">
                                                     <label for="county"><span style="color: red;">*</span>County</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="county" class="form-control" placeholder="County" name="county" value="{{ old('county', $property->county ?? '') }}">
+                                                        <input type="text" id="county" class="form-control" placeholder="County" name="county" value="{{ old('county', $invoice->county ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map"></i>
                                                         </div>
@@ -258,7 +246,7 @@
                                                 <div class="form-group">
                                                     <label for="postal_code"><span style="color: red;">*</span>Postal Code</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="postal_code" class="form-control" placeholder="Postal Code" name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
+                                                        <input type="text" id="postal_code" class="form-control" placeholder="Postal Code" name="postal_code" value="{{ old('postal_code', $invoice->postcode ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -274,7 +262,7 @@
                                                     <label for="country"><span style="color: red;">*</span>Country</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="country" class="form-control" placeholder="Country" 
-                                                            name="country" value="{{ old('country', $property->country ?? '') }}">
+                                                            name="country" value="{{ old('country', $invoice->country ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
                                                         </div>
@@ -288,12 +276,12 @@
 
                                         <div class="form-group">
                                             <label for="description"><span style="color: red;">*</span>Description</label>
-                                            <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter your description here...">{{ old('description', $property->description ?? '') }}</textarea>
+                                            <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter your description here...">{{ $invoice->description }}</textarea>
                                             @error('description') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
 
                                         <div class="form-actions right">
-                                            <a href="{{route('admin.invoices')}}" class="theme-btn btn btn-primary">
+                                            <a href="{{route('contractor.invoices')}}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">
@@ -310,6 +298,7 @@
         </section>
     </div>
 @endsection
+
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
@@ -370,9 +359,6 @@
             description: {
                 required: true
             },
-            job:{
-                required: true
-            },
             property: {
                 required: true
             },
@@ -426,9 +412,6 @@
             city: "City is required",
             postal_code: "Postal Code is required",
             country: "Country is required",
-            job: {
-                required: "Please select a job."
-            }
         },
     });
 
@@ -439,7 +422,6 @@
 });
 
 </script>
-
 
 <script>
     $(document).ready(function() {
@@ -456,10 +438,10 @@
                 let vat = (subtotal * vatRate) / 100;
                 let total = subtotal + vat;
 
-                $('#vat').val(formatNumber(vat)); 
-                $('#total').val(formatNumber(total)); 
+                $('#vat').val(formatNumber(vat));
+                $('#total').val(formatNumber(total));
             } else {
-                $('#vat').val(formatNumber(0));
+                $('#vat').val(formatNumber(0)); 
                 $('#total').val(formatNumber(subtotal));
             }
         }
@@ -489,8 +471,10 @@
         let selectedOption = $(this).val(); 
         let propertyId = $('#property').val(); 
         
+        // Always clear fields first
         $('#address_line_1, #address_line_2, #address_line_3, #city, #county, #postal_code, #country').val('');
 
+        // If "entered" is selected, stop further execution
         if (selectedOption === 'entered') {
             return;
         }
@@ -528,5 +512,4 @@
 
 
 </script>
-
 @endsection

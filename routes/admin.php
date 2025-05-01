@@ -115,6 +115,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('/contractors/{id}/delete', [ContractorsController::class, 'delete'])->name('admin.settings.contractors.delete');
     Route::get('/contractors/search', [ContractorsController::class, 'searchData'])->name('admin.settings.contractors.search');
     Route::get('contractors/{id}/view/jobs', [ContractorsController::class, 'jobs'])->name('admin.contractors.viewjobs');
+    Route::get('contractors/{id}/view/invoices', [ContractorsController::class, 'invoices'])->name('admin.contractors.invoices.index');
 
     //Properties
     Route::get('/properties', [PropertyController::class, 'index'])->name('admin.properties');
@@ -132,6 +133,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('properties/{id}/editDiary', [PropertyController::class, 'diaryStore'])->name('admin.properties.diaryStore');
     Route::post('properties/{id}/deleteDiary', [PropertyController::class, 'diaryDelete'])->name('admin.properties.diaryDelete');
     Route::get('properties/{id}/view/jobs', [PropertyController::class, 'jobs'])->name('admin.properties.viewjobs');
+    Route::get('properties/{id}/view/invoices', [PropertyController::class, 'invoices'])->name('admin.properties.invoices.index');
     Route::get('properties/{id}/past_tenant', [PropertyController::class, 'pastTenant'])->name('admin.properties.past.tenant');
     Route::get('properties/{id}/current_tenant', [PropertyController::class, 'currentTenant'])->name('admin.properties.current.tenant');
     
@@ -166,7 +168,9 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('accounts/invoices/create', [InvoicesController::class, 'create'])->name('admin.invoices.create');
     Route::post('accounts/invoices/store', [InvoicesController::class,'store'])->name('admin.invoices.store');
     Route::get('accounts/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('admin.invoices.edit');
+    Route::get('accounts/invoices/{id}/update/status', [InvoicesController::class, 'editStatus'])->name('admin.invoices.edit.status');
     Route::post('accounts/invoices/{id}/update', [InvoicesController::class, 'update'])->name('admin.invoices.update');
+    Route::post('accounts/invoices/{id}/save/status', [InvoicesController::class, 'storeStatus'])->name('admin.invoices.update.status');
     Route::delete('accounts/invoices/{id}/destroy', [InvoicesController::class, 'destroy'])->name('admin.invoices.destroy');
     Route::get('accounts/invoices/{id}/show', [InvoicesController::class,'show'])->name('admin.invoices.show');
     Route::get('accounts/invoices/search', [InvoicesController::class,'searchData'])->name('admin.invoices.search');

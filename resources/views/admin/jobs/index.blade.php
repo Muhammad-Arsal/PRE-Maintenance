@@ -102,6 +102,7 @@
                                         <th>#</th>
                                         <th>Job Id</th>
                                         <th>Status</th>
+                                        <th>Priority</th>
                                         <th>Description</th>
                                         <th>Property</th>
                                         <th>Wining Contractor</th>
@@ -121,8 +122,9 @@
                                         <tr>
                                             <td>{{ $j }}</td>
                                             <td>{{ $item->id }}</td>
-                                            <td>{{ $item->status }}</td>
-                                            <td>{{ $item->description }}</td>
+                                            <td>{{ $item->status ?? 'Not Set' }}</td>
+                                            <td>{{ $item->priority ?? 'Not Set' }}</td>
+                                            <td>{{ $item->description ?? 'Not Set' }}</td>
                                             <td>
                                                 <a href="{{ route('admin.properties.show', $item->property_id) }}">
                                                     {{ $item->property->line1 . ', ' . $item->property->city . ', ' . $item->property->county . ', ' . $item->property->postcode }}

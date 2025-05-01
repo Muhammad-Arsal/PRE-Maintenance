@@ -49,16 +49,21 @@
                                             href="{{ route('admin.properties.viewjobs', $property->id) }}">Jobs</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.invoices.index', $property->id) }}">Invoices</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
                                             aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.current.tenant', $property->id) }}">Current Tenant</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
                                             href="{{ route('admin.properties.past.tenant', $property->id) }}">Past Tenants</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('admin.properties.current.tenant', $property->id) }}">Current Tenant</a>
                                     </li>
                                 </ul>
                             </div>

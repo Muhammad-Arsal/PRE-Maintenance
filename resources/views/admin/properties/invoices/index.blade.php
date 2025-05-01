@@ -52,12 +52,12 @@
                                             href="{{ route('admin.properties.diary', $property_id) }}">Diary</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active disabled" id="jobs" data-toggle="tab"
-                                            aria-controls="jobs" href="#jobs" aria-expanded="true">Jobs</a>
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.viewjobs', $property_id) }}">Jobs</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('admin.properties.invoices.index', $property_id) }}">Invoices</a>
+                                        <a class="nav-link active disabled" id="invoices" data-toggle="tab"
+                                            aria-controls="invoices" href="#invoices" aria-expanded="true">Invoices</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
@@ -83,10 +83,10 @@
                                                     <thead style="background-color: rgb(4,30,65); color: white;">
                                                         <tr>
                                                             <th>ID</th>
-                                                            <th>Status</th>
-                                                            <th>Priority</th>
-                                                            <th>Description</th>
-                                                            <th>Winning Contractor</th>
+                                                            <th>Date</th>
+                                                            <th>Contractor</th>
+                                                            <th>Job</th>
+                                                            <th>Total</th>
                                                             <th>Created At</th>
                                                             <th>Modified At</th>
                                                         </tr>
@@ -94,47 +94,24 @@
                                                     <tbody>
                                                         @php $j=1 @endphp
                                                         <?php
-                                                            if($jobs->currentPage() !== 1){
+                                                            if($invoices->currentPage() !== 1){
                                                                 $j =  10 * ( $jobs->currentPage() - 1) + 1;
                                                             }
                                                         ?>
-                                                        @forelse ($jobs as $item)
-                                                        @php
-                                                            $contractorDetails = json_decode($item->contractor_details, true);
-                                                            $winningContractorId = null;
-                                                        
-                                                            foreach ($contractorDetails as $contractor) {
-                                                                if (isset($contractor['won_contract']) && $contractor['won_contract'] === 'yes') {
-                                                                    $winningContractorId = $contractor['contractor_id'] ?? null;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        
-                                                            $winningContractor = $winningContractorId 
-                                                                ? \App\Models\Contractor::find($winningContractorId) 
-                                                                : null;
-                                                        @endphp
+                                                        @forelse ($invoices as $item)
                                                             <tr>
-                                                                <td>{{$j}}</td>
-                                                                <td>{{$item->status}}</td>
-                                                                <td>{{$item->priority}}</td>
-                                                                <td>{{$item->description}}</td>
-                                                                <td>
-                                                                    @if($winningContractor)
-                                                                        <a href="{{ route('admin.settings.contractors.edit', $winningContractorId) }}">
-                                                                            {{ $winningContractor->name }}
-                                                                        </a>
-                                                                    @else
-                                                                        Not set
-                                                                    @endif
-                                                                </td>
+                                                                <td><a href="{{ route('admin.invoices.show',$item->id) }}">{{ $item->id }}</a></td>
+                                                                <td>{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                                                <td><a href="{{ route('admin.settings.contractors.edit', $item->contractor->id) }}">{{ $item->contractor->name }}</a></td>
+                                                                <td><a href="{{ route('admin.jobs.edit',$item->job->id) }}">{{ $item->job->description }}</a></td>
+                                                                <td>{{ $item->total }}</td>
                                                                 <td>{{$item->created_at->format('d/m/Y, h:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, h:i') }}</td>
                                                             </tr>
                                                             @php $j++ @endphp
                                                         @empty
                                                             <tr>
-                                                                <td colspan="6">
+                                                                <td colspan="7">
                                                                     <p class="text-center" style="font-size:1.5rem">No Data Available</p>
                                                                 </td>
                                                             </tr>
@@ -143,7 +120,7 @@
                                                 </table>
                                             </div>
                                             <div class="row justify-content-center pagination-wrapper mt-2">
-                                                {!! $jobs->appends(request()->query())->links('pagination::bootstrap-4') !!}
+                                                {!! $invoices->appends(request()->query())->links('pagination::bootstrap-4') !!}
                                             </div>
                                         </div>
                                                           
@@ -187,17 +164,3 @@
     </div>
 @endsection
 
-@section('js')
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $(".clickDeleteFunction").on("click", function(e) {
-            e.preventDefault(); // Prevent default link behavior
-            let actionUrl = $(this).data("action");
-            $("form[name='deleteForm']").attr("action", actionUrl);
-            $("#forceDelete").modal("show");
-        });
-    });
-    </script>
-@endsection

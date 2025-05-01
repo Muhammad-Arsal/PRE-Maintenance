@@ -38,12 +38,12 @@
                                             href="{{ route('admin.settings.contractors.edit.address', $contractor_id) }}">Address</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active disabled" id="jobs" data-toggle="tab"
-                                            aria-controls="jobs" href="#jobs" aria-expanded="true">Jobs</a>
+                                        <a class="nav-link"
+                                            href="{{ route('admin.contractors.viewjobs', $contractor_id) }}">Jobs</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('admin.contractors.invoices.index', $contractor_id) }}">Invoices</a>
+                                        <a class="nav-link active disabled" id="invoices" data-toggle="tab"
+                                            aria-controls="invoices" href="#invoices" aria-expanded="true">Invoices</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
@@ -60,11 +60,10 @@
                                                     <thead style="background-color: rgb(4,30,65); color: white;">
                                                         <tr>
                                                             <th>ID</th>
+                                                            <th>Date</th>
                                                             <th>Property</th>
-                                                            <th>Description</th>
-                                                            <th>Status</th>
-                                                            <th>Priority</th>
-                                                            <th>Won Contract?</th>
+                                                            <th>Job</th>
+                                                            <th>Total</th>
                                                             <th>Created At</th>
                                                             <th>Modified At</th>
                                                         </tr>
@@ -72,37 +71,24 @@
                                                     <tbody>
                                                         @php $j=1 @endphp
                                                         <?php
-                                                            if($jobs->currentPage() !== 1){
+                                                            if($invoices->currentPage() !== 1){
                                                                 $j =  10 * ( $jobs->currentPage() - 1) + 1;
                                                             }
                                                         ?>
-                                                        @forelse ($jobs as $item)
+                                                        @forelse ($invoices as $item)
                                                             <tr>
-                                                                <td><a href="{{ route('admin.jobs.edit', $item->id) }}">{{ $j }}</a></td>  
-                                                                <td><a href="{{route('admin.properties.edit', $item->property->id)}}">{{$item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</a></td>
-                                                                <td>{{$item->description}}</td>
-                                                                <td>{{$item->status}}</td>
-                                                                <td>{{$item->priority}}</td>
-                                                                @php
-                                                                    $status = 'No';
-                                                                    $contractors = json_decode($item->contractor_details, true);
-
-                                                                    foreach ($contractors as $contractor) {
-                                                                       
-                                                                        if ($contractor['contractor_id'] == $contractor_id && $contractor['won_contract'] === 'yes') {
-                                                                            $status = 'Yes';
-                                                                            break;
-                                                                        }
-                                                                    }
-                                                                @endphp
-                                                                <td>{{ $status }}</td>
+                                                                <td><a href="{{ route('admin.invoices.show',$item->id) }}">{{ $item->id }}</a></td>
+                                                                <td>{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                                                <td><a href="{{ route('admin.properties.edit', $item->property->id) }}">{{ $item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</a></td>
+                                                                <td><a href="{{ route('admin.jobs.edit',$item->job->id) }}">{{ $item->job->description }}</a></td>
+                                                                <td>{{ $item->total }}</td>
                                                                 <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            
                                                             </tr>
                                                             @php $j++ @endphp
                                                         @empty
                                                             <tr>
-                                                                <td colspan="6">
+                                                                <td colspan="7">
                                                                     <p class="text-center" style="font-size:1.5rem">No Data Available</p>
                                                                 </td>
                                                             </tr>
@@ -111,7 +97,7 @@
                                                 </table>
                                             </div>
                                             <div class="row justify-content-center pagination-wrapper mt-2">
-                                                {!! $jobs->appends(request()->query())->links('pagination::bootstrap-4') !!}
+                                                {!! $invoices->appends(request()->query())->links('pagination::bootstrap-4') !!}
                                             </div>
                                         </div>
                                                           

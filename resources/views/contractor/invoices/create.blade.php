@@ -1,4 +1,4 @@
-@extends('admin.partials.main')
+@extends('contractor.partials.main')
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -29,8 +29,8 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
-                                @include('admin.partials.flashes')
-                                <form method="post" enctype="multipart/form-data" id='manageInvoices'  action="{{route('admin.invoices.store')}}">
+                                @include('contractor.partials.flashes')
+                                <form method="post" enctype="multipart/form-data" id='manageInvoices'  action="{{route('contractor.invoices.store')}}">
                                     @csrf
                                     <div class="form-body">
                                         <h3 class="mb-2"><strong>Details</strong></h3>
@@ -76,7 +76,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="job"><span style="color: red;">*</span>Job</label>
-                                                    <select id="job" name="job" class="form-control select2">
+                                                    <select id="job" name="job" class="form-control select2" required>
                                                         <option value="">Select Job</option>
                                                         @foreach($jobs as $job)
                                                             <option value="{{ $job->id }}">
@@ -87,6 +87,7 @@
                                                     @error('job') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
+                                            
 
                                         </div>
                                         <h3 class="mb-2"><strong>Amount</strong></h3>
@@ -293,7 +294,7 @@
                                         </div>
 
                                         <div class="form-actions right">
-                                            <a href="{{route('admin.invoices')}}" class="theme-btn btn btn-primary">
+                                            <a href="{{route('contractor.invoices')}}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">
@@ -370,10 +371,10 @@
             description: {
                 required: true
             },
-            job:{
+            property: {
                 required: true
             },
-            property: {
+            job: {
                 required: true
             },
             date: {

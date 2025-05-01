@@ -44,6 +44,10 @@
                                             href="{{ route('admin.contractors.viewjobs', $contractor->id) }}">Jobs</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.contractors.invoices.index', $contractor->id) }}">Invoices</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
                                             aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
                                     </li>

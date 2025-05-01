@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ContractorEmailVerificationController;
 use App\Http\Controllers\Contractor\DashboardController;
 use App\Http\Controllers\Contractor\ProfileController;
 use App\Http\Controllers\Contractor\ContractorCorrespondenceController;
+use App\Http\Controllers\Contractor\InvoicesController;
 
 Route::get('/',  [ContractorAuthController::class, 'login'])->name('contractor.login');
 Route::post('/contractorlogin',[ContractorAuthController::class, 'contractorLogin'])->name('contractorLogin');
@@ -53,5 +54,19 @@ Route::middleware(['contractor', 'verified:contractor.login'])->group(function()
     Route::post('/correspondence/{id}/edit/{parent_id}/new-meeting', [ContractorCorrespondenceController::class, 'storeMeeting'])->name('contractor.contractors.correspondence.newMeeting');
     Route::get('correspondence/{id}/edit/task', [ContractorCorrespondenceController::class, 'showTaskPage'])->name('contractor.suppliers.correspondence.task');
     Route::post('tasks/create/task/{id}', [ContractorCorrespondenceController::class, 'storeTask'])->name('contractor.tasks.cross.store');
+
+
+
+    //invoices
+    Route::get('account/invoices', [InvoicesController::class, 'index'])->name('contractor.invoices');
+    Route::get('account/invoices/create', [InvoicesController::class, 'create'])->name('contractor.invoices.create');
+    Route::post('account/invoices/store', [InvoicesController::class,'store'])->name('contractor.invoices.store');
+    Route::get('account/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('contractor.invoices.edit');
+    Route::post('account/invoices/{id}/update', [InvoicesController::class, 'update'])->name('contractor.invoices.update');
+    Route::delete('account/invoices/{id}/destroy', [InvoicesController::class, 'destroy'])->name('contractor.invoices.destroy');
+    Route::get('account/invoices/{id}/show', [InvoicesController::class,'show'])->name('contractor.invoices.show');
+    Route::get('account/invoices/search', [InvoicesController::class,'searchData'])->name('contractor.invoices.search');
+    //AJAX
+    Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');
 });
 ?>

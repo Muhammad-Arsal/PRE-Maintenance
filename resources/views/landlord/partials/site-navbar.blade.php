@@ -3,6 +3,7 @@
       <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
         {{-- <li class="nav-item  {{ Request::segment(2) == 'profile' ? 'open' :''}}"><a href="{{route('landlord.settings.landlords.edit', auth('landlord')->id())}}" ><i class="la la-institution"></i><span class="menu-title">Profile</span></a> --}}
         <li class="nav-item  {{ Request::segment(2) == 'overview' ? 'open' :''}}"><a href="{{route('landlord.settings.landlords.edit', auth('landlord')->id())}}" ><i class="la la-home"></i><span class="menu-title">Overview</span></a>
+        <li class="nav-item  {{ Request::segment(2) == 'account' ? 'open' :''}}"><a href="{{route('landlord.invoices')}}" ><i class="la la-file"></i><span class="menu-title">Account</span></a>
         <li class="nav-item  {{ Request::segment(2) == 'address' ? 'open' :''}}"><a href="{{route('landlord.settings.landlord.address', auth('landlord')->id())}}" ><i class="la la-map-marker"></i><span class="menu-title">Address</span></a>
         <li class="nav-item  {{ Request::segment(2) == 'bank_details' ? 'open' :''}}"><a href="{{route('landlord.settings.landlord.bank', auth('landlord')->id())}}" ><i class="la la-credit-card"></i><span class="menu-title">Bank Detail</span></a>
         <li class="nav-item  {{ Request::segment(2) == 'properties' ? 'open' :''}}"><a href="{{route('landlord.settings.landlord.properties', auth('landlord')->id())}}" ><i class="la la-institution"></i><span class="menu-title">Properties</span></a>

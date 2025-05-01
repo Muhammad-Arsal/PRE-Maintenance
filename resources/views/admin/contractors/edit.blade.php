@@ -43,6 +43,10 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
+                                            href="{{ route('admin.contractors.invoices.index', $contractor->id) }}">Invoices</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
                                             href="{{ route('admin.contractors.correspondence', $contractor->id) }}">Correspondence</a>
                                     </li>
                                 </ul>

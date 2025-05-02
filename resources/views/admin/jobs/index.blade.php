@@ -175,7 +175,7 @@
                                         @php $j++ @endphp
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center text-muted">No data found</td>
+                                            <td colspan="10" class="text-center text-muted">No data found</td>
                                         </tr>
                                     @endforelse
 

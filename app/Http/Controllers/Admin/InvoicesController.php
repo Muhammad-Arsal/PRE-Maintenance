@@ -38,13 +38,10 @@ class InvoicesController extends Controller
         $page['page_current'] = 'Add Invoice';
 
         $properties = Property::all();
-        $contractorId = Auth::guard('contractor')->user()->id;
-        $jobs = Jobs::whereJsonContains('contractor_details', [
-            'contractor_id' => (string)$contractorId,
-            'won_contract' => 'yes'
-        ])->with('property', 'contractor')->get();
+        $contractors = Contractor::all();
+        $jobs = Jobs::with('property', 'contractor')->get();
 
-        return view('admin.invoices.create', compact('page','properties', 'jobs'));
+        return view('admin.invoices.create', compact('page','properties', 'jobs', 'contractors'));
     }
 
     public function store(Request $request)
@@ -58,6 +55,8 @@ class InvoicesController extends Controller
             'total' => 'required',
             'description' => 'required|string|max:1000',
             'address_option' => 'required|in:entered,property,landlord',
+            'contractor' => 'required',
+            'job' => 'required',
         ], [
             'property.required' => 'The property field is required.',
             'property.exists' => 'The selected property is invalid.',
@@ -71,6 +70,8 @@ class InvoicesController extends Controller
             'total.numeric' => 'Total must be a number.',
             'description.required' => 'Description is required.',
             'address_option.required' => 'Please select an address option.',
+            'contractor.required' => 'Please select a contractor.',
+            'job.required' => 'Please select a job.',
         ]);
 
         $formattedDate = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
@@ -96,6 +97,9 @@ class InvoicesController extends Controller
         $invoice->city =  $request->city ?? null;
         $invoice->postcode =  $request->postal_code ?? null;
         $invoice->country =  $request->country ?? null;
+        $invoice->contractor_id = $request->contractor;
+        $invoice->job_id = $request->job;
+        $invoice->status = 'unpaid';
 
         $invoice->description = $request->description;
 

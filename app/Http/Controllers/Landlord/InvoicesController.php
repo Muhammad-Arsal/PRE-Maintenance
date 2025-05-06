@@ -258,45 +258,45 @@ class InvoicesController extends Controller
         return view('landlord.invoices.index', compact('page', 'invoices', 'keywords'));
     }
 
-    public function getAddressDetails(Request $request)
-    {
-        // dd($request->property_id);
-        $property = Property::where('id', $request->property_id)->with('landlord')->first();
-        if (!$property) {
-            return response()->json(['success' => false, 'message' => 'Property not found'], 404);
-        }
+    // public function getAddressDetails(Request $request)
+    // {
+    //     // dd($request->property_id);
+    //     $property = Property::where('id', $request->property_id)->with('landlord')->first();
+    //     if (!$property) {
+    //         return response()->json(['success' => false, 'message' => 'Property not found'], 404);
+    //     }
 
-        if ($request->address_type === 'property') {
-            $address = [
-                'address_line_1' => $property->line1,
-                'address_line_2' => $property->line2,
-                'address_line_3' => $property->line3,
-                'city' => $property->city,
-                'county' => $property->county,
-                'postal_code' => $property->postcode,
-                'country' => $property->country,
-            ];
-        } elseif ($request->address_type === 'landlord') {
-            $landlord = $property->landlord;
+    //     if ($request->address_type === 'property') {
+    //         $address = [
+    //             'address_line_1' => $property->line1,
+    //             'address_line_2' => $property->line2,
+    //             'address_line_3' => $property->line3,
+    //             'city' => $property->city,
+    //             'county' => $property->county,
+    //             'postal_code' => $property->postcode,
+    //             'country' => $property->country,
+    //         ];
+    //     } elseif ($request->address_type === 'landlord') {
+    //         $landlord = $property->landlord;
 
-            if (!$landlord) {
-                return response()->json(['success' => false, 'message' => 'Landlord not found'], 404);
-            }
+    //         if (!$landlord) {
+    //             return response()->json(['success' => false, 'message' => 'Landlord not found'], 404);
+    //         }
 
-            $address = [
-                'address_line_1' => $landlord->line1,
-                'address_line_2' => $landlord->line2,
-                'address_line_3' => $landlord->line3,
-                'city' => $landlord->city,
-                'county' => $landlord->county,
-                'postal_code' => $landlord->postcode,
-                'country' => $landlord->country,
-            ];
-        } else {
-            return response()->json(['success' => false, 'message' => 'Invalid address type'], 400);
-        }
+    //         $address = [
+    //             'address_line_1' => $landlord->line1,
+    //             'address_line_2' => $landlord->line2,
+    //             'address_line_3' => $landlord->line3,
+    //             'city' => $landlord->city,
+    //             'county' => $landlord->county,
+    //             'postal_code' => $landlord->postcode,
+    //             'country' => $landlord->country,
+    //         ];
+    //     } else {
+    //         return response()->json(['success' => false, 'message' => 'Invalid address type'], 400);
+    //     }
 
-        return response()->json(['success' => true, 'data' => $address]);
-    }
+    //     return response()->json(['success' => true, 'data' => $address]);
+    // }
 
 }

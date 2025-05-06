@@ -176,7 +176,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('accounts/invoices/search', [InvoicesController::class,'searchData'])->name('admin.invoices.search');
 
     //AJAX
-    Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');
+    Route::get('admin/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('admin.get.address.details');
 
     //Landlord Correspondence Routes
     Route::get('/landlords/{id}/correspondence', [LandlordsCorrespondenceController::class, 'index'])->name('admin.landlords.correspondence');

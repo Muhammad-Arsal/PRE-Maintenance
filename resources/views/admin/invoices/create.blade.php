@@ -47,6 +47,34 @@
                                                     @error('property') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="contractor"><span style="color: red;">*</span>Contractor</label>
+                                                    <select id="contractor" name="contractor" class="form-control select2">
+                                                        <option value="">Select Contractor</option>
+                                                        @foreach($contractors as $item)
+                                                            <option value="{{$item->id }}">{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('contractor') <span class="text-danger">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="job"><span style="color: red;">*</span>Job</label>
+                                                    <select id="job" name="job" class="form-control select2">
+                                                        <option value="">Select Job</option>
+                                                        @foreach($jobs as $job)
+                                                            <option value="{{ $job->id }}">
+                                                                {{ $job->description . "  -  " . $job->property->line1 . ', ' . $job->property->city . ', ' . $job->property->county . ', ' . $job->property->postcode ?? 'Job #' . $job->id }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('job') <span class="text-danger">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="reference">Reference</label>
@@ -73,20 +101,6 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="job"><span style="color: red;">*</span>Job</label>
-                                                    <select id="job" name="job" class="form-control select2">
-                                                        <option value="">Select Job</option>
-                                                        @foreach($jobs as $job)
-                                                            <option value="{{ $job->id }}">
-                                                                {{ $job->description . "  -  " . $job->property->line1 . ', ' . $job->property->city . ', ' . $job->property->county . ', ' . $job->property->postcode ?? 'Job #' . $job->id }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('job') <span class="text-danger">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
 
                                         </div>
                                         <h3 class="mb-2"><strong>Amount</strong></h3>
@@ -376,6 +390,9 @@
             property: {
                 required: true
             },
+            contractor: {
+                required: true
+            },
             date: {
                 required: true,
                 date: true
@@ -416,6 +433,7 @@
         messages: {
             description: "Please enter a description",
             property: "Please select a property",
+            contractor: "Please select a contractor",
             date: "Please enter a valid date",
             subtotal: "Please enter a valid subtotal",
             vat_rate: "Please enter a valid VAT rate",
@@ -484,49 +502,47 @@
 </script>
 
 <script>
-   $(document).ready(function () {
-    $('input[name="address_option"]').change(function () {
-        let selectedOption = $(this).val(); 
-        let propertyId = $('#property').val(); 
-        
-        $('#address_line_1, #address_line_2, #address_line_3, #city, #county, #postal_code, #country').val('');
+            $(document).ready(function () {
+            $('input[name="address_option"]').change(function () {
+                let selectedOption = $(this).val(); 
+                let propertyId = $('#property').val(); 
+                
+                $('#address_line_1, #address_line_2, #address_line_3, #city, #county, #postal_code, #country').val('');
 
-        if (selectedOption === 'entered') {
-            return;
-        }
+                if (selectedOption === 'entered') {
+                    return;
+                }
 
-        if ((selectedOption === 'property' || selectedOption === 'landlord') && propertyId) {
-            $.ajax({
-                url: "{{ route('get.address.details') }}",
-                type: "GET",
-                data: { 
-                    property_id: propertyId, 
-                    address_type: selectedOption 
-                },
-                success: function (response) {
-                    if (response.success) {
-                        let address = response.data;
+                if ((selectedOption === 'property' || selectedOption === 'landlord') && propertyId) {
+                    $.ajax({
+                        url: "{{ route('admin.get.address.details') }}",
+                        type: "GET",
+                        data: { 
+                            property_id: propertyId, 
+                            address_type: selectedOption 
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                let address = response.data;
 
-                        $('#address_line_1').val(address.address_line_1);
-                        $('#address_line_2').val(address.address_line_2);
-                        $('#address_line_3').val(address.address_line_3);
-                        $('#city').val(address.city);
-                        $('#county').val(address.county);
-                        $('#postal_code').val(address.postal_code);
-                        $('#country').val(address.country);
-                    }
-                },
-                error: function () {
-                    alert('Failed to fetch address details.');
+                                $('#address_line_1').val(address.address_line_1);
+                                $('#address_line_2').val(address.address_line_2);
+                                $('#address_line_3').val(address.address_line_3);
+                                $('#city').val(address.city);
+                                $('#county').val(address.county);
+                                $('#postal_code').val(address.postal_code);
+                                $('#country').val(address.country);
+                            }
+                        },
+                        error: function () {
+                            alert('Failed to fetch address details.');
+                        }
+                    });
+                } else {
+                    alert("Please select a property first.");
                 }
             });
-        } else {
-            alert("Please select a property first.");
-        }
-    });
-});
-
-
+            });
 </script>
 
 @endsection

@@ -228,46 +228,37 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        $("#manageJobs").validate({
-            rules: {
-                status: {
-                    required: true
-                },
-                priority: {
-                    required: true
-                },
-                property_id: {
-                    required: true
-                },
-                description: {
-                    required: true
-                }
-            },
-            messages: {
-                status: {
-                    required: "Please select a status."
-                },
-                priority: {
-                    required: "Please select a priority."
-                },
-                property_id: {
-                    required: "Please select a property."
-                },
-                description: {
-                    required: "Please enter a description."
-                }
-            },
-            errorPlacement: function (error, element) {
-                error.addClass("text-danger"); // Add Bootstrap error styling
-                if (element.parent(".position-relative").length) {
-                    error.insertAfter(element.parent()); // For icon inputs
-                } else {
-                    error.insertAfter(element);
-                }
-            }
-        });
+  $(function() {
+    $('.select2').select2();
+
+    $.validator.addClassRules('price', {
+      number: true
     });
+    $.validator.addClassRules('description', {
+      required: true
+    });
+
+    $("#manageJobs").validate({
+      rules: {
+        status:       { required: true },
+        priority:     { required: true },
+        property_id:  { required: true }
+      },
+      messages: {
+        status:      { required: "Please select a status." },
+        priority:    { required: "Please select a priority." },
+        property_id: { required: "Please select a property." }
+      },
+      errorPlacement: function(error, element) {
+        error.addClass("text-danger");
+        if (element.parent(".position-relative").length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    });
+  });
 </script>
 
 

@@ -32,7 +32,7 @@
                             
                             <div class="card-body">
                                 @include('contractor.partials.flashes')
-                                <form method="post" enctype="multipart/form-data" id='managecontractor' action="{{ route('contractor.contractors.updateJob.details', $contractor_id) }}">
+                                <form method="post" enctype="multipart/form-data" id='manageJobs' action="{{ route('contractor.contractors.updateJob.details', $contractor_id) }}">
                                     @csrf
                                     <div class="form-body">
                                         @foreach($jobs as $i => $task)
@@ -42,7 +42,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>Description</label>
-                                                            <textarea class="form-control" rows="3" readonly>{{ $task->description }}</textarea>
+                                                            <textarea class="form-control description" rows="3" readonly>{{ $task->description }}</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-6">
@@ -82,7 +82,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>Price</label>
-                                                            <input type="text" name="tasks[{{ $task->id }}][price]" class="form-control" value="{{ $task->price }}">
+                                                            <input type="text" name="tasks[{{ $task->id }}][price]" class="form-control price" value="{{ $task->price }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -101,7 +101,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>Description</label>
-                                                            <textarea name="new_tasks[__INDEX__][description]" class="form-control" rows="3" required></textarea>
+                                                            <textarea name="new_tasks[__INDEX__][description]" class="form-control description" rows="3" required></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-6">
@@ -125,7 +125,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>Price</label>
-                                                            <input type="text" name="new_tasks[__INDEX__][price]" class="form-control">
+                                                            <input type="text" name="new_tasks[__INDEX__][price]" class="form-control price">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -160,6 +160,28 @@
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+<script>
+  $(function() {
+
+    $.validator.addClassRules('price', {
+      number: true
+    });
+    $.validator.addClassRules('description', {
+      required: true
+    });
+
+    $("#manageJobs").validate({
+      errorPlacement: function(error, element) {
+        error.addClass("text-danger");
+        if (element.parent(".position-relative").length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    });
+  });
+</script>
 <script>
      document.addEventListener("DOMContentLoaded", function() {
         flatpickr("#date", {

@@ -2,6 +2,7 @@
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @endsection
 
 @section('content')
@@ -80,7 +81,7 @@
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label>Description <span class="text-danger">*</span></label>
-                                                                        <textarea name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][description]" class="form-control" rows="4" required>{{ $task->description }}</textarea>
+                                                                        <textarea name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][description]" class="form-control description" rows="4" required>{{ $task->description }}</textarea>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
@@ -123,7 +124,7 @@
                                                                 <div class="col-md-6 mt-2">
                                                                     <div class="form-group">
                                                                         <label>Price</label>
-                                                                        <input type="text" name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][price]" class="form-control" value="{{ $task->price }}" placeholder="Enter price">
+                                                                        <input type="text" name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][price]" class="form-control price" value="{{ $task->price }}" placeholder="Enter price">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -158,7 +159,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Description <span class="text-danger">*</span></label>
-                                                        <textarea name="__TASK__[description]" class="form-control" rows="4" required></textarea>
+                                                        <textarea name="__TASK__[description]" class="form-control description" rows="4" required></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -184,7 +185,7 @@
                                                 <div class="col-md-6 mt-2">
                                                     <div class="form-group">
                                                         <label>Price</label>
-                                                        <input type="text" name="__TASK__[price]" class="form-control" placeholder="Enter price">
+                                                        <input type="text" name="__TASK__[price]" class="form-control price" placeholder="Enter price">
                                                     </div>
                                                 </div>
                                             </div>
@@ -211,6 +212,42 @@
 @endsection
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+
+<script>
+     document.addEventListener("DOMContentLoaded", function() {
+        flatpickr(".flatpickr", {
+            dateFormat: "d/m/Y",
+            allowInput: true
+        });
+    });
+
+</script>
+<script>
+  $(function() {
+    $('.select2').select2();
+
+    $.validator.addClassRules('price', {
+      number: true
+    });
+    $.validator.addClassRules('description', {
+      required: true
+    });
+
+    $("#manageJobs").validate({
+      errorPlacement: function(error, element) {
+        error.addClass("text-danger");
+        if (element.parent(".position-relative").length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    });
+  });
+</script>
 <script>
     let contractorIndex = {{ $job->jobDetail->groupBy('contractor_id')->count() }};
     

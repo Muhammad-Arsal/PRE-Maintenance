@@ -61,7 +61,6 @@
                                                         <tr>
                                                             <th>ID</th>
                                                             <th>Property</th>
-                                                            <th>Description</th>
                                                             <th>Status</th>
                                                             <th>Priority</th>
                                                             <th>Won Contract?</th>
@@ -80,22 +79,10 @@
                                                             <tr>
                                                                 <td><a href="{{ route('admin.jobs.edit', $item->id) }}">{{ $j }}</a></td>  
                                                                 <td><a href="{{route('admin.properties.edit', $item->property->id)}}">{{$item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</a></td>
-                                                                <td>{{$item->description}}</td>
-                                                                <td>{{$item->status}}</td>
+                                                                <td>{{ $item->status }}</td>
                                                                 <td>{{$item->priority}}</td>
-                                                                @php
-                                                                    $status = 'No';
-                                                                    $contractors = json_decode($item->contractor_details, true);
-
-                                                                    foreach ($contractors as $contractor) {
-                                                                       
-                                                                        if ($contractor['contractor_id'] == $contractor_id && $contractor['won_contract'] === 'yes') {
-                                                                            $status = 'Yes';
-                                                                            break;
-                                                                        }
-                                                                    }
-                                                                @endphp
-                                                                <td>{{ $status }}</td>
+                                                                <td>{{ $item->winning_contractor_id == $contractor_id ? 'Yes' : 'No' }}</td>
+                                                                
                                                                 <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            
                                                             </tr>

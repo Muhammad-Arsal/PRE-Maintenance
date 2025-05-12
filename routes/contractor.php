@@ -37,6 +37,8 @@ Route::middleware(['contractor', 'verified:contractor.login'])->group(function()
     Route::post('/contractors/{id}/delete', [ProfileController::class, 'delete'])->name('contractor.settings.contractors.delete');
     Route::get('/contractors/search', [ProfileController::class, 'searchData'])->name('contractor.settings.contractors.search');
     Route::get('jobs/{id}/view', [ProfileController::class, 'jobs'])->name('contractor.contractors.viewjobs');
+    Route::get('jobs/{id}/edit/detail/{jobId}', [ProfileController::class, 'editJob'])->name('contractor.contractors.editJob.details');
+    Route::post('jobs/{id}/update/detail', [ProfileController::class, 'updateContractorTasks'])->name('contractor.contractors.updateJob.details');
 
     //Correspondence Routes
     Route::get('/correspondence/{id}/edit', [ContractorCorrespondenceController::class, 'index'])->name('contractor.contractors.correspondence');

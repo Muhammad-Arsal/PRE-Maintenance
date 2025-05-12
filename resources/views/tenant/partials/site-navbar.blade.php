@@ -3,6 +3,7 @@
       <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
         <li class="nav-item  {{ Request::segment(2) == 'overview' ? 'open' :''}}"><a href="{{route('tenant.settings.tenants.edit', auth('tenant')->id())}}" ><i class="la la-home"></i><span class="menu-title">Overview</span></a>
         </li>
+        <li class="nav-item  {{ Request::segment(2) == 'account' ? 'open' :''}}"><a href="{{route('tenant.invoices')}}" ><i class="la la-file"></i><span class="menu-title">Account</span></a>
         <li class="nav-item  {{ Request::segment(2) == 'property' ? 'open' :''}}"><a href="{{route('tenant.settings.tenants.edit.property', auth('tenant')->id())}}" ><i class="la la-map-marker"></i><span class="menu-title">Property</span></a>
         </li>
         <li class="nav-item  {{ Request::segment(2) == 'correspondence' ? 'open' :''}}"><a href="{{route('tenant.tenants.correspondence', auth('tenant')->id())}}" ><i class="la la-envelope"></i><span class="menu-title">Correspondence</span></a>

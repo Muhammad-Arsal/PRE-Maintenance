@@ -103,7 +103,7 @@
                                         <th>Job Id</th>
                                         <th>Status</th>
                                         <th>Priority</th>
-                                        <th>Description</th>
+                                        
                                         <th>Property</th>
                                         <th>Wining Contractor</th>
                                         <th>Created At</th>
@@ -124,24 +124,19 @@
                                             <td>{{ $item->id }}</td>
                                             <td>{{ $item->status ?? 'Not Set' }}</td>
                                             <td>{{ $item->priority ?? 'Not Set' }}</td>
-                                            <td>{{ $item->description ?? 'Not Set' }}</td>
+                                            {{-- <td>{{ $item->description ?? 'Not Set' }}</td> --}}
                                             <td>
                                                 <a href="{{ route('admin.properties.show', $item->property_id) }}">
                                                     {{ $item->property->line1 . ', ' . $item->property->city . ', ' . $item->property->county . ', ' . $item->property->postcode }}
                                                 </a>
                                             </td>
                                             <td>
-                                                @php
-                                                    $details = json_decode($item->contractor_details, true);
-                                                    $winner = collect($details)->firstWhere('won_contract', 'yes');
-                                                    $contractor = $winner ? \App\Models\Contractor::find($winner['contractor_id']) : null;
-                                                @endphp
-                                            
-                                                @if($contractor)
-                                                    <a href="{{ route('admin.settings.contractors.edit', $contractor->id) }}">
-                                                        {{ $contractor->name }}
-                                                    </a>
+                                                @if (!empty($item->winningContractor->id))
+                                                <a href="{{ route('admin.settings.contractors.edit', $item->winningContractor->id) }}">{{ $item->winningContractor->name ?? 'Not Set' }}</a>
+                                                @else
+                                                Not Set
                                                 @endif
+                                            </td>
                                             </td>                                            
                                             <td>{{ $item->created_at ? $item->created_at->format('d/m/Y, h:i') : 'N/A' }}</td>
                                             <td>{{ $item->updated_at ? $item->updated_at->format('d/m/Y, h:i') : 'N/A' }}</td>

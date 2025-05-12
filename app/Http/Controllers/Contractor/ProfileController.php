@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Contractor;
 
-use App\Http\Controllers\Controller;
-use App\Models\Contractor;
+use Carbon\Carbon;
 use App\Models\Jobs;
-use App\Models\ContractorProfile;
+use App\Models\Admin;
+use App\Models\JobDetail;
+use App\Models\Contractor;
 use Illuminate\Http\Request;
+use App\Models\ContractorProfile;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ContractorSubmittedJobNotification;
 
 class ProfileController extends Controller
 {
@@ -272,11 +277,117 @@ class ProfileController extends Controller
         $page['page_parent_link'] = route('contractor.dashboard');
         $page['page_current'] = 'View Contractor Jobs';
 
-        $jobs = Jobs::whereJsonContains('contractor_details', [
-            'contractor_id' => (string) $id
-        ])->with('property', 'contractor')->paginate(10);     
+        $jobs = Jobs::whereHas('jobDetail', function($query) use ($id) {
+            $query->where('contractor_id', $id);
+        })->with('property', 'contractor', 'jobDetail')->paginate(10); 
         $contractor_id = $id;
 
         return view('contractor.profile.jobs.index', compact('page', 'jobs', 'contractor_id'));
     }
+
+    public function editJob(Request $request, $id,$jobId)
+    {
+        $page['page_title'] = 'Manage Contractors';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('contractor.dashboard');
+        $page['page_current'] = 'Edit Contractor Job';
+
+        $contractors = Contractor::where('status', 'Active')->get();
+        $jobs = JobDetail::where('contractor_id', $id)->where('jobs_id', $jobId)->with('contractor')->get();
+        $contractor_id = $id;
+
+        $contractor = Auth::guard('contractor')->user();
+        $allNotifications = $contractor->notifications()->where('data->notification_detail->type', 'job')->whereNull('read_at')->update(['read_at' => Carbon::now()]);
+        return view('contractor.profile.jobs.edit', compact('page', 'jobs', 'contractor_id', 'contractors'));
+    }
+    private function handleFileUpload(Request $request, $path)
+    {
+        $file = data_get($request->allFiles(), $path);
+        return $file ? $file->store('uploads/job_details', 'public') : null;
+    }
+
+    private function formatDate($date)
+    {
+        if (!$date) return null;
+
+        try {
+            return \Carbon\Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+    public function updateContractorTasks(Request $request, $id)
+    {
+        $tasks = $request->input('tasks', []);
+        $newTasks = $request->input('new_tasks', []);
+        $jobId = null;
+
+        // 🔁 Update existing tasks
+        foreach ($tasks as $taskId => $taskData) {
+            $task = JobDetail::where('id', $taskId)
+                ->where('contractor_id', $id)
+                ->first();
+
+            if (!$task) continue;
+
+            $task->contractor_comment = $taskData['contractor_comment'] ?? null;
+            $task->date = $this->formatDate($taskData['date'] ?? null);
+            $task->price = $taskData['price'] ?? null;
+
+            $newFile = $this->handleFileUpload($request, "tasks.{$taskId}.contractor_upload");
+            if ($newFile) {
+                $task->contractor_upload = $newFile;
+            }
+
+            if (!$jobId) {
+                $jobId = $task->jobs_id;
+            }
+
+            $task->save();
+        }
+
+        foreach ($newTasks as $index => $task) {
+            if (empty($task['description']) || empty($task['job_id']) || empty($task['contractor_id'])) {
+                continue;
+            }
+
+            JobDetail::create([
+                'jobs_id' => $task['job_id'],
+                'contractor_id' => $task['contractor_id'],
+                'description' => $task['description'],
+                'contractor_comment' => $task['contractor_comment'] ?? null,
+                'contractor_upload' => $this->handleFileUpload($request, "new_tasks.{$index}.contractor_upload"),
+                'date' => $this->formatDate($task['date'] ?? null),
+                'price' => $task['price'] ?? null,
+                'won_contract' => 'no',
+            ]);
+
+            if (!$jobId) {
+                $jobId = $task['job_id'];
+            }
+        }
+
+        if ($jobId) {
+            $admins = Admin::all();
+
+            foreach ($admins as $admin) {
+                $notificationDetails = array(
+                    'type' => 'job',
+                    'message' => 'Contractor has submitted job details.',
+                    'route' => route('admin.jobs.edit', $jobId),
+                );
+                Notification::send($admin, new ContractorSubmittedJobNotification($notificationDetails));
+            }
+        }
+
+        return redirect()
+            ->route('contractor.contractors.viewjobs', auth('contractor')->user()->id)
+            ->withFlashMessage('Job details updated successfully!')
+            ->withFlashType('success');
+    }
+
+    
+
+
+
 }

@@ -85,7 +85,6 @@
                                                             <th>ID</th>
                                                             <th>Status</th>
                                                             <th>Priority</th>
-                                                            <th>Description</th>
                                                             <th>Winning Contractor</th>
                                                             <th>Created At</th>
                                                             <th>Modified At</th>
@@ -99,34 +98,17 @@
                                                             }
                                                         ?>
                                                         @forelse ($jobs as $item)
-                                                        @php
-                                                            $contractorDetails = json_decode($item->contractor_details, true);
-                                                            $winningContractorId = null;
-                                                        
-                                                            foreach ($contractorDetails as $contractor) {
-                                                                if (isset($contractor['won_contract']) && $contractor['won_contract'] === 'yes') {
-                                                                    $winningContractorId = $contractor['contractor_id'] ?? null;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        
-                                                            $winningContractor = $winningContractorId 
-                                                                ? \App\Models\Contractor::find($winningContractorId) 
-                                                                : null;
-                                                        @endphp
                                                             <tr>
                                                                 <td>{{$j}}</td>
                                                                 <td>{{$item->status}}</td>
                                                                 <td>{{$item->priority}}</td>
-                                                                <td>{{$item->description}}</td>
+                                                                
                                                                 <td>
-                                                                    @if($winningContractor)
-                                                                        <a href="{{ route('admin.settings.contractors.edit', $winningContractorId) }}">
-                                                                            {{ $winningContractor->name }}
+                                                                
+                                                                        <a href="{{ route('admin.settings.contractors.edit', $item->winningContractor->id) }}">
+                                                                            {{ $item->winningContractor->name ?? 'Not Set' }}
                                                                         </a>
-                                                                    @else
-                                                                        Not set
-                                                                    @endif
+                                                                    
                                                                 </td>
                                                                 <td>{{$item->created_at->format('d/m/Y, h:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, h:i') }}</td>

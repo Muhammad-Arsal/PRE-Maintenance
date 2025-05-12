@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jobs extends Model
 {
+    use HasFactory;
+
     protected $table = 'jobs';
 
     protected $fillable = [
         'status',
         'property_id',
-        'won_contract',
-        'description',
         'other_information',
-        'contractor_details',
         'priority',
+        'winning_contractor_id'
     ];
 
     public function property()
@@ -27,6 +27,12 @@ class Jobs extends Model
     {
         return $this->belongsTo(Contractor::class, 'contractor_id');
     }
-
-    use HasFactory;
+    public function jobDetail()
+    {
+        return $this->hasMany(JobDetail::class);
+    }
+    public function winningContractor()
+    {
+        return $this->hasOne(Contractor::class, 'id', 'winning_contractor_id');
+    }
 }

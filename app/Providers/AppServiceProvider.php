@@ -26,8 +26,16 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('admin.**', function ($view) {
             $admin = auth()->guard('admin')->user();
             if ($admin) {
-                $allNotifications = $admin->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->orderBy('created_at', 'desc')->get();
-                $allNotificationsCount = $admin->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->count();
+                $allNotifications = $admin->notifications()
+                ->whereIn('data->notification_detail->type', ['invoice', 'job'])
+                ->whereNull('read_at')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            $allNotificationsCount = $admin->notifications()
+                ->whereIn('data->notification_detail->type', ['invoice', 'job'])
+                ->whereNull('read_at')
+                ->count(); 
 
                 $view->with(['allNotifications' => $allNotifications, 'allNotificationsCount' => $allNotificationsCount]);
             }
@@ -44,8 +52,16 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('contractor.**', function ($view) {
             $contractor = auth()->guard('contractor')->user();
             if ($contractor) {
-                $allNotifications = $contractor->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->orderBy('created_at', 'desc')->get();
-                $allNotificationsCount = $contractor->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->count();
+                $allNotifications = $contractor->notifications()
+                ->whereIn('data->notification_detail->type', ['invoice', 'job'])
+                ->whereNull('read_at')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            $allNotificationsCount = $contractor->notifications()
+                ->whereIn('data->notification_detail->type', ['invoice', 'job'])
+                ->whereNull('read_at')
+                ->count();            
 
                 $view->with(['allNotifications' => $allNotifications, 'allNotificationsCount' => $allNotificationsCount]);
             }

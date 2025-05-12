@@ -44,39 +44,151 @@
                                         </ul>
                                     </div>
                                     <div class="form-body">
-                                        {{-- Contractor rows loop --}}
                                         <div id="contractor-rows">
-                                            @foreach($contractorDetails as $i => $detail)
-                                                <div class="contractor-row d-flex mb-2">
-                                                    <div class="col-md-6">
-                                                        <select name="contractors[{{ $i }}][contractor_id]" class="form-control contractor-select">
-                                                            <option value="">Select Contractor</option>
-                                                            @foreach($contractors as $contractor)
-                                                                <option value="{{ $contractor->id }}" {{ $detail['contractor_id'] == $contractor->id ? 'selected' : '' }}>
-                                                                    {{ $contractor->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
+                                            {{-- Existing contractor blocks --}}
+                                            @foreach($job->jobDetail->groupBy('contractor_id') as $i => $taskGroup)
+                                                @php
+                                                    $contractor = $contractors->firstWhere('id', $i);
+                                                    $wonContract = $taskGroup->first()->won_contract === 'yes';
+                                                @endphp
+                                        
+                                                <div class="contractor-block mb-4" data-index="{{ $loop->index }}">
+                                                    <!-- Contractor Info -->
+                                                    <div class="row contractor-row mb-2">
+                                                        <div class="col-md-6">
+                                                            <label>Contractor</label>
+                                                            <select name="contractors[{{ $loop->index }}][contractor_id]" class="form-control contractor-select">
+                                                                <option value="">Select Contractor</option>
+                                                                @foreach($contractors as $c)
+                                                                    <option value="{{ $c->id }}" {{ $c->id == $i ? 'selected' : '' }}>{{ $c->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4 d-flex align-items-end" style="top: -10px;">
+                                                            <label class="mb-0 mr-2"><span class="text-danger">🏅</span> Won contract?</label>
+                                                            <input type="radio" name="won_contract_global" value="{{ $loop->index }}" {{ $wonContract ? 'checked' : '' }}>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex align-items-end">
+                                                            <button type="button" class="btn btn-danger btn-sm remove-contractor">X</button>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-4 d-flex align-items-end">
-                                                        <label class="mb-0 mr-2">
-                                                            <span class="text-danger" style="font-size: 1.2rem;">🏅</span> Won contract?
-                                                        </label>
-                                                        <input type="radio" name="won_contract_global" value="{{ $i }}" class="won-contract-radio" {{ $detail['won_contract'] == 'yes' ? 'checked' : '' }}>
+                                        
+                                                    <!-- Task Rows -->
+                                                    <div class="task-rows" data-contractor-index="{{ $loop->index }}">
+                                                        @foreach($taskGroup as $j => $task)
+                                                            <div class="task-row row mb-2">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Description <span class="text-danger">*</span></label>
+                                                                        <textarea name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][description]" class="form-control" rows="4" required>{{ $task->description }}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Contractor Comment</label>
+                                                                        <textarea name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][contractor_comment]" class="form-control" rows="4">{{ $task->contractor_comment }}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label>Admin Upload</label>
+                                                                    <input type="file" name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][admin_upload]" class="form-control-file">
+                                                                
+                                                                    @if (!empty($task->admin_upload))
+                                                                        <div class="mt-1">
+                                                                            <a href="{{ asset('storage/' . $task->admin_upload) }}" download>
+                                                                                <img src="{{ asset('storage/' . $task->admin_upload) }}" alt="Admin Upload" style="max-height: 80px; border: 1px solid #ddd; padding: 2px;">
+                                                                            </a>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                                
+                                                                <div class="col-md-6">
+                                                                    <label>Contractor Upload</label>
+                                                                    <input type="file" name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][contractor_upload]" class="form-control-file">
+                                                                
+                                                                    @if (!empty($task->contractor_upload))
+                                                                        <div class="mt-1">
+                                                                            <a href="{{ asset('storage/' . $task->contractor_upload) }}" download>
+                                                                                <img src="{{ asset('storage/' . $task->contractor_upload) }}" alt="Contractor Upload" style="max-height: 80px; border: 1px solid #ddd; padding: 2px;">
+                                                                            </a>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>                                                                                                                              
+                                                                <div class="col-md-6 mt-2">
+                                                                    <div class="form-group">
+                                                                        <label>Date <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][date]" class="form-control flatpickr" value="{{ \Carbon\Carbon::parse($task->date)->format('d/m/Y') }}" placeholder="DD/MM/YYYY" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 mt-2">
+                                                                    <div class="form-group">
+                                                                        <label>Price</label>
+                                                                        <input type="text" name="contractors[{{ $loop->parent->index }}][tasks][{{ $j }}][price]" class="form-control" value="{{ $task->price }}" placeholder="Enter price">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                        @php
+                                                            $totalPrice = $taskGroup->sum(function($t) {
+                                                                return floatval($t->price);
+                                                            });
+                                                        @endphp
+                                                        <div class="row">
+                                                            <div class="col-md-12 offset-md-12">
+                                                                <div class="form-group">
+                                                                    <label><strong>Total Price</strong></label>
+                                                                    <input type="text" class="form-control" value="{{ number_format($totalPrice, 2) }}" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    @if($i > 0)
-                                                    <div class="col-md-2 d-flex align-items-end">
-                                                        <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
-                                                    </div>
-                                                    @endif
+                                        
+                                                    <!-- Add Task Button -->
+                                                    <button type="button" class="btn btn-sm btn-outline-primary add-task" data-contractor-index="{{ $loop->index }}">+ Add Task</button>
                                                 </div>
                                             @endforeach
                                         </div>
-
-                                        {{-- Add Button --}}
-                                        <div class="mb-3 col">
-                                            <button type="button" class="btn btn-sm btn-primary" id="add-contractor">+ Add Contractor</button>
-                                        </div>
+                                        
+                                        <!-- Add New Contractor -->
+                                        <button type="button" class="btn btn-sm btn-primary" id="add-contractor">+ Add Contractor</button>
+                                        
+                                        <!-- Task Template -->
+                                        <script type="text/template" id="task-template">
+                                            <div class="task-row row mb-2">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Description <span class="text-danger">*</span></label>
+                                                        <textarea name="__TASK__[description]" class="form-control" rows="4" required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Contractor Comment</label>
+                                                        <textarea name="__TASK__[contractor_comment]" class="form-control" rows="4"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Admin Upload</label>
+                                                    <input type="file" name="__TASK__[admin_upload]" class="form-control-file">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Contractor Upload</label>
+                                                    <input type="file" name="__TASK__[contractor_upload]" class="form-control-file">
+                                                </div>
+                                                <div class="col-md-6 mt-2">
+                                                    <div class="form-group">
+                                                        <label>Date <span class="text-danger">*</span></label>
+                                                        <input type="text" name="__TASK__[date]" class="form-control flatpickr" placeholder="DD/MM/YYYY" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mt-2">
+                                                    <div class="form-group">
+                                                        <label>Price</label>
+                                                        <input type="text" name="__TASK__[price]" class="form-control" placeholder="Enter price">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </script>                                                                              
 
                                 
                                         <div class="form-actions right">
@@ -100,58 +212,94 @@
 
 @section('js')
 <script>
-    // Initial contractor row count (based on existing loaded data)
-    let contractorIndex = {{ isset($contractorDetails) ? count($contractorDetails) : 1 }};
-
+    let contractorIndex = {{ $job->jobDetail->groupBy('contractor_id')->count() }};
+    
     document.getElementById('add-contractor').addEventListener('click', function () {
         const container = document.getElementById('contractor-rows');
-
-        const newRow = document.createElement('div');
-        newRow.classList.add('contractor-row', 'd-flex', 'mb-2');
-
-        newRow.innerHTML = `
-            <div class="col-md-6">
-                <select name="contractors[${contractorIndex}][contractor_id]" class="form-control contractor-select">
-                    <option value="">Select Contractor</option>
-                    @foreach($contractors as $contractor)
-                        <option value="{{ $contractor->id }}">{{ $contractor->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <label class="mb-0 mr-2">
-                    <span class="text-danger" style="font-size: 1.2rem;">🏅</span> Won contract?
-                </label>
-                <input type="radio" name="won_contract_global" value="${contractorIndex}" class="won-contract-radio">
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+        const block = document.createElement('div');
+        block.classList.add('contractor-block', 'mb-4');
+        block.dataset.index = contractorIndex;
+    
+        // Contractor Header
+        const contractorRow = `
+            <div class="row contractor-row mb-2">
+                <div class="col-md-6">
+                    <select name="contractors[${contractorIndex}][contractor_id]" class="form-control contractor-select">
+                        <option value="">Select Contractor</option>
+                        @foreach($contractors as $c)
+                            <option value="{{ $c->id }}">{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <label class="mb-0 mr-2"><span class="text-danger">🏅</span> Won contract?</label>
+                    <input type="radio" name="won_contract_global" value="${contractorIndex}">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger btn-sm remove-contractor">X</button>
+                </div>
             </div>
         `;
-
-        container.appendChild(newRow);
-
-        // Re-initialize Select2 if you're using it
+        block.innerHTML = contractorRow;
+    
+        // Tasks Wrapper
+        const taskWrapper = document.createElement('div');
+        taskWrapper.classList.add('task-rows');
+        taskWrapper.dataset.contractorIndex = contractorIndex;
+    
+        const firstTaskHtml = document.getElementById('task-template').innerHTML
+            .replace(/__TASK__/g, `contractors[${contractorIndex}][tasks][0]`);
+    
+        taskWrapper.insertAdjacentHTML('beforeend', firstTaskHtml);
+        block.appendChild(taskWrapper);
+    
+        // Add Task button
+        const addTaskBtn = document.createElement('button');
+        addTaskBtn.type = 'button';
+        addTaskBtn.className = 'btn btn-sm btn-outline-primary add-task';
+        addTaskBtn.textContent = '+ Add Task';
+        addTaskBtn.dataset.contractorIndex = contractorIndex;
+        block.appendChild(addTaskBtn);
+    
+        container.appendChild(block);
+    
+        flatpickr(block.querySelector('.flatpickr'), {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            defaultDate: new Date()
+        });
+    
         if ($.fn.select2) {
-            $(newRow).find('select').select2();
+            $(block).find('select').select2();
         }
-
+    
         contractorIndex++;
     });
-
-    // Delegate removal of dynamically added rows
+    
     document.addEventListener('click', function (e) {
-        if (e.target && e.target.classList.contains('remove-row')) {
-            const row = e.target.closest('.contractor-row');
-            const radio = row.querySelector('.won-contract-radio');
-            if (radio && radio.checked) {
-                // Clear the selection if this row had the selected radio
-                radio.checked = false;
-            }
-            row.remove();
+        if (e.target.classList.contains('remove-contractor')) {
+            const block = e.target.closest('.contractor-block');
+            const radio = block.querySelector('input[type=radio]');
+            if (radio && radio.checked) radio.checked = false;
+            block.remove();
+        }
+    
+        if (e.target.classList.contains('add-task')) {
+            const contractorIndex = e.target.dataset.contractorIndex;
+            const taskContainer = document.querySelector(`.task-rows[data-contractor-index="${contractorIndex}"]`);
+            const taskCount = taskContainer.querySelectorAll('.task-row').length;
+            const template = document.getElementById('task-template').innerHTML;
+            const taskHtml = template.replace(/__TASK__/g, `contractors[${contractorIndex}][tasks][${taskCount}]`);
+            taskContainer.insertAdjacentHTML('beforeend', taskHtml);
+    
+            flatpickr(taskContainer.querySelectorAll('.flatpickr')[taskCount], {
+                dateFormat: "d/m/Y",
+                allowInput: true,
+                defaultDate: new Date()
+            });
         }
     });
-</script>
+    </script>    
 
 @endsection
 

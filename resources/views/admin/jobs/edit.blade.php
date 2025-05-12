@@ -131,15 +131,6 @@
                                                 </div>
                                             </div> 
                                         </div>
-                                      
-                                                                        
-                                        <div class="form-group">
-                                            <label for="description"><span style="color: red;">*</span> Description</label>
-                                            <textarea id="description" name="description" class="form-control" rows="4">{{ old('description', $job->description) }}</textarea>
-                                            @error('description') 
-                                                <span class="text-danger">{{ $message }}</span> 
-                                            @enderror
-                                        </div>
                                                                         
                                         <div class="form-group">
                                             <label for="other_information">Other Information</label>

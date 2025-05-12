@@ -38,11 +38,11 @@
                                                         <tr>
                                                             <th>ID</th>
                                                             <th>Property</th>
-                                                            <th>Description</th>
                                                             <th>Status</th>
                                                             <th>Won Contract?</th>
                                                             <th>Created At</th>
                                                             <th>Modified At</th>
+                                                            <th>Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -56,29 +56,22 @@
                                                             <tr>
                                                                 <td>{{$j}}</td>
                                                                 <td>{{$item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</td>
-                                                                <td>{{$item->description}}</td>
                                                                 <td>{{$item->status}}</td>
-                                                                @php
-                                                                    $status = 'No';
-                                                                    $contractors = json_decode($item->contractor_details, true); // decode to array
-
-                                                                    foreach ($contractors as $contractor) {
-                                                                        if ($contractor['contractor_id'] == auth('contractor')->id() && $contractor['won_contract'] === 'yes') {
-                                                                            $status = 'Yes';
-                                                                            break;
-                                                                        }
-                                                                    }
-                                                                @endphp
-
-                                                                <td>{{ $status }}</td>
-
+                                                                <td>{{$item->winning_contractor_id == $contractor_id ? 'Yes' : 'No'}}</td>
                                                                 <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
-                                                                <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            
+                                                                <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>   
+                                                                <td>
+                                                                    <a href="{{ route('contractor.contractors.editJob.details',[auth('contractor')->id(), $item->id])}}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                                        data-title="Edit Job"><span
+                                                                            style="padding:0.3rem 0.3rem" data-row-id=""
+                                                                            class="d-inline-block rounded bg-warning bg text-white"><i
+                                                                                class="la la-edit"></i></span></a>
+                                                                </td>                                        
                                                             </tr>
                                                             @php $j++ @endphp
                                                         @empty
                                                             <tr>
-                                                                <td colspan="6">
+                                                                <td colspan="7">
                                                                     <p class="text-center" style="font-size:1.5rem">No Data Available</p>
                                                                 </td>
                                                             </tr>

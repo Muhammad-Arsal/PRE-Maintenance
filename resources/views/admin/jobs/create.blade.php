@@ -2,6 +2,7 @@
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @endsection
 
 @section('content')
@@ -129,28 +130,70 @@
                                                             <option value="{{ $contractor->id }}">{{ $contractor->name }}</option>
                                                         @endforeach
                                                     </select>
-                                                </div>
-                                                <div class="col-md-4 d-flex align-items-center" style="padding-top: 25px;">
-                                                    <label class="mb-0 mr-2 d-flex align-items-center">
-                                                        <span class="text-danger mr-1" style="font-size: 1.2rem;">🏅</span> Won contract?
-                                                    </label>
-                                                    <input type="radio" name="won_contract_global" value="0" class="won-contract-radio">
-                                                </div>                                                
+                                                </div>                                             
                                             </div>
                                         </div>
                                         
                                         {{-- Add Button --}}
                                         <div class="mb-3">
                                             <button type="button" class="btn btn-sm btn-primary" id="add-contractor">+ Add Contractor</button>
-                                        </div>                                                                               
+                                        </div>    
+
+                                        <div id="task-container">
+                                            <div class="task-row row mb-2">
+                                                <!-- Description -->
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Description <span class="text-danger">*</span></label>
+                                                        <textarea name="description[0]" class="form-control description" rows="4" required></textarea>
+                                                    </div>
+                                                </div>
                                         
-                                        <div class="form-group">
-                                            <label for="description"><span style="color: red;">*</span> Description</label>
-                                            <textarea id="description" name="description" class="form-control" rows="4"></textarea>
-                                            @error('description') <span class="text-danger">{{ $message }}</span> @enderror
+                                                <!-- Contractor Comment -->
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Contractor Comment</label>
+                                                        <textarea name="contractor_comment[0]" class="form-control contractor_comment" rows="4"></textarea>
+                                                    </div>
+                                                </div>
+                                        
+                                                <!-- Admin Upload -->
+                                                <div class="col-md-6">
+                                                    <label>Admin Upload</label>
+                                                    <input type="file" name="admin_upload[0]" class="form-control-file admin_upload">
+                                                </div>
+                                        
+                                                <!-- Contractor Upload -->
+                                                <div class="col-md-6">
+                                                    <label>Contractor Upload</label>
+                                                    <input type="file" name="contractor_upload[0]" class="form-control-file contractor_upload">
+                                                </div>
+                                        
+                                                <!-- Date -->
+                                                <div class="col-md-6 mt-2">
+                                                    <div class="form-group">
+                                                        <label>Date <span class="text-danger">*</span></label>
+                                                        <input type="text" name="date[0]" class="form-control flatpickr date" placeholder="DD/MM/YYYY" required>
+                                                    </div>
+                                                </div>
+                                        
+                                                <!-- Price -->
+                                                <div class="col-md-6 mt-2">
+                                                    <div class="form-group">
+                                                        <label>Price</label>
+                                                        <input type="text" name="price[0]" class="form-control price" placeholder="Enter price">
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         
-                                        <div class="form-group">
+                                        <!-- Add Button -->
+                                        <button type="button" class="btn btn-sm btn-primary mt-2" id="add-task">+ Add</button>
+                                                                                                                      
+                                        
+                                        
+                                        
+                                        <div class="form-group mt-2">
                                             <label for="other_information">Other Information</label>
                                             <textarea id="other_information" name="other_information" class="form-control" rows="4"></textarea>
                                         </div>
@@ -177,6 +220,7 @@
 @section('js')
 <script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     $(function() {
         $('.select2').select2();
@@ -246,15 +290,9 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-4 d-flex align-items-center">
-                <label class="mb-0 mr-2 d-flex align-items-center">
-                    <span class="text-danger mr-1" style="font-size: 1.2rem;">🏅</span> Won contract?
-                </label>
-                <input type="radio" name="won_contract_global" value="0" class="won-contract-radio">
-            </div>
 
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+            <div class="col-md-2 d-flex align-items-end" style= "top:-7px">
+                <button  type="button" class="btn btn-danger btn-sm remove-row">X</button>
             </div>
         `;
 
@@ -277,7 +315,91 @@
             row.remove();
         }
     });
+
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("#date", {
+            dateFormat: "d/m/Y",
+            allowInput: true
+        });
+    });
+
 </script>
 
-
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        initFlatpickr();
+    
+        // jQuery form validation init (assuming form exists)
+        $('form').validate();
+    
+        $('#add-task').on('click', function () {
+            const $original = $('.task-row:first');
+            const $clone = $original.clone();
+    
+            // Clear values
+            $clone.find('input, textarea').each(function () {
+                if (this.type === 'file') {
+                    $(this).val('');
+                } else {
+                    $(this).val('');
+                }
+            });
+    
+            // Add remove button if not already present
+            if ($clone.find('.remove-btn').length === 0) {
+                $clone.prepend(`
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-btn" onclick="removeRow(this)">✕</button>
+                    </div>
+                `);
+            }
+    
+            $('#task-container').append($clone);
+            updateRowIndexes();
+    
+            // Apply flatpickr to new date input and auto-fill current date
+            $clone.find('.flatpickr').each(function () {
+                flatpickr(this, {
+                    dateFormat: "d/m/Y",
+                    allowInput: true,
+                    defaultDate: new Date() // auto-fill current date
+                });
+            });
+    
+            $('form').validate();
+        });
+    });
+    
+    // Flatpickr init for initial page load
+    function initFlatpickr() {
+        document.querySelectorAll(".flatpickr").forEach(function (el) {
+            flatpickr(el, {
+                dateFormat: "d/m/Y",
+                allowInput: true,
+                defaultDate: new Date() // today's date
+            });
+        });
+    }
+    
+    // Remove row and reindex
+    function removeRow(btn) {
+        $(btn).closest('.task-row').remove();
+        updateRowIndexes();
+    }
+    
+    // Update names to match array indexes
+    function updateRowIndexes() {
+        $('#task-container .task-row').each(function (index) {
+            $(this).find('input, textarea').each(function () {
+                const base = $(this).attr('name')?.replace(/\[\d+\]/, '');
+                if (base) {
+                    $(this).attr('name', `${base}[${index}]`);
+                }
+            });
+        });
+    }
+    </script>
+    
+    
 @endsection

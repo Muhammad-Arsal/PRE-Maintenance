@@ -306,7 +306,7 @@ class PropertyController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Properties Jobs';
 
-        $jobs = Jobs::where('property_id',$id)->with('property')->paginate(10);
+        $jobs = Jobs::where('property_id',$id)->with('property', 'jobDetail', 'winningContractor')->paginate(10);
         $property_id = $id;
 
         return view('admin.properties.jobs.index', compact('page', 'jobs', 'property_id'));

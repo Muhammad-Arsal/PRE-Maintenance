@@ -1,9 +1,10 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\TenantAuthController;
-use App\Http\Controllers\Auth\TenantEmailVerficationController;
-use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\ProfileController;
+use App\Http\Controllers\Auth\TenantAuthController;
+use App\Http\Controllers\Tenant\InvoicesController;
+use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Auth\TenantEmailVerficationController;
 use App\Http\Controllers\Tenant\TenantCorrespondenceController;
 
 
@@ -55,6 +56,17 @@ Route::middleware(['tenant', 'verified:tenant.login'])->group(function(){
     Route::post('correspondence/{id}/edit/{parent_id}/new-meeting', [TenantCorrespondenceController::class, 'storeMeeting'])->name('tenant.tenants.correspondence.newMeeting');
     Route::get('correspondence/{id}/edit/task', [TenantCorrespondenceController::class, 'showTaskPage'])->name('tenant.suppliers.correspondence.task');
     Route::post('correspondence/tasks/create/task/{id}', [TenantCorrespondenceController::class, 'storeTask'])->name('tenant.tasks.cross.store');
+
+
+    //invoices
+    Route::get('account/invoices', [InvoicesController::class, 'index'])->name('tenant.invoices');
+    Route::get('account/invoices/create', [InvoicesController::class, 'create'])->name('tenant.invoices.create');
+    Route::post('account/invoices/store', [InvoicesController::class,'store'])->name('tenant.invoices.store');
+    Route::get('account/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('tenant.invoices.edit');
+    Route::post('account/invoices/{id}/update', [InvoicesController::class, 'update'])->name('tenant.invoices.update');
+    Route::delete('account/invoices/{id}/destroy', [InvoicesController::class, 'destroy'])->name('tenant.invoices.destroy');
+    Route::get('account/invoices/{id}/show', [InvoicesController::class,'show'])->name('tenant.invoices.show');
+    Route::get('account/invoices/search', [InvoicesController::class,'searchData'])->name('tenant.invoices.search');
 
 });
 

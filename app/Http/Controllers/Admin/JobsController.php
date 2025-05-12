@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Jobs;
 use App\Models\Property;
+use App\Models\JobDetail;
 use App\Models\Contractor;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\JobAssignedNotification;
 
 class JobsController extends Controller
 {
@@ -22,7 +27,7 @@ class JobsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Jobs';
 
-        $jobs = Jobs::orderBy('created_at', 'desc')->with('property', 'contractor')->paginate(10);
+        $jobs = Jobs::orderBy('created_at', 'desc')->with('property', 'contractor', 'winningContractor')->paginate(10);
 
         $properties = Property::where('status', 'Active')->get();
         $contractors = Contractor::where('status', 'Active')->get();
@@ -65,54 +70,112 @@ class JobsController extends Controller
         return view('admin.jobs.create', compact('page', 'properties', 'contractors','property_id'));
     }
 
+    public function handleFileUpload(Request $request, $field, $index)
+    {
+        $fileArray = data_get($request->allFiles(), $field, []);
+
+        if (is_array($fileArray) && isset($fileArray[$index])) {
+            return $fileArray[$index]->store('uploads/job_details', 'public');
+        }
+
+        return null;
+    }
+
+    public function updateHandleFileUpload(Request $request, $fieldPath)
+    {
+        $file = data_get($request->allFiles(), $fieldPath);
+        return $file ? $file->store('uploads/job_details', 'public') : null;
+    }
+
+
+
+    public function formatDate($date)
+    {
+        // Converts d/m/Y to Y-m-d for MySQL
+        if (!$date) return null;
+
+        try {
+            return \Carbon\Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         $request->validate([
             'status' => 'required|string',
             'property_id' => 'required',
-            'description' => 'required|string',
             'other_information' => 'nullable|string',
             'contractors.*.contractor_id' => 'nullable|exists:contractors,id',
             'priority' => 'required',
         ]);
-    
-        // Prepare contractor details JSON
+
         $contractorsInput = $request->input('contractors', []);
-        $wonIndex = $request->input('won_contract_global');
-    
-        $contractorDetails = [];
-    
-        foreach ($contractorsInput as $index => $contractor) {
-            if (empty($contractor['contractor_id'])) {
-                continue; // Skip empty rows
-            }
-    
-            $contractorDetails[] = [
-                'contractor_id' => $contractor['contractor_id'],
-                'won_contract' => ((string) $wonIndex === (string) $index) ? 'yes' : 'no',
-            ];
-        }
-    
+
         $job = Jobs::create([
             'status' => $request->status,
             'property_id' => $request->property_id,
-            'description' => $request->description,
             'other_information' => $request->other_information,
-            'contractor_details' => json_encode($contractorDetails),
             'priority' => $request->priority,
         ]);
-    
+
+        
+            foreach ($contractorsInput as $contractorIndex => $contractor) {
+                if (empty($contractor['contractor_id'])) continue;
+
+                $jobDetailCount = count($request->input('description', []));
+
+                for ($i = 0; $i < $jobDetailCount; $i++) {
+                    if (empty($request->description[$i])) continue;
+                
+                    JobDetail::create([
+                        'jobs_id' => $job->id, // explicit foreign key
+                        'contractor_id' => $contractor['contractor_id'],
+                        'description' => $request->description[$i],
+                        'contractor_comment' => $request->contractor_comment[$i] ?? null,
+                        'admin_upload' => $this->handleFileUpload($request, 'admin_upload', $i),
+                        'contractor_upload' => $this->handleFileUpload($request, 'contractor_upload', $i),
+                        'date' => $this->formatDate($request->date[$i] ?? null),
+                        'price' => $request->price[$i] ?? null,
+                        'won_contract' => 'no',
+                    ]);
+            }
+        }
+
+        $contractorIds = JobDetail::where('jobs_id', $job->id)
+            ->pluck('contractor_id')
+            ->unique()
+            ->filter()
+            ->values();
+
+        $contractors = Contractor::whereIn('id', $contractorIds)->get();
+
+        foreach ($contractors as $contractor) {
+            $notificationDetails = array(
+                'type' => 'job',
+                'message' => 'You have been assigned a new job.',
+                'route' => route('contractor.contractors.editJob.details', [$contractor->id, $job->id]),
+            );
+            Notification::send($contractor, new JobAssignedNotification($notificationDetails));
+        }
+
+
         return redirect()
             ->route('admin.jobs')
-            ->withFlashMessage('Job added successfully!')
+            ->withFlashMessage('Job and job details added successfully!')
             ->withFlashType('success');
-    }    
+    }
+
+  
 
     /**
      * Display the specified resource.
@@ -145,12 +208,11 @@ class JobsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Edit Job';
 
-        $job = Jobs::where('id', $id)->first();
+        $job = Jobs::where('id', $id)->with('jobDetail')->first();
         $properties = Property::where('status', 'Active')->get();
         $contractors = Contractor::where('status', 'Active')->get();
-        $contractorDetails = json_decode($job->contractor_details, true);
 
-        return view('admin.jobs.edit', compact('page', 'job', 'properties', 'contractors', 'contractorDetails'));
+        return view('admin.jobs.edit', compact('page', 'job', 'properties', 'contractors'));
     }
     public function editContractorList($id)
     {
@@ -159,11 +221,13 @@ class JobsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Edit Job';
 
-        $job = Jobs::where('id', $id)->first();
+        $job = Jobs::where('id', $id)->with('jobDetail')->first();
         $contractors = Contractor::where('status', 'Active')->get();
-        $contractorDetails = json_decode($job->contractor_details, true);
 
-        return view('admin.jobs.contractorList.index', compact('page', 'job', 'contractorDetails', 'contractors'));
+        $admin = Auth::guard('admin')->user();
+        $allNotifications = $admin->notifications()->where('data->notification_detail->type', 'job')->whereNull('read_at')->update(['read_at' => Carbon::now()]);
+
+        return view('admin.jobs.contractorList.index', compact('page', 'job', 'contractors'));
     }
 
     /**
@@ -178,7 +242,6 @@ class JobsController extends Controller
         $request->validate([
             'status' => 'required|string',
             'property_id' => 'required', 
-            'description' => 'required|string',
             'other_information' => 'nullable|string',
             'priority' => 'required',
         ]);
@@ -186,7 +249,6 @@ class JobsController extends Controller
         $job = Jobs::where('id', $id)->first();
         $job->status = $request->status;
         $job->property_id = $request->property_id;
-        $job->description = $request->description;
         $job->other_information = $request->other_information;
         $job->priority = $request->priority;
         $job->save();
@@ -196,41 +258,59 @@ class JobsController extends Controller
         ->withFlashMessage('Job Updated successfully!')
         ->withFlashType('success');
     }
-
-
     public function updateContractorList(Request $request, $id)
     {
         $request->validate([
             'contractors.*.contractor_id' => 'nullable|exists:contractors,id',
+            'contractors.*.tasks.*.description' => 'required|string',
         ]);
-
+    
         $job = Jobs::findOrFail($id);
-
+    
+        // Remove old job details
+        $job->jobDetail()->delete();
+    
         $contractorsInput = $request->input('contractors', []);
         $wonIndex = $request->input('won_contract_global');
-
-        $contractorDetails = [];
-
-        foreach ($contractorsInput as $index => $contractor) {
-            if (empty($contractor['contractor_id'])) {
-                continue;
+        $winningContractorId = null;
+    
+        foreach ($contractorsInput as $contractorIndex => $contractor) {
+            if (empty($contractor['contractor_id'])) continue;
+    
+            // Capture the winning contractor
+            if ((string)$contractorIndex === (string)$wonIndex) {
+                $winningContractorId = $contractor['contractor_id'];
             }
-
-            $contractorDetails[] = [
-                'contractor_id' => $contractor['contractor_id'],
-                'won_contract' => ((string) $wonIndex === (string) $index) ? 'yes' : 'no',
-            ];
+    
+            $tasks = $contractor['tasks'] ?? [];
+    
+            foreach ($tasks as $taskIndex => $task) {
+                if (empty($task['description'])) continue;
+    
+                JobDetail::create([
+                    'jobs_id' => $job->id,
+                    'contractor_id' => $contractor['contractor_id'],
+                    'won_contract' => ((string)$contractorIndex === (string)$wonIndex) ? 'yes' : 'no',
+                    'description' => $task['description'],
+                    'contractor_comment' => $task['contractor_comment'] ?? null,
+                    'admin_upload' => $this->updateHandleFileUpload($request, "contractors.{$contractorIndex}.tasks.{$taskIndex}.admin_upload"),
+                    'contractor_upload' => $this->updateHandleFileUpload($request, "contractors.{$contractorIndex}.tasks.{$taskIndex}.contractor_upload"),
+                    'date' => $this->formatDate($task['date'] ?? null),
+                    'price' => $task['price'] ?? null,
+                ]);
+            }
         }
-
-        $job->contractor_details = json_encode($contractorDetails);
-
+    
+        // Save winning contractor ID to the job
+        $job->winning_contractor_id = $winningContractorId;
         $job->save();
-
+    
         return redirect()
-        ->route('admin.jobs')
-        ->withFlashMessage('Job Updated successfully!')
-        ->withFlashType('success');
+            ->route('admin.jobs')
+            ->withFlashMessage('Job updated successfully!')
+            ->withFlashType('success');
     }
+       
 
     /**
      * Remove the specified resource from storage.
@@ -240,14 +320,20 @@ class JobsController extends Controller
      */
     public function destroy($id)
     {
-        $job = Jobs::findOrFail($id);
-        $job->delete(); 
+        $job = Jobs::with('jobDetail')->findOrFail($id);
+
+        // Delete all related job details first
+        $job->jobDetail()->delete();
+
+        // Then delete the job itself
+        $job->delete();
 
         return redirect()
-        ->route('admin.jobs')
-        ->withFlashMessage('Job Deleted successfully!')
-        ->withFlashType('success');
+            ->route('admin.jobs')
+            ->withFlashMessage('Job and its associated tasks deleted successfully!')
+            ->withFlashType('success');
     }
+
 
     public function searchData(Request $request)
     {

@@ -341,9 +341,9 @@ class ContractorsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Contractor Jobs';
 
-        $jobs = Jobs::whereJsonContains('contractor_details', [
-            'contractor_id' => (string) $id
-        ])->with('property', 'contractor')->paginate(10); 
+        $jobs = Jobs::whereHas('jobDetail', function($query) use ($id) {
+            $query->where('contractor_id', $id);
+        })->with('property', 'contractor', 'jobDetail')->paginate(10); 
         $contractor_id = $id;
 
         return view('admin.contractors.jobs.index', compact('page', 'jobs', 'contractor_id'));

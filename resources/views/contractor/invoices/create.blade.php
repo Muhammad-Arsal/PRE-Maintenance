@@ -72,17 +72,23 @@
                                                     @error('date') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
-
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="job"><span style="color: red;">*</span>Job</label>
                                                     <select id="job" name="job" class="form-control select2" required>
                                                         <option value="">Select Job</option>
-                                                        @foreach($jobs as $job)
-                                                            <option value="{{ $job->id }}">
-                                                                {{ $job->description . "  -  " . $job->property->line1 . ', ' . $job->property->city . ', ' . $job->property->county . ', ' . $job->property->postcode ?? 'Job #' . $job->id }}
-                                                            </option>
-                                                        @endforeach
+                                                       @foreach($jobs as $job)
+                                                        <option value="{{ $job->id }}">
+                                                            {{ 
+                                                                $job->jobDetail->pluck('description')->join(', ') 
+                                                                . " - " . $job->property->line1 . ', ' 
+                                                                . $job->property->city . ', ' 
+                                                                . $job->property->county . ', ' 
+                                                                . ($job->property->postcode ?? 'Job #' . $job->id) 
+                                                            }}
+                                                        </option>
+                                                    @endforeach
+
                                                     </select>
                                                     @error('job') <span class="text-danger">{{ $message }}</span> @enderror
                                                 </div>

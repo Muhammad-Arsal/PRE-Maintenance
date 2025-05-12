@@ -80,7 +80,11 @@
                                                                 <td><a href="{{ route('admin.invoices.show',$item->id) }}">{{ $item->id }}</a></td>
                                                                 <td>{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                                                 <td><a href="{{ route('admin.properties.edit', $item->property->id) }}">{{ $item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</a></td>
-                                                                <td><a href="{{ route('admin.jobs.edit',$item->job->id) }}">{{ $item->job->description }}</a></td>
+                                                                <td>
+                                                                    <a href="{{ route('admin.jobs.edit', $item->job->id) }}">
+                                                                        {{ $item->job->jobDetail->pluck('description')->join(', ') }}
+                                                                    </a>
+                                                                </td>
                                                                 <td>{{ $item->total }}</td>
                                                                 <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            

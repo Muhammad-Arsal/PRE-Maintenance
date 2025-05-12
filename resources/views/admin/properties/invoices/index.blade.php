@@ -103,7 +103,15 @@
                                                                 <td><a href="{{ route('admin.invoices.show',$item->id) }}">{{ $item->id }}</a></td>
                                                                 <td>{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                                                 <td><a href="{{ route('admin.settings.contractors.edit', $item->contractor->id) }}">{{ $item->contractor->name }}</a></td>
-                                                                <td><a href="{{ route('admin.jobs.edit',$item->job->id) }}">{{ $item->job->description }}</a></td>
+                                                                <td>
+                                                                    @if($item->job && $item->job->jobDetail->isNotEmpty())
+                                                                        <a href="{{ route('admin.jobs.edit', $item->job->id) }}">
+                                                                            {{ $item->job->jobDetail->pluck('description')->join(', ') }}
+                                                                        </a>
+                                                                    @else
+                                                                        Not Set
+                                                                    @endif
+                                                                </td>
                                                                 <td>{{ $item->total }}</td>
                                                                 <td>{{$item->created_at->format('d/m/Y, h:i') }}</td>
                                                                 <td>{{$item->updated_at->format('d/m/Y, h:i') }}</td>

@@ -3,7 +3,6 @@
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
 @endsection
-
 @section('content')
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2 breadcrumb-new">
@@ -94,13 +93,20 @@
                                             $j =  10 * ( $invoices->currentPage() - 1) + 1;
                                         }
                                     ?>
+                                    
                                     @forelse($invoices as $data)
                                         <tr>
                                             <td>{{$j}}</td>
                                             <td>{{$data->id}}</td>
                                             <td>{{$data->status}}</td>
                                             <td>{{$data->total}}</td>
-                                            <td>{{$data->description}}</td>
+                                            <td>
+                                                @if($data->job)
+                                                    {{ $data->job->jobDetail->pluck('description')->join(', ') }}
+                                                @else
+                                                    Not Set
+                                                @endif
+                                            </td>
                                             <td>{{$data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode}}</td>
                                             <td>{{ \Carbon\Carbon::parse($data->date)->format('d/m/Y') }}</td>
                                             <td>{{ $data->created_at->format('d/m/Y,  h:i') }}</td>

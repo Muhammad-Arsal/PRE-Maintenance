@@ -101,7 +101,19 @@
                                             <td>{{$data->id}}</td>
                                             <td>{{$data->status}}</td>
                                             <td>{{$data->total}}</td>
-                                            <td>{{$data->description}}</td>
+                                            <td>
+                                                @if($data->job && $data->job->jobDetail->isNotEmpty())
+                                                    {{
+                                                        $data->job->jobDetail
+                                                            ->where('contractor_id', $data->job->winning_contractor_id)
+                                                            ->pluck('description')
+                                                            ->join(', ')
+                                                    }}
+                                                @else
+                                                    Not Set
+                                                @endif
+                                            </td>
+
                                             <td>{{$data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode}}</td>
                                             <td>{{$data->contractor->name}}</td>
                                             <td>{{ \Carbon\Carbon::parse($data->date)->format('d/m/Y') }}</td>

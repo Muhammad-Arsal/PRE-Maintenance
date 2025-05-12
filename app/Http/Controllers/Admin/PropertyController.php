@@ -356,9 +356,17 @@ class PropertyController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Property Invoices';
 
-        $invoices = Invoices::where('property_id', $id)->with('property', 'contractor')->paginate(10);
-        $property_id = $id;
+        $invoices = Invoices::where('property_id', $id)
+        ->with([
+            'property',
+            'contractor',
+            'job' => function ($query) {
+                $query->with('jobDetail');
+            }
+        ])
+        ->paginate(10);
 
+        $property_id = $id;
         return view('admin.properties.invoices.index', compact('page','invoices', 'property_id'));
     }
 

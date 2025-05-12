@@ -29,7 +29,7 @@ class Jobs extends Model
     }
     public function jobDetail()
     {
-        return $this->hasMany(JobDetail::class);
+        return $this->hasMany(JobDetail::class, 'jobs_id');
     }
     public function winningContractor()
     {

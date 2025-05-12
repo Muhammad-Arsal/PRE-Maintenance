@@ -22,9 +22,14 @@ class InvoicesController extends Controller
         $page['page_parent_link'] = route('tenant.settings.tenants.edit', auth('tenant')->user()->id);
         $page['page_current'] = 'Invoices';
 
-        $invoices = Invoices::whereHas('property.tenant', function($q) {
-            $q->where('id', auth('tenant')->id());
-        })->paginate(10);
+        $tenantId = auth('tenant')->id();
+
+        $invoices = Invoices::whereHas('property', function($query) use ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            })
+            ->with(['property', 'contractor', 'job.jobDetail'])
+            ->paginate(10);
+
         $keywords = '';
         // $landlord = Auth::guard('landlord')->user();
         // $allNotifications = $landlord->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->update(['read_at' => Carbon::now()]);

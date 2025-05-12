@@ -25,7 +25,7 @@ class JobDetail extends Model
 
     public function job()
     {
-        return $this->belongsTo(Jobs::class);
+        return $this->belongsTo(Jobs::class, 'jobs_id');
     }
     public function contractor()
     {

@@ -356,7 +356,9 @@ class ContractorsController extends Controller
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'View Contractor Invoices';
 
-        $invoices = Invoices::where('contractor_id', $id)->with('property', 'job')->paginate(10);
+        $invoices = Invoices::where('contractor_id', $id)
+            ->with(['property', 'job.jobDetail'])
+            ->paginate(10);
         $contractor_id = $id;
 
         return view('admin.contractors.invoices.index', compact('page', 'invoices', 'contractor_id'));

@@ -22,8 +22,24 @@ class InvoicesController extends Controller
         $page['page_parent_link'] = route('contractor.settings.contractors.edit', auth('contractor')->user()->id);
         $page['page_current'] = 'Invoices';
 
-        $invoices = Invoices::where('contractor_id', auth('contractor')->user()->id)->with('property')->paginate(10);
+        $contractorId = auth('contractor')->user()->id;
+
+        $invoices = Invoices::where('contractor_id', $contractorId)
+        ->with([
+            'property',
+            'job' => function ($query) use ($contractorId) {
+                $query->with([
+                    'jobDetail' => function ($subQuery) use ($contractorId) {
+                        $subQuery->where('contractor_id', $contractorId)
+                                ->select('id', 'jobs_id', 'description', 'contractor_id');
+                    }
+                ]);
+            }
+        ])
+        ->paginate(10);
+
         $keywords = '';
+        
         $contractor = Auth::guard('contractor')->user();
         $allNotifications = $contractor->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->update(['read_at' => Carbon::now()]);
 
@@ -38,10 +54,16 @@ class InvoicesController extends Controller
 
         $properties = Property::all();
         $contractorId = Auth::guard('contractor')->user()->id;
-        $jobs = Jobs::whereJsonContains('contractor_details', [
-            'contractor_id' => (string)$contractorId,
-            'won_contract' => 'yes'
-        ])->with('property', 'contractor')->get();
+        $jobs = Jobs::where('winning_contractor_id', $contractorId)
+            ->orderBy('created_at', 'desc')
+            ->with([
+                'property',
+                'contractor',
+                'winningContractor',
+                'jobDetail' => function ($query) use ($contractorId) {
+                    $query->where('contractor_id', $contractorId);
+                },
+            ])->get();
 
         return view('contractor.invoices.create', compact('page','properties', 'jobs'));
     }

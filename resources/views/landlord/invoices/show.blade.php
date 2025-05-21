@@ -11,9 +11,18 @@
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('landlord.dashboard') }}" class="theme-color">Home</a></li>
-                        <li class="breadcrumb-item active">View Landlord</li>
+                        <li class="breadcrumb-item active">View Invoice</li>
                     </ol>
                 </div>
+            </div>
+        </div>
+        <div class="content-header-right col-md-6 col-12">
+            <div class="dropdown float-md-right">
+                <a href="{{ route('landlord.invoices.generatePDF', $invoice->id) }}"
+                    class="btn btn-primary basic-btn btn-min-width mr-1 mb-1" type="button">
+                    <i class="la la-arrow-down"></i>
+                    Download Invoice
+                </a>
             </div>
         </div>
     </div>
@@ -35,7 +44,20 @@
                         <tr>
                             <th class="font-weight-bold ">Reference:</th>
                             <td class="">{{$invoice->reference ?? ''}}</td>
-                            
+                            <th class="font-weight-bold">Status:</th>
+                            <td>
+                                <span class="badge 
+                                    @if($invoice->status === 'paid') bg-success
+                                    @elseif($invoice->status === 'unpaid') bg-secondary
+                                    @elseif($invoice->status === 'overdue') bg-danger
+                                    @elseif($invoice->status === 'cancel') bg-dark
+                                    @else bg-light text-dark
+                                    @endif
+                                    "
+                                    >
+                                    {{ ucfirst($invoice->status) }}
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

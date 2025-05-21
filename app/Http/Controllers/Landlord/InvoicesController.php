@@ -8,11 +8,13 @@ use App\Models\Admin;
 use App\Models\Invoices;
 use App\Models\Landlord;
 use App\Models\Property;
+use App\Models\JobDetail;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
-use App\Notifications\InvoiceEmailNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\InvoiceEmailNotification;
 
 class InvoicesController extends Controller
 {
@@ -41,6 +43,23 @@ class InvoicesController extends Controller
         $landlord = Auth::guard('landlord')->user();
         $allNotifications = $landlord->notifications()->where('data->notification_detail->type', 'invoice')->whereNull('read_at')->update(['read_at' => Carbon::now()]);
         return view('landlord.invoices.index', compact('page', 'invoices', 'keywords'));
+    }
+    public function generatePDF($id)
+    {
+        $invoice = Invoices::where('id', $id)->with('property', 'contractor')->first();
+
+        $count = Invoices::count() + 1;
+
+        $invoiceNo = 'INV-PRE-' . str_pad($count, 5, '0', STR_PAD_LEFT);
+
+        $jobDetails = JobDetail::where('jobs_id', $invoice->job_id)->where('contractor_id', $invoice->contractor_id)->where('won_contract', 'yes')->get();
+
+        // Calculate subtotal
+        $subtotal = $jobDetails->sum('price');
+
+        $pdf = Pdf::loadView('admin.invoices.pdf', compact('invoice', 'invoiceNo', 'jobDetails', 'subtotal'));
+
+        return $pdf->download( $invoiceNo . '.pdf');
     }
 
     // public function create(){

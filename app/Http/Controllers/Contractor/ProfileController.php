@@ -322,7 +322,6 @@ class ProfileController extends Controller
         $newTasks = $request->input('new_tasks', []);
         $jobId = null;
 
-        // 🔁 Update existing tasks
         foreach ($tasks as $taskId => $taskData) {
             $task = JobDetail::where('id', $taskId)
                 ->where('contractor_id', $id)
@@ -374,7 +373,7 @@ class ProfileController extends Controller
                 $notificationDetails = array(
                     'type' => 'job',
                     'message' => 'Contractor has submitted job details.',
-                    'route' => route('admin.jobs.edit', $jobId),
+                    'route' => route('admin.jobs.edit.contractorList', $jobId),
                 );
                 Notification::send($admin, new ContractorSubmittedJobNotification($notificationDetails));
             }

@@ -70,5 +70,8 @@ Route::middleware(['contractor', 'verified:contractor.login'])->group(function()
     Route::get('account/invoices/search', [InvoicesController::class,'searchData'])->name('contractor.invoices.search');
     //AJAX
     Route::get('/get-address-details', [InvoicesController::class, 'getAddressDetails'])->name('get.address.details');
+
+    //pdf generate 
+    Route::get('contractor/invoices/generatePDF/{id}', [InvoicesController::class, 'generatePDF'])->name('contractor.invoices.generatePDF');
 });
 ?>

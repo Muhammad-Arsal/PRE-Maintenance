@@ -68,6 +68,9 @@ Route::middleware(['tenant', 'verified:tenant.login'])->group(function(){
     Route::get('account/invoices/{id}/show', [InvoicesController::class,'show'])->name('tenant.invoices.show');
     Route::get('account/invoices/search', [InvoicesController::class,'searchData'])->name('tenant.invoices.search');
 
+    //pdf generate 
+    Route::get('tenant/invoices/generatePDF/{id}', [InvoicesController::class, 'generatePDF'])->name('tenant.invoices.generatePDF');
+
 });
 
 ?>

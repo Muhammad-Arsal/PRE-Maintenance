@@ -24,18 +24,6 @@
           <ul class="nav navbar-nav float-right">
             <li class="dropdown dropdown-user nav-item">
                 <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
-                    <i class="fa fa-comment" style="color: #041e41; padding-top: 0.5em;"></i>
-                      {{-- <span class="badge badge-pill" style="position: absolute; top: 10px; right: 5px; background-color: red; color: white;">0</span> --}}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" style="white-space: normal;">There are no new comments</a>
-                </div>
-            </li>
-          </ul>
-
-          <ul class="nav navbar-nav float-right">
-            <li class="dropdown dropdown-user nav-item">
-                <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                     <i class="fa fa-bell" style="color: #041e41; padding-top: 0.5em;"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" style="min-width: 15rem;">

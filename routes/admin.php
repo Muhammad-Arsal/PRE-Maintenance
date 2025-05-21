@@ -301,6 +301,9 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('settings/contractorType/{id}/edit', [ContractorTypeController::class, 'edit'])->name('admin.settings.contractorType.edit');
     Route::post('settings/contractorType/{id}/update', [ContractorTypeController::class, 'update'])->name('admin.settings.contractorType.update');
     Route::post('settings/contractorType/{id}/destroy', [ContractorTypeController::class, 'destroy'])->name('admin.settings.contractorType.destroy');
+
+    //pdf generate 
+    Route::get('admin/invoices/generatePDF/{id}', [InvoicesController::class, 'generatePDF'])->name('admin.invoices.generatePDF');
 });
 
 

@@ -101,7 +101,13 @@
                                             <td>{{$data->id}}</td>
                                             <td>{{$data->status}}</td>
                                             <td>{{$data->total}}</td>
-                                            <td>{{$data->description}}</td>
+                                            <td>
+                                                @if($data->job)
+                                                    {{ $data->job->jobDetail->pluck('description')->join(', ') }}
+                                                @else
+                                                    Not Set
+                                                @endif
+                                            </td>
                                             <td><a href="{{route('admin.properties.edit',$data->property->id)}}">{{$data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode}}</a></td>
                                             <td><a href="{{route('admin.settings.contractors.edit',$data->contractor->id)}}">{{$data->contractor->name}}</a></td>
                                             <td>{{ \Carbon\Carbon::parse($data->date)->format('d/m/Y') }}</td>

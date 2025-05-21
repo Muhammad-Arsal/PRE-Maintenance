@@ -15,8 +15,7 @@
               <i class="la la-calculator"></i>
               <span class="menu-title">Accounts</span>
           </a>
-      </li>
-      
+        </li>
       <li class="nav-item {{ Request::segment(2) == 'jobs' ? 'open' : '' }}">
         <a href="{{route('admin.jobs')}}">
             <i class="la la-briefcase"></i>

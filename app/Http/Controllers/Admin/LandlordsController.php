@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\LandlordAdded;
-use App\Http\Controllers\Controller;
 use App\Models\Landlord;
 use App\Models\Property;
-use App\Models\LandlordProfile;
+use App\Models\JobDetail;
 use Illuminate\Http\Request;
+use App\Events\LandlordAdded;
+use App\Models\LandlordProfile;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -401,6 +402,42 @@ class LandlordsController extends Controller
         $landlord = Landlord::where('id', $id)->with('profile','property.tenant')->first();
 
         return view('admin.landlords.show', compact('page', 'landlord'));
+    }
+
+    public function invoices($id){
+        $page['page_title'] = 'View Landlord Details';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Invoices';
+
+        $landlord = Landlord::where('id', $id)->with('invoices.property')->first();
+        $invoices = $landlord->invoices()->paginate(10);
+
+        return view('admin.landlords.invoices.index', compact('page', 'landlord', 'invoices'));
+    }
+
+    public function jobs($id){
+        $page['page_title'] = 'View Landlord Details';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Quotes';
+
+        $landlord = Landlord::where('id', $id)->with('jobs.property')->first();
+        $jobs = $landlord->jobs()->paginate(10);
+
+        return view('admin.landlords.jobs.index', compact('page', 'landlord', 'jobs'));
+    }
+    public function quotes($jobId, $landlordId)
+    {
+        $page['page_title'] = 'View Landlord Details';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Quotes';
+
+        $quotes = JobDetail::where('jobs_id', $jobId)->with('contractor')->get()->groupBy('contractor_id');
+        $landlord_id = $landlordId;
+
+        return view('admin.landlords.jobs.quotes', compact('page', 'quotes', 'landlord_id'));
     }
 
 }

@@ -86,6 +86,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/tenants/search', [TenantsController::class, 'searchData'])->name('admin.settings.tenants.search');
     Route::get('tenants/{id}/show', [TenantsController::class,'show'])->name('admin.settings.tenants.show');
     Route::get('tenants/{id}/past_tenancy', [TenantsController::class, 'pastTenancy'])->name('admin.properties.past.tenancy');
+    Route::get('tenants/{id}/jobs', [TenantsController::class, 'jobs'])->name('admin.tenants.jobs');
     
     // Landlords
     Route::get('/landlords', [LandlordsController::class, 'index'])->name('admin.settings.landlords');
@@ -102,6 +103,9 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('/landlords/{id}/delete', [LandlordsController::class, 'delete'])->name('admin.settings.landlords.delete');
     Route::get('/landlords/search', [LandlordsController::class, 'searchData'])->name('admin.settings.landlords.search');
     Route::get('landlords/{id}/show', [LandlordsController::class, 'show'])->name('admin.settings.landlords.show');
+    Route::get('/landlords/{id}/invoices', [LandlordsController::class, 'invoices'])->name('admin.settings.landlords.invoices');
+    Route::get('/landlords/{id}/quotes', [LandlordsController::class, 'jobs'])->name('admin.settings.landlords.jobs');
+    Route::get('/landlords/{jobId}/quotes/{landlordId}', [LandlordsController::class, 'quotes'])->name('admin.settings.landlords.jobs.quotes');
 
     // Contractors
     Route::get('/contractors', [ContractorsController::class, 'index'])->name('admin.settings.contractors');
@@ -116,6 +120,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('/contractors/search', [ContractorsController::class, 'searchData'])->name('admin.settings.contractors.search');
     Route::get('contractors/{id}/view/jobs', [ContractorsController::class, 'jobs'])->name('admin.contractors.viewjobs');
     Route::get('contractors/{id}/view/invoices', [ContractorsController::class, 'invoices'])->name('admin.contractors.invoices.index');
+    Route::get('contractors/{jobId}/quote/{contractorId}', [ContractorsController::class, 'quote'])->name('admin.contractors.quote');
 
     //Properties
     Route::get('/properties', [PropertyController::class, 'index'])->name('admin.properties');
@@ -136,6 +141,7 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::get('properties/{id}/view/invoices', [PropertyController::class, 'invoices'])->name('admin.properties.invoices.index');
     Route::get('properties/{id}/past_tenant', [PropertyController::class, 'pastTenant'])->name('admin.properties.past.tenant');
     Route::get('properties/{id}/current_tenant', [PropertyController::class, 'currentTenant'])->name('admin.properties.current.tenant');
+    Route::get('properties/{id}/view/jobs/quotes', [PropertyController::class, 'quotes'])->name('admin.properties.viewjobs.quotes');
     
 
     // Property Types

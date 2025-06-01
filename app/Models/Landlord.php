@@ -32,7 +32,14 @@ class Landlord extends Authenticatable implements MustVerifyEmail
     public function property(){
         return $this->hasMany(Property::class);
     }
-
+    public function invoices()
+    {
+        return $this->hasManyThrough(Invoices::class, Property::class);
+    }
+    public function jobs()
+    {
+        return $this->hasManyThrough(Jobs::class, Property::class);
+    }
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new LandlordPasswordResetNotification($token));

@@ -47,16 +47,16 @@
                                             href="{{route('admin.settings.landlord.bank', $landlord->id)}}">Bank Details</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="{{ route('admin.settings.landlords.invoices', $landlord->id) }}">Invoices</a>
+                                        <a class="nav-link active disabled" id="invoices" data-toggle="tab"
+                                            aria-controls="invoices" href="#invoices" aria-expanded="true">Invoices</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
                                             href="{{ route('admin.settings.landlords.jobs', $landlord->id) }}">Quotes</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active disabled" id="bankDetails" data-toggle="tab"
-                                            aria-controls="bankDetails" href="#bankDetails" aria-expanded="true">Properties</a>
+                                     <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.settings.landlord.properties', $landlord->id) }}">Properties</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
@@ -73,32 +73,37 @@
                                     <table class="table table-bordered table-striped">
                                         <thead class="text-white" style="background-color:  #041E41;">
                                             <tr>
-                                                <th>Property ID</th>
-                                                <th>Address</th>
-                                                <th>Type</th>
-                                                <th>Tenant</th>
+                                                <th>#</th>
+                                                <th>Invoice ID</th>
+                                                <th>Status</th>
+                                                <th>Total</th>
+                                                <th>Property</th>
+                                                <th>Date</th>
                                                 <th>Created</th>
                                                 <th>Modified</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse ($properties as $property)
-                                            <tr>
-                                                <td>{{$property->id}}</td>
-                                                <td><a href="{{route('admin.properties.edit',$property->id)}}">{{$property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->postcode}}</a></td>
-                                                <td>{{$property->type}}</td>
-                                                <td>
-                                                    @if(isset($property->tenant) && $property->tenant->id)
-                                                        <a href="{{ route('admin.settings.tenants.edit', $property->tenant->id) }}">
-                                                            {{ $property->tenant->name }}
-                                                        </a>
-                                                    @else
-                                                        N/A
-                                                    @endif
-                                                </td>                        
-                                                <td>{{date("d/m/Y", strtotime($property->created_at))}}</td>
-                                                <td>{{date("d/m/Y", strtotime($property->updated_at))}}</td>
-                                            </tr>
+                                            @forelse ($invoices as $invoice)
+                                            
+                                                <tr>            
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td><a href="{{ route('admin.invoices.show', $invoice->id) }}">{{ $invoice->id }}</a></td>
+                                                    <td>{{ $invoice->status }}</td>
+                                                    <td>{{ $invoice->total }}</td>
+                                                    <td>
+                                                        @if(isset($invoice->property) && $invoice->property->id)
+                                                            <a href="{{ route('admin.properties.edit', $invoice->property->id) }}">
+                                                                {{ $invoice->property->line1 . ', ' . $invoice->property->city . ', ' . $invoice->property->county . ', ' . $invoice->property->postcode }}
+                                                            </a>
+                                                        @else
+                                                            N/A
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ date("d/m/Y", strtotime($invoice->date)) }}</td>
+                                                    <td>{{date("d/m/Y", strtotime($invoice->created_at))}}</td>
+                                                    <td>{{date("d/m/Y", strtotime($invoice->updated_at))}}</td>
+                                                </tr>
                                             @empty
                                                 <tr>
                                                     <td colspan="6" class="text-center">No properties found.</td>
@@ -108,7 +113,7 @@
                                     </table>
                                 </div>
                                 <div class="row justify-content-center pagination-wrapper mt-2">
-                                    {!! $properties->appends(request()->query())->links('pagination::bootstrap-4') !!}
+                                    {!! $invoices->appends(request()->query())->links('pagination::bootstrap-4') !!}
                                 </div>
                             </div>
                         </div>
@@ -120,34 +125,5 @@
 @endsection
 
 @section('js')
-<script type="text/javascript">
-    $(function() {
-        var validate = $('#managelandlord').validate({
-            rules: {
-                address_line_1: {
-                    required: true,
-                },
-                city: {
-                    required: true,
-                },
-                county: {   required: true  },
-                postal_code: {  required: true  },
-                country: {
-                    required: true,
-                },
-            },
-            messages: {
-                address_line_1: 'The Address Line 1 field is required',
-                city: 'The City field is required',
-                county: 'The County field is required',
-                postal_code: 'The Postal Code field is required',
-                country: 'The Country field is required',
-            }
-        });
 
-        $('input').on('focusout keyup', function() {
-            $(this).valid();
-        });
-    });
-</script>
 @endsection

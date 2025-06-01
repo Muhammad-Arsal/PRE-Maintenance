@@ -31,23 +31,35 @@
                                 <ul class="nav nav-tabs nav-underline no-hover-bg">
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.tenants.edit', $tenant_id)}}">Overview</a>
+                                            href="{{route('admin.settings.landlords.edit', $landlord->id)}}">Overview</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.settings.tenants.edit.property', $tenant_id)}}">Current Property</a>
+                                            href="{{route('admin.settings.landlord.address', $landlord->id)}}">Address</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.tenants.jobs', $tenant_id)}}">Jobs</a>
+                                            href="{{route('admin.settings.landlord.bank', $landlord->id)}}">Bank Details</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{route('admin.tenants.correspondence', $tenant_id)}}">Correspondence</a>
+                                            href="{{ route('admin.settings.landlords.invoices', $landlord->id) }}">Invoices</a>
+                                    </li>
+                                     <li class="nav-item">
+                                        <a class="nav-link active disabled" id="quotes" data-toggle="tab"
+                                            aria-controls="quotes" href="#quotes" aria-expanded="true">Quotes</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link active disabled" id="pastTenancy" data-toggle="tab"
-                                            aria-controls="pastTenancy" href="#pastTenancy" aria-expanded="true">Past Tenancy</a>
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.landlord.properties', $landlord->id)}}">Properties</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.landlords.correspondence', $landlord->id)}}">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="">Remittances</a>
                                     </li>
                                 </ul>
                             </div>
@@ -60,45 +72,54 @@
                                                     <thead style="background-color: rgb(4,30,65); color: white;">
                                                         <tr>
                                                             <th>ID</th>
+                                                            <th>Job ID</th>
                                                             <th>Property</th>
-                                                            <th>Contract Start</th>
-                                                            <th>Contract End</th>
-                                                            <th>Date Left Property</th>
+                                                            <th>Status</th>
+                                                            <th>Priority</th>
+                                                            <th>Winning Contractor</th>
                                                             <th>Created At</th>
                                                             <th>Modified At</th>
+                                                            <th>Job Quotes</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @php $j=1 @endphp
                                                         <?php
-                                                            if($pastTenant->currentPage() !== 1){
-                                                                $j =  10 * ( $pastTenant->currentPage() - 1) + 1;
+                                                            if($jobs->currentPage() !== 1){
+                                                                $j =  10 * ( $jobs->currentPage() - 1) + 1;
                                                             }
                                                         ?>
-                                                        @forelse ($pastTenant as $item)
-                                                        <tr>
-                                                            <td>{{ $j }}</td>
-                                                            <td>
-                                                                @if ($item->tenant && $item->tenant->id)
-                                                                    <a href="{{route('admin.properties.edit',$item->property->id)}}">{{$item->property->line1 . ', ' . $item->property->city . ', ' . $item->property->county . ', ' . $item->property->postcode}}</a>
-                                                                @elseif ($item->tenant)
-                                                                    {{ $item->tenant->name }}
-                                                                @else
-                                                                    Not set
-                                                                @endif
-                                                            </td>                                                                                                                       
-                                                            <td>{{ $item->contract_start ? date('d/m/Y', strtotime($item->contract_start)) : 'Not set' }}</td>
-                                                            <td>{{ $item->contract_end ? date('d/m/Y', strtotime($item->contract_end)) : 'Not set' }}</td>
-                                                            <td>{{ $item->left_property ? date('d/m/Y', strtotime($item->left_property)) : 'Not set' }}</td>
-                                                        
-                                                            <td>{{ $item->created_at ? $item->created_at->format('d/m/Y, h:i') : 'Not set' }}</td>
-                                                            <td>{{ $item->updated_at ? $item->updated_at->format('d/m/Y, h:i') : 'Not set' }}</td>
-                                                        </tr>
-                                                        
+                                                        @forelse ($jobs as $item)
+                                                            <tr>
+                                                                <td>{{$j}}</td>
+                                                                <td><a href="{{ route('admin.jobs.edit', $item->id) }}">{{ $item->id }}</a></td>
+                                                                <td><a href="{{route('admin.properties.edit', $item->property->id)}}">{{$item->property->line1 . ', ' . $item->property->city . ', '. $item->property->county . ', ' . $item->property->postcode }}</a></td>
+                                                                <td>{{$item->status}}</td>
+                                                                <td>{{$item->priority}}</td>
+                                                                <td>
+                                                                    @if ($item->winningContractor)
+                                                                        <a href="{{ route('admin.settings.contractors.edit', $item->winningContractor->id) }}">
+                                                                            {{ $item->winningContractor->name ?? 'Not Set' }}
+                                                                        </a>
+                                                                    @else
+                                                                        Not Set
+                                                                    @endif
+                                                                </td>
+                                                                <td>{{$item->created_at->format('d/m/Y, h:i') }}</td>
+                                                                <td>{{$item->updated_at->format('d/m/Y, h:i') }}</td>
+                                                                <td>
+                                                                    <a href="{{ route('admin.settings.landlords.jobs.quotes', [$item->id, $landlord->id]) }}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                                    data-title="View Job Quotes"><span
+                                                                    style="padding:0.5rem 0.75rem" data-row-id=""
+                                                                    class="d-inline-block rounded bg-warning bg text-white"><i
+                                                                    class="la la-eye"></i></span>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
                                                             @php $j++ @endphp
                                                         @empty
                                                             <tr>
-                                                                <td colspan="6">
+                                                                <td colspan="7">
                                                                     <p class="text-center" style="font-size:1.5rem">No Data Available</p>
                                                                 </td>
                                                             </tr>
@@ -107,7 +128,7 @@
                                                 </table>
                                             </div>
                                             <div class="row justify-content-center pagination-wrapper mt-2">
-                                                {!! $pastTenant->appends(request()->query())->links('pagination::bootstrap-4') !!}
+                                                {!! $jobs->appends(request()->query())->links('pagination::bootstrap-4') !!}
                                             </div>
                                         </div>
                                                           
@@ -115,32 +136,9 @@
                                 </div>
                     
                                 <div class="form-actions right">
-                                    <a href="{{route('admin.properties')}}" class="theme-btn btn btn-primary">
+                                    <a href="{{route('admin.settings.landlords.edit', $landlord->id)}}" class="theme-btn btn btn-primary">
                                         <i class="la la-times"></i> Back
                                     </a>
-                                </div>
-
-                                <div id="forceDelete" class="modal modal-danger fade" role="dialog">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <form name="deleteForm" action="" method="POST">
-                                            @csrf
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">Delete Diary Entry</h4>
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Are you sure? You want to do this.
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <input style="background-color: #A6A6A6; color:white;" class="btn btn-outline pull-left"
-                                                        type="button" value="Cancel" data-dismiss="modal">
-                                                    <input style="background-color: #FF1616; color:white;" class="btn btn-outline" type="submit"
-                                                        value="Confirm">
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -12,7 +12,7 @@ use App\Models\PropertyType;
 use Illuminate\Http\Request;
 use App\Models\PastTenantDetails;
 use App\Http\Controllers\Controller;
-
+use App\Models\JobDetail;
 
 class PropertyController extends Controller
 {
@@ -310,6 +310,19 @@ class PropertyController extends Controller
         $property_id = $id;
 
         return view('admin.properties.jobs.index', compact('page', 'jobs', 'property_id'));
+    }
+
+    public function quotes($id)
+    {
+        $page['page_title'] = 'Manage Properties';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Properties Job Quotes';
+
+        $quotes = JobDetail::where('jobs_id', $id)->with('contractor')->get()->groupBy('contractor_id');
+        $property_id = $id;
+
+        return view('admin.properties.jobs.quotes', compact('page', 'quotes', 'property_id'));
     }
 
     public function pastTenant($id)

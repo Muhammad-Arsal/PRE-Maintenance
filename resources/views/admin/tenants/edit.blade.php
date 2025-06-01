@@ -40,6 +40,10 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
+                                            href="{{route('admin.tenants.jobs', $tenant->id)}}">Jobs</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
                                             href="{{route('admin.tenants.correspondence', $tenant->id)}}">Correspondence</a>
                                     </li>
                                     <li class="nav-item">

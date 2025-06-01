@@ -40,6 +40,10 @@
                                             href="{{route('admin.settings.tenants.edit.property', $tenant->id)}}">Current Property</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.tenants.jobs', $tenant->id)}}">Jobs</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
                                             aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
                                     </li>

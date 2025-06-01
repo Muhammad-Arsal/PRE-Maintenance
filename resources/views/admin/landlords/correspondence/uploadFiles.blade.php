@@ -46,11 +46,23 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
+                                            href="{{ route('admin.settings.landlords.invoices', $landlord->id) }}">Invoices</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.settings.landlords.jobs', $landlord->id) }}">Quotes</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
                                             href="{{route('admin.settings.landlord.properties', $landlord->id)}}">Properties</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
                                             aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="">Remittances</a>
                                     </li>
                                 </ul>
                             </div>

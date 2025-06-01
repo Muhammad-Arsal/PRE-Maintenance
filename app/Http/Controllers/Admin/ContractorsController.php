@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Jobs;
 use App\Models\Invoices;
+use App\Models\JobDetail;
 use App\Models\Contractor;
 use Illuminate\Http\Request;
 use App\Models\ContractorType;
@@ -347,6 +348,19 @@ class ContractorsController extends Controller
         $contractor_id = $id;
 
         return view('admin.contractors.jobs.index', compact('page', 'jobs', 'contractor_id'));
+    }
+
+    public function quote($jobId, $contractorId)
+    {
+        $page['page_title'] = 'Manage Contractors'; 
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'View Contractor Quotes';
+
+        $quotes = JobDetail::where('contractor_id', $contractorId)->where('jobs_id', $jobId)->get();
+        $contractor_id = $contractorId;
+
+        return view('admin.contractors.jobs.quote', compact('page', 'quotes', 'contractor_id'));
     }
 
     public function invoices($id)

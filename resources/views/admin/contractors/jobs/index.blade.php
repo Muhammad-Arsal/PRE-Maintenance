@@ -66,6 +66,7 @@
                                                             <th>Won Contract?</th>
                                                             <th>Created At</th>
                                                             <th>Modified At</th>
+                                                            <th>Job Quote</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -84,12 +85,21 @@
                                                                 <td>{{ $item->winning_contractor_id == $contractor_id ? 'Yes' : 'No' }}</td>
                                                                 
                                                                 <td>{{$item->created_at->format('d/m/Y, H:i') }}</td>
-                                                                <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>                                            
+                                                                <td>{{$item->updated_at->format('d/m/Y, H:i') }}</td>   
+                                                                
+                                                                <td>
+                                                                    <a href="{{ route('admin.contractors.quote', [$item->id, $contractor_id]) }}" data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                                                    data-title="View Job Quotes"><span
+                                                                    style="padding:0.5rem 0.75rem" data-row-id=""
+                                                                    class="d-inline-block rounded bg-warning bg text-white"><i
+                                                                    class="la la-eye"></i></span>
+                                                                    </a>
+                                                                </td>                                         
                                                             </tr>
                                                             @php $j++ @endphp
                                                         @empty
                                                             <tr>
-                                                                <td colspan="6">
+                                                                <td colspan="7">
                                                                     <p class="text-center" style="font-size:1.5rem">No Data Available</p>
                                                                 </td>
                                                             </tr>

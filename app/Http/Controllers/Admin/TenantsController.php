@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\TenantAdded;
-use App\Http\Controllers\Controller;
+use App\Models\Jobs;
 use App\Models\Tenant;
-use App\Models\TenantProfile;
 use App\Models\Property;
-use App\Models\TenantDetails;
-use App\Models\PastTenantDetails;
+use App\Events\TenantAdded;
 use Illuminate\Http\Request;
+use App\Models\TenantDetails;
+use App\Models\TenantProfile;
+use App\Models\PastTenantDetails;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class TenantsController extends Controller
@@ -473,5 +474,21 @@ class TenantsController extends Controller
         $tenant_id = $id;
 
         return view('admin.tenants.past.past-tennat', compact('page','pastTenant', 'tenant_id'));
+    }
+
+    public function jobs(Request $request, $id)
+    {
+        $page['page_title'] = 'Manage Tenants';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Jobs';
+
+        $tenantDetails = Tenant::where('id', $id)->with('property')->first();
+        
+        $jobs = Jobs::where('property_id', $tenantDetails->property->id)->paginate(10);
+
+        $tenant_id = $id;
+
+        return view('admin.tenants.jobs.index', compact('page','jobs', 'tenant_id'));
     }
 }

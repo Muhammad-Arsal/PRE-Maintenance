@@ -23,4 +23,10 @@ class Property extends Model
     public function landlord(){
         return $this->belongsTo(Landlord::class);
     }
+    public function invoices(){
+        return $this->hasMany(Invoices::class);
+    }
+    public function jobs(){
+        return $this->hasMany(Jobs::class);
+    }
 }

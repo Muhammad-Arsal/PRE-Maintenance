@@ -14,17 +14,6 @@
         .custom-content span:first-child {
             font-weight: bold;
         }
-        /* Multi‐line (2‐line) clamp + ellipsis */
-    .event-title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;    /* show at most 2 lines */
-    overflow: hidden;         /* hide everything past line 2 */
-    max-width: 100%;
-    line-height: 1.2em;       /* height of one text line */
-    font-size: 0.85em;
-    }
-
 
         /* html body a {
             color: initial !important;
@@ -36,6 +25,17 @@
 
         .fc-event-main-frame .fc-event-title {
             margin-bottom: 2em;
+        }
+
+        /* Multi‐line (2‐line) clamp + ellipsis */
+        .event-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;    /* show at most 2 lines */
+        overflow: hidden;         /* hide everything past line 2 */
+        max-width: 100%;
+        line-height: 1.2em;       /* height of one text line */
+        font-size: 0.85em;
         }
 
         #calendar a.fc-event {
@@ -243,7 +243,7 @@
         </div>
         <div class="content-header-right col-md-6 col-12">
             <div class="dropdown float-md-right">
-                <a href="{{ route('admin.diary.event.create') }}" class="btn btn-primary basic-btn btn-min-width mr-1 mb-1"
+                <a href="{{ route('admin.properties.diary.event.create', $property_id) }}" class="btn btn-primary basic-btn btn-min-width mr-1 mb-1"
                     type="button">
                     <i class="la la-plus"></i>
                     New Event
@@ -256,8 +256,45 @@
             <div class="row match-height">
                 <div class="col-md-12">
                     <div class="card">
-
+                        <div class="card-header">
+                                <ul class="nav nav-tabs nav-underline no-hover-bg">
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.edit', $property_id) }}">Overview</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.edit.address', $property_id) }}">Address</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active disabled" id="diary" data-toggle="tab"
+                                            aria-controls="diary" href="#diary" aria-expanded="true">Diary</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.viewjobs', $property_id) }}">Jobs</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.invoices.index', $property_id) }}">Invoices</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.propertys.correspondence', $property_id) }}">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.current.tenant', $property_id) }}">Current Tenant</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.past.tenant', $property_id) }}">Past Tenants</a>
+                                    </li>
+                                </ul>
+                            </div>
                         <div class="card-content collapse show">
+                            
                             <div class="card-body">
                                 @include('admin.partials.flashes')
                                     <div class="row">
@@ -277,7 +314,7 @@
 
         <div id="eventFormModal" class="modal fade" role="dialog">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form name="eventForm" id="eventForm" action="{{ route('admin.diary.event.store') }}" method="post" style="width: 100%;" enctype="multipart/form-data">
+                <form name="eventForm" id="eventForm" action="{{ route('admin.properties.diary.event.store', $property_id) }}" method="post" style="width: 100%;" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
@@ -889,7 +926,7 @@
 
             function saveDateAndView(date, view) {
                 $.ajax({
-                    url: "{{ route('admin.saveCalendarState') }}", 
+                    url: "{{ route('admin.properties.saveCalendarState') }}", 
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}', 

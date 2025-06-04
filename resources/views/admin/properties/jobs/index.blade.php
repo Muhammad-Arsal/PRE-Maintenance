@@ -49,7 +49,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{ route('admin.properties.diary', $property_id) }}">Diary</a>
+                                            href="{{ route('admin.properties.calendar', $property_id) }}">Diary</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active disabled" id="jobs" data-toggle="tab"

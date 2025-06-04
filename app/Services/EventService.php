@@ -28,11 +28,11 @@ class EventService
      * @param array $platformUsers
      * @return \App\Models\Events
      */
-    public function createEvent($requestData, $platformUsers, $contacts, $files)
+    public function createEvent($requestData, $platformUsers, $contacts, $files, $tenantId, $created_by_type)
     {
-        return \DB::transaction(function() use ($requestData, $platformUsers, $contacts, $files) {
+        return \DB::transaction(function() use ($requestData, $platformUsers, $contacts, $files, $tenantId, $created_by_type) {
             // Parse dates and times and create the main event
-            $event = $this->parseDatesAndTimesAndStoreEvent($requestData);
+            $event = $this->parseDatesAndTimesAndStoreEvent($requestData, $tenantId, $created_by_type);
 
             $this->handleFileUploads($event, $files);
 
@@ -90,14 +90,26 @@ class EventService
             // $this->handleProviders($event, $requestData['providers']);
 
             // Handle recurrence creation
-            $this->handleEventCreationRecurrence($event, $platformUsers, $contacts, $files, $requestData['repeated_for']);
+            $this->handleEventCreationRecurrence($event, $platformUsers, $contacts, $files, $requestData['repeated_for'], $tenantId, $created_by_type);
             
             return $event;
         });
     }
 
-    protected function parseDatesAndTimesAndStoreEvent($requestData)
+    protected function parseDatesAndTimesAndStoreEvent($requestData, $tenantId, $created_by_type)
     {
+        if($created_by_type == 'tenant') {
+            $created_by = $tenantId;
+            $created_by_type = 'tenant';
+        }elseif($created_by_type == 'property')
+        {
+            $created_by = $tenantId;
+            $created_by_type = 'property';
+        }
+        else{
+            $created_by = Auth::guard('admin')->user()->id;
+            $created_by_type = 'admin';
+        }
         $time_from = $requestData['time_from'];
         $time_to = $requestData['time_to'];
         
@@ -120,12 +132,13 @@ class EventService
             'time_to' => $requestData['time_to'],
             'description' => $requestData['description'],
             'recurrence' => $requestData['recurrence'],
-            'created_by' => Auth::guard('admin')->user()->id,
+            'created_by' => $created_by,
+            'created_by_type' => $created_by_type,
         ]);
     }
 
 
-    protected function handleEventCreationRecurrence(Events $event, $platformUsers, $contacts, $files, $repeated_for) {
+    protected function handleEventCreationRecurrence(Events $event, $platformUsers, $contacts, $files, $repeated_for, $tenantId, $created_by_type) {
         if(!$event->event()->exists())
         {
             $recurrences = [
@@ -146,6 +159,19 @@ class EventService
             $date_to = Carbon::parse($event->date_to);
             $recurrence = $recurrences[$event->recurrence] ?? null;
 
+            if($created_by_type == 'tenant') {
+            $created_by = $tenantId;
+            $created_by_type = 'tenant';
+            }elseif($created_by_type == 'property')
+            {
+                $created_by = $tenantId;
+                $created_by_type = 'property';
+            }
+            else{
+                $created_by = Auth::guard('admin')->user()->id;
+                $created_by_type = 'admin';
+            }
+
             if($recurrence)
                 for($i = 0; $i < $recurrence['times']; $i++)
                 {
@@ -160,6 +186,8 @@ class EventService
                         'time_from' => $event->time_from,
                         'time_to' => $event->time_to,
                         'recurrence'    => $event->recurrence,
+                        'created_by' => $created_by,
+                        'created_by_type' => $created_by_type,
                     ]);
 
                     $this->handleFileUploads($saveStoredEvent, $files);
@@ -170,9 +198,9 @@ class EventService
         }
     }
 
-    public function updateEvent(Events $event, array $data) 
+    public function updateEvent(Events $event, array $data, $tenantId, $created_by_type)
     {
-        return \DB::transaction(function() use ($event, $data) {
+        return \DB::transaction(function() use ($event, $data, $tenantId, $created_by_type) {
 
             $time_from = $data['time_from'];
             $time_to = $data['time_to'];
@@ -189,6 +217,7 @@ class EventService
             $original_date_from = $event->getOriginal('date_from');
             $original_date_to = $event->getOriginal('date_to');
 
+
             $check = $event->update([
                 'event_type' => $data['event_type'],
                 'date_from' => $dateFrom,
@@ -201,6 +230,8 @@ class EventService
                 'external_user_name' => $data['external_user_name'],
                 'cc' => $data['cc'],
                 'address_main_contact' => $data['address_main_contact'],
+                'created_by' => $event->created_by,
+                'created_by_type' => $event->created_by_type,
             ]);
 
             $this->handleFileUploads($event, $data['files']);
@@ -216,13 +247,13 @@ class EventService
             // $this->handleProviders($event, $data['providers']);
 
             if ($data['apply_to_future'] == 1) {
-                $this->handleEventUpdateRecurrence($event, $data['platform_user'], $data['contacts'], $originalDescription, $originalRecurrence, $data['files'], $data['repeated_for'], $data, $original_date_from, $original_date_to);
+                $this->handleEventUpdateRecurrence($event, $data['platform_user'], $data['contacts'], $originalDescription, $originalRecurrence, $data['files'], $data['repeated_for'], $data, $original_date_from, $original_date_to, $tenantId, $created_by_type);
             }
 
         });
     }
 
-    public function handleEventUpdateRecurrence(Events $event, $platformUsers, $contacts, $originalDescription, $originalRecurrence, $files, $repeated_for, $data, $original_date_from, $original_date_to) 
+    public function handleEventUpdateRecurrence(Events $event, $platformUsers, $contacts, $originalDescription, $originalRecurrence, $files, $repeated_for, $data, $original_date_from, $original_date_to, $tenantId, $created_by_type)
     {
         if($event->events()->exists() || $event->event) 
         {
@@ -266,7 +297,7 @@ class EventService
         }
 
         if($originalRecurrence !== $event->recurrence && $event->recurrence != 'none') {
-            $this->handleEventCreationRecurrence($event, $platformUsers, $contacts, $files, $repeated_for);
+            $this->handleEventCreationRecurrence($event, $platformUsers, $contacts, $files, $repeated_for, $tenantId, $created_by_type);
         }
     }
     

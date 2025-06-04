@@ -49,6 +49,10 @@
                                         <a class="nav-link active disabled" id="pastTenancy" data-toggle="tab"
                                             aria-controls="pastTenancy" href="#pastTenancy" aria-expanded="true">Past Tenancy</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.tenants.calendar', $tenant_id) }}">Diary</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="card-body">

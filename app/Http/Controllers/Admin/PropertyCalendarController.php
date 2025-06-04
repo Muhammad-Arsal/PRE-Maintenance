@@ -13,20 +13,20 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CalendarController extends Controller
+class PropertyCalendarController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request, $propertyId) {
         $page['page_title'] = 'Diary';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
         $page['page_current'] = 'Diary';
 
         $admin_id = Auth::guard('admin')->user()->id;
-        $events = Events::orderBy('created_at', 'desc')->get();
-        $tasks = Tasks::orderBy('created_at', 'desc')->where('is_critical', 1)->get();
-        $meetings = GeneralCorrespondenceCall::where('is_call', 'no')->get();
+        $events = Events::orderBy('created_at', 'desc')->where('created_by', $propertyId)->where('created_by_type', 'property')->get();
+        // $tasks = Tasks::orderBy('created_at', 'desc')->where('is_critical', 1)->get();
+        // $meetings = GeneralCorrespondenceCall::where('is_call', 'no')->get();
         
-        $events = $events->concat($tasks)->concat($meetings);
+        // $events = $events->concat($tasks)->concat($meetings);
         
         $data = [];
         $color = '';
@@ -74,7 +74,7 @@ class CalendarController extends Controller
                     $date_to = $date_to->toIso8601String();
                 }
 
-                $url = route('admin.diary.event.edit', $d->id);
+                $url = route('admin.properties.diary.event.edit', [$d->id, $propertyId]);
             } else if($d instanceof Tasks) {
                 $date = Carbon::createFromFormat('Y-m-d', $d->due_date)->startOfDay();                
 
@@ -126,52 +126,54 @@ class CalendarController extends Controller
             $calendarView = 'timeGridDay';
         }
 
-        return view('admin.calendar.index', compact('page', 'data', 'event_types', 'platform_users', 'contacts', 'calendarDate', 'calendarView'));
+        $property_id = $propertyId;
+
+        return view('admin.properties.calendar.index', compact('page', 'data', 'event_types', 'platform_users', 'contacts', 'calendarDate', 'calendarView', 'property_id'));
     }
 
-    public function editMeetingForm($id, $type) {
-        $page['page_title'] = 'Meeting';
-        $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
-        $page['page_current'] = 'Edit Meeting';
+    // public function editMeetingForm($id, $type) {
+    //     $page['page_title'] = 'Meeting';
+    //     $page['page_parent'] = 'Home';
+    //     $page['page_parent_link'] = route('admin.dashboard');
+    //     $page['page_current'] = 'Edit Meeting';
 
-        $meeting = GeneralCorrespondenceCall::where('id', $id)->first();
-        $contacts = Landlord::orderBy('name', 'asc')->get();
+    //     $meeting = GeneralCorrespondenceCall::where('id', $id)->first();
+    //     $contacts = Landlord::orderBy('name', 'asc')->get();
 
-        return view('admin.calendar.edit_meeting', compact('page', 'meeting', 'contacts'));
-    }
+    //     return view('admin.calendar.edit_meeting', compact('page', 'meeting', 'contacts'));
+    // }
 
-    public function storeMeetingForm(Request $request, $id, $type) {
-        $request->validate([
-            'meeting_date' => 'required',
-            'meeting_time' => 'required',
-            'meeting_time_to' => 'required',
-        ], [
-            'meeting_time.required' => "This field is required",
-            'meeting_time_to.required' => "This field is required",
-        ]);
+    // public function storeMeetingForm(Request $request, $id, $type) {
+    //     $request->validate([
+    //         'meeting_date' => 'required',
+    //         'meeting_time' => 'required',
+    //         'meeting_time_to' => 'required',
+    //     ], [
+    //         'meeting_time.required' => "This field is required",
+    //         'meeting_time_to.required' => "This field is required",
+    //     ]);
 
-        $data = $request->except('_token');
-        if($data['meeting_date']) {
-            $meeting_date = Carbon::createFromFormat("d/m/Y", $data['meeting_date'])
-            ->format('Y-m-d H:i:s');
-        }
+    //     $data = $request->except('_token');
+    //     if($data['meeting_date']) {
+    //         $meeting_date = Carbon::createFromFormat("d/m/Y", $data['meeting_date'])
+    //         ->format('Y-m-d H:i:s');
+    //     }
 
-        $meeting = GeneralCorrespondenceCall::where('id', $id)->update([
-            'description' => $data['meeting_notes'],
-            'time' => $data['meeting_time'],
-            'time_to' => $data['meeting_time_to'],
-            'date' => $meeting_date,
-            'call_type'   => null,
-            'is_call' => 'no',
-            'landlord_id' => $request->contacts,
-        ]);
+    //     $meeting = GeneralCorrespondenceCall::where('id', $id)->update([
+    //         'description' => $data['meeting_notes'],
+    //         'time' => $data['meeting_time'],
+    //         'time_to' => $data['meeting_time_to'],
+    //         'date' => $meeting_date,
+    //         'call_type'   => null,
+    //         'is_call' => 'no',
+    //         'landlord_id' => $request->contacts,
+    //     ]);
 
-        return redirect()
-        ->route( 'admin.diary' )
-        ->withFlashMessage( 'Meeting updated successfully!' )
-        ->withFlashType( 'success' );
-    }
+    //     return redirect()
+    //     ->route( 'admin.tenants.calendar' )
+    //     ->withFlashMessage( 'Meeting updated successfully!' )
+    //     ->withFlashType( 'success' );
+    // }
 
     public function saveCalendarState(Request $request) {
         session([
@@ -182,3 +184,4 @@ class CalendarController extends Controller
         return response()->json(['success' => true]);
     }
 }
+

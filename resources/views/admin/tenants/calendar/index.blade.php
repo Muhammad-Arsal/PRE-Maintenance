@@ -14,17 +14,17 @@
         .custom-content span:first-child {
             font-weight: bold;
         }
-        /* Multi‐line (2‐line) clamp + ellipsis */
-    .event-title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;    /* show at most 2 lines */
-    overflow: hidden;         /* hide everything past line 2 */
-    max-width: 100%;
-    line-height: 1.2em;       /* height of one text line */
-    font-size: 0.85em;
-    }
 
+        /* Multi‐line (2‐line) clamp + ellipsis */
+        .event-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;    /* show at most 2 lines */
+        overflow: hidden;         /* hide everything past line 2 */
+        max-width: 100%;
+        line-height: 1.2em;       /* height of one text line */
+        font-size: 0.85em;
+        }
 
         /* html body a {
             color: initial !important;
@@ -243,7 +243,7 @@
         </div>
         <div class="content-header-right col-md-6 col-12">
             <div class="dropdown float-md-right">
-                <a href="{{ route('admin.diary.event.create') }}" class="btn btn-primary basic-btn btn-min-width mr-1 mb-1"
+                <a href="{{ route('admin.tenants.diary.event.create', $tenant_id) }}" class="btn btn-primary basic-btn btn-min-width mr-1 mb-1"
                     type="button">
                     <i class="la la-plus"></i>
                     New Event
@@ -258,6 +258,34 @@
                     <div class="card">
 
                         <div class="card-content collapse show">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs nav-underline no-hover-bg">
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.tenants.edit', $tenant_id)}}">Current Property</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.settings.tenants.edit.property', $tenant_id)}}">Current Property</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.tenants.jobs', $tenant_id)}}">Jobs</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{route('admin.tenants.correspondence', $tenant_id)}}">Correspondence</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.properties.past.tenancy', $tenant_id) }}">Past Tenancy</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active disabled" id="diary" data-toggle="tab"
+                                            aria-controls="diary" href="#diary" aria-expanded="true">Diary</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="card-body">
                                 @include('admin.partials.flashes')
                                     <div class="row">
@@ -277,7 +305,7 @@
 
         <div id="eventFormModal" class="modal fade" role="dialog">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form name="eventForm" id="eventForm" action="{{ route('admin.diary.event.store') }}" method="post" style="width: 100%;" enctype="multipart/form-data">
+                <form name="eventForm" id="eventForm" action="{{ route('admin.tenants.diary.event.store', $tenant_id) }}" method="post" style="width: 100%;" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
@@ -889,7 +917,7 @@
 
             function saveDateAndView(date, view) {
                 $.ajax({
-                    url: "{{ route('admin.saveCalendarState') }}", 
+                    url: "{{ route('admin.tenants.saveCalendarState') }}", 
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}', 

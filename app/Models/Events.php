@@ -19,7 +19,7 @@ class Events extends Model
     ];
     
     protected $fillable = [
-        'event_type', 'description', 'external_user', 'date_from', 'date_to', 'time_from', 'time_to', 'time_from_manual', 'time_to_manual', 'comment', 'recurrence', 'event_id', 'created_by', 'external_user_name', 'cc', 'address_main_contact'
+        'created_by_type','event_type', 'description', 'external_user', 'date_from', 'date_to', 'time_from', 'time_to', 'time_from_manual', 'time_to_manual', 'comment', 'recurrence', 'event_id', 'created_by', 'external_user_name', 'cc', 'address_main_contact'
     ];
 
     public function events()

@@ -15,10 +15,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Http\Request;
 
-class EventController extends Controller
+class PropertyEventController extends Controller
 {
 
-    public function create() {
+    public function create($propertyId) {
         $page['page_title'] = 'Event';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
@@ -27,11 +27,12 @@ class EventController extends Controller
         $event_types = EventType::orderBy('event_name', 'asc')->get();
         $platform_users = Admin::orderBy('name', 'asc')->get();
         $contacts = Landlord::orderBy('name', 'asc')->get();
+        $property_id = $propertyId;
 
-        return view('admin.calendar.event.add', compact('page', 'event_types', 'platform_users', 'contacts'));
+        return view('admin.properties.calendar.event.add', compact('page', 'event_types', 'platform_users', 'contacts', 'property_id'));
     }
 
-    public function store(Request $request, EventService $eventService) {
+    public function store(Request $request, EventService $eventService, $propertyId) {
         $request->validate([
             'docs.*' => 'nullable|file|max:51200'
         ]);
@@ -43,15 +44,15 @@ class EventController extends Controller
 
         $requestData['repeated_for'] = $request->repeated_for ? $request->repeated_for : '4';
         
-        $event = $eventService->createEvent($requestData, $platformUsers, $contacts, $files, $tenantId = null, $created_by_type = 'admin');
+        $event = $eventService->createEvent($requestData, $platformUsers, $contacts, $files, $propertyId, $created_by_type = 'property');
 
         return redirect()
-        ->route( 'admin.diary', ['savedState' => 'true'])
+        ->route( 'admin.properties.calendar', ['savedState' => 'true', 'id' => $propertyId])
         ->withFlashMessage( 'Event created successfully!' )
         ->withFlashType( 'success' );
     }
 
-    public function edit(Events $id) {
+    public function edit(Events $id, $propertyId, $created_by_type = 'property') {
         $page['page_title'] = 'Event';
         $page['page_parent'] = 'Home';
         $page['page_parent_link'] = route('admin.dashboard');
@@ -75,11 +76,12 @@ class EventController extends Controller
         $platform_users = Admin::orderBy('name', 'asc')->get();
         $contacts = Landlord::orderBy('name', 'asc')->get();
         // $providers = Supplier::orderby('name', 'desc')->get();
+        $property_id = $propertyId;
 
-        return view('admin.calendar.event.edit', compact('page', 'event_types', 'platform_users', 'event', 'event_users', 'event_contacts', 'contacts'));
+        return view('admin.properties.calendar.event.edit', compact('page', 'event_types', 'platform_users', 'event', 'event_users', 'event_contacts', 'contacts', 'property_id'));
     }
 
-    public function update(Request $request, Events $id) {
+    public function update(Request $request, Events $id, $propertyId, $created_by_type = 'property') {
         $request->validate([
             'docs.*' => 'nullable|file|max:51200'
         ]);
@@ -97,15 +99,15 @@ class EventController extends Controller
 
         $event = $id;
     
-        $eventService->updateEvent($event, $requestData, $tenantId = null, $created_by_type = 'admin');  // Call the service method to update the event
+        $eventService->updateEvent($event, $requestData, $propertyId, $created_by_type);  // Call the service method to update the event
     
         return redirect()
-            ->route( 'admin.diary', ['savedState' => 'true'])
+            ->route( 'admin.properties.calendar', ['savedState' => 'true', 'id' => $propertyId])
             ->withFlashMessage('Event updated successfully!')
             ->withFlashType('success');
     }
 
-    public function fileDelete(EventDocs $id)
+    public function fileDelete(EventDocs $id, $propertyId)
     {
 
         $eventDocs = $id;
@@ -119,24 +121,24 @@ class EventController extends Controller
         \DB::table('event_docs')->where('id', $eventDocs->id)->delete();
 
         return redirect()
-        ->route('admin.diary.event.edit', $eventDocs->event_id)
+        ->route( 'admin.properties.calendar', ['savedState' => 'true', 'id' => $propertyId])
         ->withFlashMessage('File deleted successfully!')
         ->withFlashType('success');
     }
 
-    public function destroy(Events $id) {
+    public function destroy(Events $id, $propertyId) {
         $event = $id;
 
         \DB::table('event_users')->where('event_id', $event->id)->delete();
         $event->delete();
 
         return redirect()
-        ->route( 'admin.diary', ['savedState' => 'true'])
+        ->route( 'admin.properties.calendar', ['savedState' => 'true', 'id' => $propertyId])
         ->withFlashMessage( 'Event deleted successfully!' )
         ->withFlashType( 'success' );
     }
 
-    public function deleteAllRecurrences(Events $id) {
+    public function deleteAllRecurrences(Events $id, $propertyId) {
         $event = $id;
 
         if (is_null($event->event_id)) {
@@ -167,96 +169,9 @@ class EventController extends Controller
         }
 
         return redirect()
-        ->route( 'admin.diary', ['savedState' => 'true'])
+        ->route( 'admin.properties.calendar', ['savedState' => 'true', 'id' => $propertyId])
         ->withFlashMessage( 'All Recurrences deleted successfully!' )
         ->withFlashType( 'success' );
     }
 
-
-    // Event Type
-    public function manageType(){
-        $page['page_title'] = 'Manage Event Type';
-        $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
-        $page['page_current'] = 'Event Type';
-
-        $event_types = EventType::withTrashed()->orderBy('event_name', 'desc')->get();
-
-        return view('admin.settings.event-type.index', compact('page', 'event_types'));
-    }
-
-    public function createType() {
-        $page['page_title'] = 'Manage Event Type';
-        $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
-        $page['page_current'] = 'Add Event Type';
-
-        $emailTemplates = EmailTemplate::orderBy('type', 'desc')->where('status', '1')->get();
-
-        return view('admin.settings.event-type.add', compact('page', 'emailTemplates'));
-    }
-
-    public function storeType(Request $request) {
-        $request->validate([
-            'event_name' => 'required',
-            'email_template' => 'required',
-        ]);
-
-        EventType::create([
-            'event_name' => $request->event_name,
-            'email_template_id' => $request->email_template
-        ]);
-
-        return redirect()
-        ->route( 'admin.settings.event-type' )
-        ->withFlashMessage( 'Event Type added successfully!' )
-        ->withFlashType( 'success' );
-    }
-
-    public function editType($id) {
-        $page['page_title'] = 'Manage Event Type';
-        $page['page_parent'] = 'Home';
-        $page['page_parent_link'] = route('admin.dashboard');
-        $page['page_current'] = 'Edit Event Type';
-
-        $event_type = EventType::where('id', $id)->with('emailTemplate')->withTrashed()->first();
-
-        $emailTemplates = EmailTemplate::orderBy('type', 'desc')->where('status', '1')->get();
-
-        return view('admin.settings.event-type.edit', compact('page', 'event_type', 'emailTemplates'));
-    }
-
-    public function updateType(Request $request, $id) {
-        $request->validate([
-            'event_name' => 'required',
-            'email_template' => 'required',
-        ]);
-
-        $event_type = EventType::where('id', $id)->withTrashed()->first();
-
-        EventType::where('id', $event_type->id)->withTrashed()->update([
-            'event_name' => $request->event_name,
-            'email_template_id' => $request->email_template
-        ]);
-
-        return redirect()
-        ->route( 'admin.settings.event-type' )
-        ->withFlashMessage( 'Event Type updated successfully!' )
-        ->withFlashType( 'success' );
-    }
-
-    public function destroyType($id) {
-        $event_type = EventType::where('id', $id)->withTrashed()->first();
-
-        if($event_type->trashed()) {
-            $event_type->restore();
-        } else {
-            $event_type->delete();
-        }
-
-        return redirect()
-        ->route( 'admin.settings.event-type' )
-        ->withFlashMessage( 'Event Type deleted successfully!' )
-        ->withFlashType( 'success' );
-    }
 }

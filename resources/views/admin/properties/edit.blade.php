@@ -39,7 +39,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"
-                                            href="{{ route('admin.properties.diary', $property->id) }}">Diary</a>
+                                            href="{{ route('admin.properties.calendar', $property->id) }}">Diary</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link"

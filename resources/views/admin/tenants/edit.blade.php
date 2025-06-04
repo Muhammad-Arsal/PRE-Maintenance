@@ -50,6 +50,10 @@
                                         <a class="nav-link"
                                             href="{{ route('admin.properties.past.tenancy', $tenant->id) }}">Past Tenancy</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.tenants.calendar', $tenant->id) }}">Diary</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="card-body">

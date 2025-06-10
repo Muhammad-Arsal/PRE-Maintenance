@@ -107,53 +107,6 @@
                                         <div class="row">
                                             <div class="col-md-4 col-12">
                                                 <div class="form-group">
-                                                    <label for="platform_users">External User Name</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="text" id="external_user_name" class="form-control {{ $errors->has('external_user_name') ? 'error' : '' }}" placeholder="External User Name" name="external_user_name" value="{{ old('external_user_name', $event->external_user_name) }}" aria-invalid="true">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-user"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('external_user_name'))
-                                                        <label id="external_user_name-error" class="error"
-                                                            for="external_user_name">{{ $errors->first('external_user_name') }}</label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 col-12">
-                                                <div class="form-group">
-                                                    <label for="platform_users">External User Email</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="email" id="external_user" disabled class="form-control {{ $errors->has('external_user') ? 'error' : '' }}" placeholder="External User Email" name="external_user" value="{{ $event->external_user }}" aria-invalid="true">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-envelope"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('external_user'))
-                                                        <label id="external_user-error" class="error"
-                                                            for="external_user">{{ $errors->first('external_user') }}</label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 col-12">
-                                                <div class="form-group">
-                                                    <label for="cc">CC</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <input type="email" id="cc" class="form-control {{ $errors->has('cc') ? 'error' : '' }}" placeholder="CC" name="cc" value="{{ old('cc', $event->cc) }}" aria-invalid="true">
-                                                        <div class="form-control-position">
-                                                            <i class="la la-envelope"></i>
-                                                        </div>
-                                                    </div>
-                                                    @if ($errors->has('cc'))
-                                                        <label id="cc-error" class="error"
-                                                            for="cc">{{ $errors->first('cc') }}</label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4 col-12">
-                                                <div class="form-group">
                                                     <label for="address_main_contact">Address Main Contact</label>
                                                     <div class="position-relative has-icon-left">
                                                         <textarea id="address_main_contact" name="address_main_contact" class="form-control {{ $errors->has('address_main_contact') ? 'error' : '' }}" placeholder="Address Main Contact">{{ old('address_main_contact', $event->address_main_contact) }}</textarea>

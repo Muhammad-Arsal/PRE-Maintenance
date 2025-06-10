@@ -43,9 +43,14 @@ class Events extends Model
         });
     }
 
-    public function EventUsers()
+    public function EventProperty()
     {
-        return $this->belongsToMany(Admin::class, 'event_users', 'event_id', 'platform_user_id');
+        return $this->belongsToMany(Property::class, 'event_property', 'event_id', 'platform_user_id');
+    }
+
+    public function EventContacts()
+    {
+        return $this->belongsToMany(Contractor::class, 'event_contacts', 'event_id', 'contact_id');
     }
 
     public function permissions()

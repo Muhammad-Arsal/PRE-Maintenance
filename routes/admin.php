@@ -22,7 +22,10 @@ use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\PropertyEventController;
 use App\Http\Controllers\Admin\ContractorTypeController;
 use App\Http\Controllers\Admin\TenantCalendarController;
+use App\Http\Controllers\Admin\ContractorEventController;
+use App\Http\Controllers\Admin\LandlordCalendarController;
 use App\Http\Controllers\Admin\PropertyCalendarController;
+use App\Http\Controllers\Admin\ContractorCalendarController;
 use App\Http\Controllers\Admin\TenantsCorrespondenceController;
 use App\Http\Controllers\Auth\AdminEmailVerificationController;
 use App\Http\Controllers\Admin\LandlordsCorrespondenceController;
@@ -318,13 +321,8 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     //Tenant Calendar Routes
     Route::get('/tenants/{id}/calendar', [TenantCalendarController::class, 'index'])->name('admin.tenants.calendar');
     Route::post('tenants/diary/save-calendar-state', [TenantCalendarController::class, 'saveCalendarState'])->name('admin.tenants.saveCalendarState');
-    Route::get('tenants/diary/event/{id}/add', [TenantEventController::class, 'create'])->name('admin.tenants.diary.event.create');
-    Route::post('tenants/diary/event/{id}/store', [TenantEventController::class, 'store'])->name('admin.tenants.diary.event.store');
-    Route::get('tenants/diary/event/{id}/edit/{tenant_id}', [TenantEventController::class, 'edit'])->name('admin.tenants.diary.event.edit');
-    Route::post('tenants/diary/event/{id}/update/{tenant_id}', [TenantEventController::class, 'update'])->name('admin.tenants.diary.event.update');
-    Route::post('tenants/diary/event/{id}/delete{tenant_id}', [TenantEventController::class, 'destroy'])->name('admin.tenants.diary.event.delete');
-    Route::post('tenants/diary/event/{id}/deleteAllRecurrences/{tenant_id}', [TenantEventController::class, 'deleteAllRecurrences'])->name('admin.tenants.diary.event.deleteAllRecurrences');
-    Route::post('tenants/diary/event/{id}/file-delete/{tenant_id}', [TenantEventController::class, 'fileDelete'])->name('admin.tenants.diary.event.fileDelete');
+    Route::get('tenants/diary/event/{id}/edit/{tenant_id}', [TenantCalendarController::class, 'edit'])->name('admin.tenants.diary.event.edit');
+
 
     //Property Calendar Routes
     Route::get('/properties/{id}/calendar', [PropertyCalendarController::class, 'index'])->name('admin.properties.calendar');
@@ -336,6 +334,22 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('properties/diary/event/{id}/delete{property_id}', [PropertyEventController::class, 'destroy'])->name('admin.properties.diary.event.delete');
     Route::post('properties/diary/event/{id}/deleteAllRecurrences/{property_id}', [PropertyEventController::class, 'deleteAllRecurrences'])->name('admin.properties.diary.event.deleteAllRecurrences');
     Route::post('properties/diary/event/{id}/file-delete/{property_id}', [PropertyEventController::class, 'fileDelete'])->name('admin.properties.diary.event.fileDelete');
+
+    //Landlord Calendar Routes
+    Route::get('/landlords/{id}/calendar', [LandlordCalendarController::class, 'index'])->name('admin.landlords.calendar');
+    Route::post('landlords/diary/save-calendar-state', [LandlordCalendarController::class, 'saveCalendarState'])->name('admin.landlords.saveCalendarState');
+    Route::get('landlords/diary/event/{id}/edit/{property_id}', [LandlordCalendarController::class, 'edit'])->name('admin.landlords.diary.event.edit');
+
+    //contractor Calendar Routes
+    Route::get('/contractors/{id}/calendar', [ContractorCalendarController::class, 'index'])->name('admin.contractors.calendar');
+    Route::post('contractors/diary/save-calendar-state', [ContractorCalendarController::class, 'saveCalendarState'])->name('admin.contractors.saveCalendarState');
+    Route::get('contractors/diary/event/{id}/add', [ContractorEventController::class, 'create'])->name('admin.contractors.diary.event.create');
+    Route::post('contractors/diary/event/{id}/store', [ContractorEventController::class, 'store'])->name('admin.contractors.diary.event.store');
+    Route::get('contractors/diary/event/{id}/edit/{contractor_id}', [ContractorEventController::class, 'edit'])->name('admin.contractors.diary.event.edit');
+    Route::post('contractors/diary/event/{id}/update/{contractor_id}', [ContractorEventController::class, 'update'])->name('admin.contractors.diary.event.update');
+    Route::post('contractors/diary/event/{id}/delete{contractor_id}', [ContractorEventController::class, 'destroy'])->name('admin.contractors.diary.event.delete'); 
+    Route::post('contractors/diary/event/{id}/deleteAllRecurrences/{contractor_id}', [ContractorEventController::class, 'deleteAllRecurrences'])->name('admin.contractors.diary.event.deleteAllRecurrences');
+    Route::post('contractors/diary/event/{id}/file-delete/{contractor_id}', [ContractorEventController::class, 'fileDelete'])->name('admin.contractors.diary.event.fileDelete');
 });
 
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\Tenant\ProfileController;
 use App\Http\Controllers\Auth\TenantAuthController;
 use App\Http\Controllers\Tenant\InvoicesController;
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\TenantCalendarController;
 use App\Http\Controllers\Auth\TenantEmailVerficationController;
 use App\Http\Controllers\Tenant\TenantCorrespondenceController;
 
@@ -71,6 +72,10 @@ Route::middleware(['tenant', 'verified:tenant.login'])->group(function(){
     //pdf generate 
     Route::get('tenant/invoices/generatePDF/{id}', [InvoicesController::class, 'generatePDF'])->name('tenant.invoices.generatePDF');
 
+    //tenant calendar Routes
+    Route::get('/diary/{id}/calendar', [TenantCalendarController::class, 'index'])->name('tenant.calendar');
+    Route::post('diary/save-calendar-state', [TenantCalendarController::class, 'saveCalendarState'])->name('tenant.saveCalendarState'); 
+    Route::get('diary/event/{id}/edit/{tenant_id}', [TenantCalendarController::class, 'edit'])->name('tenant.diary.event.edit');
 });
 
 ?>

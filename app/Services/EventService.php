@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Admin;
-use App\Models\EmailTemplate;
-use App\Models\Events;
-use App\Models\EventType;
 use Carbon\Carbon;
+use App\Models\Admin;
+use App\Models\Events;
+use App\Models\Property;
+use App\Models\EventType;
+use App\Models\EmailTemplate;
 use Illuminate\Support\Facades\Auth;
 
 class EventService
@@ -28,9 +29,9 @@ class EventService
      * @param array $platformUsers
      * @return \App\Models\Events
      */
-    public function createEvent($requestData, $platformUsers, $contacts, $files, $tenantId, $created_by_type)
+    public function createEvent($requestData, $property, $contacts, $files, $tenantId, $created_by_type)
     {
-        return \DB::transaction(function() use ($requestData, $platformUsers, $contacts, $files, $tenantId, $created_by_type) {
+        return \DB::transaction(function() use ($requestData, $property, $contacts, $files, $tenantId, $created_by_type) {
             // Parse dates and times and create the main event
             $event = $this->parseDatesAndTimesAndStoreEvent($requestData, $tenantId, $created_by_type);
 
@@ -45,23 +46,23 @@ class EventService
                     $e_date_from = Date('d/m/Y H:i', strtotime($event->date_from));
                     $e_date_to = Date('d/m/Y H:i', strtotime($event->date_to));
 
-                    foreach($platformUsers as $user) {
-                        $platform_user = Admin::find($user);
-                        if($platform_user) {
-                            if($platform_user->email) {
-                                $data = array(
-                                    'user_name' => $platform_user->name,
-                                    'event_type' => $event_type->event_name,
-                                    'date' => $e_date_from . ' -- ' . $e_date_to,
-                                    'description' => $event->description,
-                                    'template' => $template->content,
-                                    'type' => 'internal_email',
-                                );
+                    // foreach($property as $user) {
+                    //     $platform_user = Property::find($user);
+                    //     if($platform_user) {
+                    //         if($platform_user->email) {
+                    //             $data = array(
+                    //                 'user_name' => $platform_user->name,
+                    //                 'event_type' => $event_type->event_name,
+                    //                 'date' => $e_date_from . ' -- ' . $e_date_to,
+                    //                 'description' => $event->description,
+                    //                 'template' => $template->content,
+                    //                 'type' => 'internal_email',
+                    //             );
     
-                                \Mail::to($platform_user->email)->send(new \App\Mail\EventReminder($data));
-                            }
-                        }
-                    }
+                    //             \Mail::to($platform_user->email)->send(new \App\Mail\EventReminder($data));
+                    //         }
+                    //     }
+                    // }
 
                     //Send Email to external user
                     if ($requestData['external_user']) {
@@ -81,7 +82,7 @@ class EventService
             }
 
             // Associate platform users with the event
-            $this->handlePlatformUsers($event, $platformUsers);
+            $this->handlePlatformUsers($event, $property);
 
             //Associate contacts with the event
             $this->handleContacts($event, $contacts);
@@ -90,7 +91,7 @@ class EventService
             // $this->handleProviders($event, $requestData['providers']);
 
             // Handle recurrence creation
-            $this->handleEventCreationRecurrence($event, $platformUsers, $contacts, $files, $requestData['repeated_for'], $tenantId, $created_by_type);
+            $this->handleEventCreationRecurrence($event, $property, $contacts, $files, $requestData['repeated_for'], $tenantId, $created_by_type);
             
             return $event;
         });
@@ -138,7 +139,7 @@ class EventService
     }
 
 
-    protected function handleEventCreationRecurrence(Events $event, $platformUsers, $contacts, $files, $repeated_for, $tenantId, $created_by_type) {
+    protected function handleEventCreationRecurrence(Events $event, $property, $contacts, $files, $repeated_for, $tenantId, $created_by_type) {
         if(!$event->event()->exists())
         {
             $recurrences = [
@@ -191,7 +192,7 @@ class EventService
                     ]);
 
                     $this->handleFileUploads($saveStoredEvent, $files);
-                    $this->handlePlatformUsers($saveStoredEvent, $platformUsers);
+                    $this->handlePlatformUsers($saveStoredEvent, $property);
                     $this->handleContacts($saveStoredEvent, $contacts);
                     // $this->handleProviders($saveStoredEvent, $providers);
                 }
@@ -240,14 +241,14 @@ class EventService
 // \Log::info($queries);
 
             // dd($check);
-            $this->handlePlatformUsers($event, $data['platform_user']);
+            $this->handlePlatformUsers($event, $data['property']);
 
             $this->handleContacts($event, $data['contacts']);
 
             // $this->handleProviders($event, $data['providers']);
 
             if ($data['apply_to_future'] == 1) {
-                $this->handleEventUpdateRecurrence($event, $data['platform_user'], $data['contacts'], $originalDescription, $originalRecurrence, $data['files'], $data['repeated_for'], $data, $original_date_from, $original_date_to, $tenantId, $created_by_type);
+                $this->handleEventUpdateRecurrence($event, $data['property'], $data['contacts'], $originalDescription, $originalRecurrence, $data['files'], $data['repeated_for'], $data, $original_date_from, $original_date_to, $tenantId, $created_by_type);
             }
 
         });
@@ -331,19 +332,19 @@ class EventService
     }
     
 
-    protected function handlePlatformUsers($event, $platformUsers)
+    protected function handlePlatformUsers($event, $property)
     {
-        \DB::table('event_users')->where('event_id', $event->id)->delete();
+        \DB::table('event_property')->where('event_id', $event->id)->delete();
         
         $platformUserRecords = [];
-        foreach ($platformUsers as $user) {
+        foreach ($property as $user) {
             $platformUserRecords[] = [
                 'event_id' => $event->id,
                 'platform_user_id' => $user
             ];
         }
         
-        \DB::table('event_users')->insert($platformUserRecords);
+        \DB::table('event_property')->insert($platformUserRecords);
     }
 
     protected function handleContacts($event, $contacts)

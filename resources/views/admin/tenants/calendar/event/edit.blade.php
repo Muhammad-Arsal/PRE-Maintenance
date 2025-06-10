@@ -57,18 +57,20 @@
                             <div class="card-body">
                                 @include('admin.partials.flashes')
                                 <form method="post" id='manageType'
-                                    action="{{ route('admin.tenants.diary.event.update', [$event->id, $tenant_id]) }}" enctype="multipart/form-data">
+                                    action="" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-body">
                                         <div class="form-group">
                                             <label for="event_type">Event Type</label>
                                             <div class="position-relative has-icon-left">
-                                                <select name="event_type" id="event_type" class="form-control {{ $errors->has('event_type') ? 'error' : '' }}">
-                                                    <option value="">Event Type</option>
+                                                <select name="event_type" id="event_type" class="form-control {{ $errors->has('event_type') ? 'error' : '' }}" readonly>
                                                     @foreach ($event_types as $item)
-                                                        <option {{ $event->event_type == $item->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->event_name }}</option>
+                                                        @if ($event->event_type == $item->id)
+                                                            <option selected value="{{ $item->id }}">{{ $item->event_name }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
+
                                                 <div class="form-control-position">
                                                     <i class="la la-calendar-check-o"></i>
                                                 </div>
@@ -81,27 +83,28 @@
                                         <div class="row">
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group">
-                                                    <label for="platform_users">Platform Users</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <select name="platform_user[]" multiple id="platform_user" class="form-control {{ $errors->has('platform_users') ? 'error' : '' }}">
-                                                            @foreach ($platform_users as $platform_user)
-                                                                <option
-                                                                    @php foreach ($event_users as $event_user) {
-                                                                        if($event_user->platform_user_id == $platform_user->id) {
-                                                                            echo 'selected';
-                                                                        }
-                                                                    } @endphp
-                                                                    value="{{ $platform_user->id }}">{{ $platform_user->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        <div class="form-control-position">
-                                                            <i class="la la-users"></i>
-                                                        </div>
+                                                <label for="property">Properties</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <select name="property[]" id="property" readonly
+                                                    class="form-control {{ $errors->has('property') ? 'error' : '' }}">
+                                                    @foreach ($properties as $property)
+                                                        @if (collect($event_property)->pluck('platform_user_id')->contains($property->id))
+                                                            <option selected value="{{ $property->id }}">
+                                                                {{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->country . ', ' . $property->postcode }}
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+
+                                                    </select>
+                                                    <div class="form-control-position">
+                                                    <i class="la la-building"></i>
                                                     </div>
-                                                    @if ($errors->has('platform_users'))
-                                                        <label id="platform_users-error" class="error"
-                                                            for="platform_users">{{ $errors->first('platform_users') }}</label>
-                                                    @endif
+                                                </div>
+                                                @if ($errors->has('property'))
+                                                    <label id="property-error" class="error" for="property">
+                                                    {{ $errors->first('property') }}
+                                                    </label>
+                                                @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -110,7 +113,7 @@
                                                 <div class="form-group">
                                                     <label for="platform_users">External User Name</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="external_user_name" class="form-control {{ $errors->has('external_user_name') ? 'error' : '' }}" placeholder="External User Name" name="external_user_name" value="{{ old('external_user_name', $event->external_user_name) }}" aria-invalid="true">
+                                                        <input readonly type="text" id="external_user_name" class="form-control {{ $errors->has('external_user_name') ? 'error' : '' }}" placeholder="External User Name" name="external_user_name" value="{{ old('external_user_name', $event->external_user_name) }}" aria-invalid="true">
                                                         <div class="form-control-position">
                                                             <i class="la la-user"></i>
                                                         </div>
@@ -125,7 +128,7 @@
                                                 <div class="form-group">
                                                     <label for="platform_users">External User Email</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="email" id="external_user" disabled class="form-control {{ $errors->has('external_user') ? 'error' : '' }}" placeholder="External User Email" name="external_user" value="{{ $event->external_user }}" aria-invalid="true">
+                                                        <input readonly type="email" id="external_user" disabled class="form-control {{ $errors->has('external_user') ? 'error' : '' }}" placeholder="External User Email" name="external_user" value="{{ $event->external_user }}" aria-invalid="true">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -140,7 +143,7 @@
                                                 <div class="form-group">
                                                     <label for="cc">CC</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="email" id="cc" class="form-control {{ $errors->has('cc') ? 'error' : '' }}" placeholder="CC" name="cc" value="{{ old('cc', $event->cc) }}" aria-invalid="true">
+                                                        <input readonly type="email" id="cc" class="form-control {{ $errors->has('cc') ? 'error' : '' }}" placeholder="CC" name="cc" value="{{ old('cc', $event->cc) }}" aria-invalid="true">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -157,7 +160,7 @@
                                                 <div class="form-group">
                                                     <label for="address_main_contact">Address Main Contact</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <textarea id="address_main_contact" name="address_main_contact" class="form-control {{ $errors->has('address_main_contact') ? 'error' : '' }}" placeholder="Address Main Contact">{{ old('address_main_contact', $event->address_main_contact) }}</textarea>
+                                                        <textarea readonly id="address_main_contact" name="address_main_contact" class="form-control {{ $errors->has('address_main_contact') ? 'error' : '' }}" placeholder="Address Main Contact">{{ old('address_main_contact', $event->address_main_contact) }}</textarea>
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
                                                         </div>
@@ -172,7 +175,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="contacts">Add Contacts</label>
+                                                    <label for="contacts">Add Contractors</label>
                                                     <div class="position-relative has-icon-left">
                                                         <select name="contacts[]" multiple id="contacts" class="form-control">
                                                             @foreach ($contacts as $contact)
@@ -219,7 +222,7 @@
                                                 <div class="form-group">
                                                     <label for="date">Date From</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date"
+                                                        <input readonly type="text" id="date"
                                                             class="form-control pickadate {{ $errors->has('date') ? 'error' : '' }}"
                                                             placeholder="Date From" name="date"
                                                             value="@php if($event->date_from) {echo date('d/m/Y', strtotime($event->date_from));} else if($event->date_to) {echo date('d/m/Y', strtotime($event->date_to));} @endphp" />
@@ -237,7 +240,7 @@
                                                 <div class="form-group">
                                                     <label for="date">Date To</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date_to"
+                                                        <input readonly type="text" id="date_to"
                                                             class="form-control pickadate {{ $errors->has('date_to') ? 'error' : '' }}"
                                                             placeholder="Date To" name="date_to"
                                                             value="@php if($event->date_to) {echo date('d/m/Y', strtotime($event->date_to));} @endphp" />
@@ -257,7 +260,7 @@
                                                 <div class="form-group">
                                                     <label for="time_from">Time From</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text"
+                                                        <input readonly type="text"
                                                             class="form-control pickatime picker__input mandatory"
                                                             id="time_from" value="{{ $event->time_from }}" name="time_from" placeholder="Time From">
                                                         <div class="form-control-position">
@@ -270,7 +273,7 @@
                                                 <div class="form-group">
                                                     <label for="time_to">Time To</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text"
+                                                        <input readonly type="text"
                                                             class="form-control pickatime picker__input mandatory"
                                                             id="time_to" value="{{ $event->time_to ? date('H:i', strtotime($event->time_to)) : '' }}" name="time_to" placeholder="Time To">
                                                         <div class="form-control-position">
@@ -280,23 +283,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Upload Docs</label>
-                                                    <input multiple type="file" name="docs[]" id="docs" class="form-control">
-
-                                                    @if ($errors->has('docs'))
-                                                        <label id="docs-error" class="error"
-                                                            for="docs">{{ $errors->first('docs') }}</label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="form-group">
                                             <label for="description">Add Description</label>
                                             <div class="position-relative has-icon-left">
-                                                <textarea class="form-control {{ $errors->has('description') ? 'error' : '' }}" rows="3" placeholder="Add Description" name="description" id="description">{{ old('description') ? old('description') : $event->description }}</textarea>
+                                                <textarea readonly class="form-control {{ $errors->has('description') ? 'error' : '' }}" rows="3" placeholder="Add Description" name="description" id="description">{{ old('description') ? old('description') : $event->description }}</textarea>
                                                 <div class="form-control-position">
                                                     <i class="la la-align-justify"></i>
                                                 </div>
@@ -309,48 +299,10 @@
                                         <div class="form-group">
                                             <label for="comment">Add Comment</label>
                                             <div class="position-relative has-icon-left">
-                                                <textarea class="form-control" rows="3" placeholder="Add Comment" name="comment" id="comment">{{ old('comment') ? old('comment') : $event->comment }}</textarea>
+                                                <textarea readonly class="form-control" rows="3" placeholder="Add Comment" name="comment" id="comment">{{ old('comment') ? old('comment') : $event->comment }}</textarea>
                                                 <div class="form-control-position">
                                                     <i class="la la-align-justify"></i>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        @if (!$event->event && !$event->events_count)
-                                            <div class="form-group}">
-                                                <label>Recurrence</label>
-                                                @foreach (App\Models\Events::RECURRENCE_RADIO as $key => $label)
-                                                    <div>
-                                                        <input id="recurrence_{{ $key }}" name="recurrence" type="radio" value="{{ $key }}" {{ old('recurrence', $event->recurrence) === (string) $key ? 'checked' : '' }}>
-                                                        <label for="recurrence_{{ $key }}">{{ $label }}</label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-
-                                            <div class="form-group repeated_for" style="display:none">
-                                                <label>Repeated For? (How many days/weeks/months)</label>
-                                                <input type="text" name="repeated_for" class="form-control" id="repeated_for" placeholder="Repeated For">
-                                            </div>
-                                        @else
-                                            <input type="hidden" name="recurrence" value="{{ $event->recurrence }}">
-                                        @endif
-                                        <div class="form-actions right" style="display: flex; justify-content: space-between;">
-                                            <div class="left">
-                                                @if ($event->recurrence != 'none')
-                                                    <a href="#" data-modal="deleteEventRecurringModal"
-                                                        data-action="{{ route('admin.tenants.diary.event.deleteAllRecurrences', [$event->id,$tenant_id]) }}" style="background-color: #FF1616; color:white;" class="btn btn-outline clickDeleteFunction">
-                                                        <i class="la la-times"></i> Delete All Recurrences
-                                                    </a>
-                                                @endif
-                                            </div>
-                                            <div class="right">
-                                                <a href="#" data-modal="deleteEventModal"
-                                                    data-action="{{ route('admin.tenants.diary.event.delete',  [$event->id,$tenant_id]) }}" style="background-color: #FF1616; color:white;" class="btn btn-outline clickDeleteFunction">
-                                                    <i class="la la-times"></i> Delete
-                                                </a>
-                                                <button type="submit" class="theme-btn btn btn-primary">
-                                                    <i class="la la-check-square-o"></i> Save
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -394,12 +346,6 @@
                                                                     <i class="la la-eye"></i>
                                                                 </span>
                                                             </a>
-
-                                                            <a href="#" class="clickDeleteFunction" data-modal="perDeleteEventModal" data-toggle="tooltip" data-trigger="hover" data-placement="top"
-                                                                data-title="Delete File" data-original-title="Delete File"
-                                                                data-action="{{ route('admin.tenants.diary.event.fileDelete', [$row->id,$tenant_id]) }}"><span
-                                                                    style="padding:0.5rem 0.75rem; white-space: nowrap;" data-row-id="{{ $row['id'] }}"
-                                                                    class="d-inline-block bg-danger bg rounded text-white"><i class="la la-trash" aria-hidden="true"></i></span></a>
                                                         </div>
 
                                                     </td>
@@ -551,16 +497,6 @@
                     event_type: 'The Event Type field is required',
                 },
                 submitHandler: function(form) {
-                    const selectedItemsPlatformUsers = $('#platform_user .selected-items .item');
-
-
-                    if (selectedItemsPlatformUsers.length === 0) {
-                        $('#platform_user-error').remove();
-                        $('<label id="platform_user-error" class="error">Please select at least one platform user.</label>')
-                            .insertAfter('#platform_user');
-
-                        return false;
-                    }
 
                     if ("{{ $event->recurrence }}" !== "none") {
                         $('#updateRecurrenceModal').modal('show');
@@ -593,21 +529,21 @@
 
             var date = "";
 
-            $('.pickadate').pickadate({
-                min: true,
-                format: 'dd/mm/yyyy',
-                formatSubmit: 'dd/mm/yyyy',
-                onSet: function() {
-                    date = this.get('select', 'dd/mm/yyyy');
-                }
-            });
+            // $('.pickadate').pickadate({
+            //     min: true,
+            //     format: 'dd/mm/yyyy',
+            //     formatSubmit: 'dd/mm/yyyy',
+            //     onSet: function() {
+            //         date = this.get('select', 'dd/mm/yyyy');
+            //     }
+            // });
 
-            $('.pickatime').pickatime({
-                format: 'HH:i',
-                formatSubmit: 'HH:i',
-                interval: 30,
-                editable: true
-            });
+            // $('.pickatime').pickatime({
+            //     format: 'HH:i',
+            //     formatSubmit: 'HH:i',
+            //     interval: 30,
+            //     editable: true
+            // });
 
             Inputmask("99:99", {
                 placeholder: "HH:MM",
@@ -620,10 +556,6 @@
                 insertMode: false,
                 showMaskOnHover: false
             }).mask("#time_to");
-
-            const platform_user = $("#platform_user").filterMultiSelect({
-                placeholderText: "Choose Platform Users"
-            });
 
             const contacts = $("#contacts").filterMultiSelect({
                 placeholderText: "Add Contacts"

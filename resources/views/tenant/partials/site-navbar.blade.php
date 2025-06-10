@@ -8,6 +8,8 @@
         </li>
         <li class="nav-item  {{ Request::segment(2) == 'correspondence' ? 'open' :''}}"><a href="{{route('tenant.tenants.correspondence', auth('tenant')->id())}}" ><i class="la la-envelope"></i><span class="menu-title">Correspondence</span></a>
         </li>
+        <li class="nav-item  {{ Request::segment(2) == 'diary' ? 'open' :''}}"><a href="{{route('tenant.calendar', auth('tenant')->id())}}" ><i class="la la-book"></i><span class="menu-title">Diary</span></a>
+        </li>
     </ul>
     <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; height: 326px; right: 3px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 24px;"></div></div></div>
   </div>

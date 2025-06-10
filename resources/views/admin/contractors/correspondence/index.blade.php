@@ -51,6 +51,10 @@
                                         <a class="nav-link active disabled" id="correspondence" data-toggle="tab"
                                             aria-controls="correspondence" href="#correspondence" aria-expanded="true">Correspondence</a>
                                     </li>
+                                     <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.contractors.calendar', $contractor->id) }}">Diary</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="card-body" style="padding-top:0">

@@ -241,7 +241,7 @@
                 </div>
             </div>
         </div>
-        <div class="content-header-right col-md-6 col-12">
+        {{-- <div class="content-header-right col-md-6 col-12">
             <div class="dropdown float-md-right">
                 <a href="{{ route('admin.properties.diary.event.create', $property_id) }}" class="btn btn-primary basic-btn btn-min-width mr-1 mb-1"
                     type="button">
@@ -249,7 +249,7 @@
                     New Event
                 </a>
             </div>
-        </div>
+        </div> --}}
     </div>
     <div class="content-body">
         <section id="settings-form">
@@ -334,10 +334,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="platform_users">Platform Users</label>
-                                        <select name="platform_user[]" multiple id="platform_user" class="form-control">
-                                            @foreach ($platform_users as $platform_user)
-                                                <option value="{{ $platform_user->id }}">{{ $platform_user->name }}</option>
+                                        <label for="property">Property</label>
+                                        <select name="property[]" class="form-control">
+                                            @foreach ($properties as $property)
+                                                <option value="{{ $property->id }}">{{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->country . ', ' . $property->postcode }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -529,20 +529,7 @@
                     time_to: 'The Time To field is required',
                     event_type: 'The Event Type field is required',
                 },
-                submitHandler: function (form) {
-                    const selectedItemsPlatformUsers = $('#platform_user .selected-items .item');
-
-
-                    if (selectedItemsPlatformUsers.length === 0) {
-                        $('#platform_user-error').remove();
-                        $('<label id="platform_user-error" class="error">Please select at least one platform user.</label>')
-                            .insertAfter('#platform_user');
-
-                        return false;
-                    }
-
-                    form.submit();
-                }
+                
             });
 
 
@@ -583,9 +570,7 @@
             startTimePicker = startTimePicker.pickatime('picker')
             endTimePicker = endTimePicker.pickatime('picker')
 
-            const platform_user = $("#platform_user").filterMultiSelect({
-                placeholderText: "Choose Platform Users"
-            });
+        
 
             const contacts = $("#contacts").filterMultiSelect({
                 placeholderText: "Add Contacts"

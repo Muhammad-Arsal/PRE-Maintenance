@@ -241,15 +241,6 @@
                 </div>
             </div>
         </div>
-        <div class="content-header-right col-md-6 col-12">
-            <div class="dropdown float-md-right">
-                <a href="{{ route('admin.tenants.diary.event.create', $tenant_id) }}" class="btn btn-primary basic-btn btn-min-width mr-1 mb-1"
-                    type="button">
-                    <i class="la la-plus"></i>
-                    New Event
-                </a>
-            </div>
-        </div>
     </div>
     <div class="content-body">
         <section id="settings-form">
@@ -305,7 +296,7 @@
 
         <div id="eventFormModal" class="modal fade" role="dialog">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form name="eventForm" id="eventForm" action="{{ route('admin.tenants.diary.event.store', $tenant_id) }}" method="post" style="width: 100%;" enctype="multipart/form-data">
+                <form name="eventForm" id="eventForm" action="" method="post" style="width: 100%;" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
@@ -325,10 +316,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="platform_users">Platform Users</label>
-                                        <select name="platform_user[]" multiple id="platform_user" class="form-control">
-                                            @foreach ($platform_users as $platform_user)
-                                                <option value="{{ $platform_user->id }}">{{ $platform_user->name }}</option>
+                                        <label for="property">Property</label>
+                                        <select name="property[]" class="form-control">
+                                            @foreach ($properties as $property)
+                                                <option value="{{ $property->id }}">{{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->country . ', ' . $property->postcode }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -574,10 +565,6 @@
             startTimePicker = startTimePicker.pickatime('picker')
             endTimePicker = endTimePicker.pickatime('picker')
 
-            const platform_user = $("#platform_user").filterMultiSelect({
-                placeholderText: "Choose Platform Users"
-            });
-
             const contacts = $("#contacts").filterMultiSelect({
                 placeholderText: "Add Contacts"
             });
@@ -715,7 +702,7 @@
 
 
 
-                    $('#eventFormModal').modal('show');
+                    // $('#eventFormModal').modal('show');
 
                 },
                   views: {

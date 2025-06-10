@@ -65,6 +65,11 @@
                                         <a class="nav-link"
                                             href="">Remittances</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.landlords.calendar', $landlord->id) }}">Diary</a>
+                                    </li>
+
                                 </ul>
                             </div>
                             <div class="card-body">

@@ -53,30 +53,36 @@
                                         <div class="row">
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group">
-                                                    <label for="platform_users">Platform Users</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <select name="platform_user[]" multiple id="platform_user" class="form-control {{ $errors->has('platform_users') ? 'error' : '' }}">
-                                                            @foreach ($platform_users as $platform_user)
-                                                                <option
-                                                                    @php foreach ($event_users as $event_user) {
-                                                                        if($event_user->platform_user_id == $platform_user->id) {
-                                                                            echo 'selected';
-                                                                        }
-                                                                    } @endphp
-                                                                    value="{{ $platform_user->id }}">{{ $platform_user->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        <div class="form-control-position">
-                                                            <i class="la la-users"></i>
-                                                        </div>
+                                                <label for="property">Properties</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <select name="property[]" id="property"
+                                                    class="form-control {{ $errors->has('property') ? 'error' : '' }}">
+                                                    @foreach ($properties as $property)
+                                                        <option
+                                                        @php foreach ($event_property as $item) {
+                                                            if ($item->platform_user_id == $property->id) {
+                                                            echo 'selected';
+                                                            }
+                                                        } @endphp
+                                                        value="{{ $property->id }}"
+                                                        >
+                                                        {{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->country . ', ' . $property->postcode }}
+                                                        </option>
+                                                    @endforeach
+                                                    </select>
+                                                    <div class="form-control-position">
+                                                    <i class="la la-building"></i>
                                                     </div>
-                                                    @if ($errors->has('platform_users'))
-                                                        <label id="platform_users-error" class="error"
-                                                            for="platform_users">{{ $errors->first('platform_users') }}</label>
-                                                    @endif
+                                                </div>
+                                                @if ($errors->has('property'))
+                                                    <label id="property-error" class="error" for="property">
+                                                    {{ $errors->first('property') }}
+                                                    </label>
+                                                @endif
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-md-4 col-12">
                                                 <div class="form-group">
@@ -144,7 +150,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="contacts">Add Contacts</label>
+                                                    <label for="contacts">Add Contractors</label>
                                                     <div class="position-relative has-icon-left">
                                                         <select name="contacts[]" multiple id="contacts" class="form-control">
                                                             @foreach ($contacts as $contact)
@@ -503,6 +509,7 @@
 
             var validate = $('#manageType').validate({
                 rules: {
+                    property: 'required',
                     date: 'required',
                     date_to: 'required',
                     time_from: 'required',
@@ -513,6 +520,7 @@
                     },
                 },
                 messages: {
+                    property: 'Please select a property',
                     repeated_for: {
                         digits: 'This field must be in numbers',
                     },
@@ -523,17 +531,6 @@
                     event_type: 'The Event Type field is required',
                 },
                 submitHandler: function(form) {
-                    const selectedItemsPlatformUsers = $('#platform_user .selected-items .item');
-
-
-                    if (selectedItemsPlatformUsers.length === 0) {
-                        $('#platform_user-error').remove();
-                        $('<label id="platform_user-error" class="error">Please select at least one platform user.</label>')
-                            .insertAfter('#platform_user');
-
-                        return false;
-                    }
-
                     if ("{{ $event->recurrence }}" !== "none") {
                         $('#updateRecurrenceModal').modal('show');
 
@@ -592,10 +589,6 @@
                 insertMode: false,
                 showMaskOnHover: false
             }).mask("#time_to");
-
-            const platform_user = $("#platform_user").filterMultiSelect({
-                placeholderText: "Choose Platform Users"
-            });
 
             const contacts = $("#contacts").filterMultiSelect({
                 placeholderText: "Add Contacts"

@@ -49,6 +49,10 @@
                                         <a class="nav-link"
                                             href="{{ route('admin.contractors.correspondence', $contractor_id) }}">Correspondence</a>
                                     </li>
+                                     <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.contractors.calendar', $contractor_id) }}">Diary</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="card-body">

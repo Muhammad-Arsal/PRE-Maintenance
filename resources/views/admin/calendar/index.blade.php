@@ -14,16 +14,16 @@
         .custom-content span:first-child {
             font-weight: bold;
         }
-        /* Multi‐line (2‐line) clamp + ellipsis */
-    .event-title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;    /* show at most 2 lines */
-    overflow: hidden;         /* hide everything past line 2 */
-    max-width: 100%;
-    line-height: 1.2em;       /* height of one text line */
-    font-size: 0.85em;
-    }
+        .event-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;    /* show at most 2 lines */
+        overflow: hidden;         /* hide everything past line 2 */
+        max-width: 100%;
+        line-height: 1.2em;       /* height of one text line */
+        font-size: 0.85em;
+        font-weight: bold;
+        }
 
 
         /* html body a {
@@ -297,10 +297,10 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="platform_users">Platform Users</label>
-                                        <select name="platform_user[]" multiple id="platform_user" class="form-control">
-                                            @foreach ($platform_users as $platform_user)
-                                                <option value="{{ $platform_user->id }}">{{ $platform_user->name }}</option>
+                                        <label for="property">Property</label>
+                                        <select name="property[]" class="form-control">
+                                            @foreach ($properties as $property)
+                                                <option value="{{ $property->id }}">{{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->country . ', ' . $property->postcode }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -350,7 +350,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="contacts">Add Contacts</label>
+                                        <label for="contacts">Add Contractors</label>
                                         <div class="position-relative has-icon-left">
                                             <select name="contacts[]" multiple id="contacts" class="form-control">
                                                 @foreach ($contacts as $contact)
@@ -473,6 +473,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var validate = $('#eventForm').validate({
                 rules: {
+                    property: 'required',
                     date: 'required',
                     date_to: 'required',
                     time_from: 'required',
@@ -483,6 +484,7 @@
                     },
                 },
                 messages: { 
+                    property: 'Please select a property',
                     repeated_for: {
                         digits: 'This field must be in numbers',
                     },
@@ -492,20 +494,6 @@
                     time_to: 'The Time To field is required',
                     event_type: 'The Event Type field is required',
                 },
-                submitHandler: function (form) {
-                    const selectedItemsPlatformUsers = $('#platform_user .selected-items .item');
-
-
-                    if (selectedItemsPlatformUsers.length === 0) {
-                        $('#platform_user-error').remove();
-                        $('<label id="platform_user-error" class="error">Please select at least one platform user.</label>')
-                            .insertAfter('#platform_user');
-
-                        return false;
-                    }
-
-                    form.submit();
-                }
             });
 
 
@@ -546,9 +534,7 @@
             startTimePicker = startTimePicker.pickatime('picker')
             endTimePicker = endTimePicker.pickatime('picker')
 
-            const platform_user = $("#platform_user").filterMultiSelect({
-                placeholderText: "Choose Platform Users"
-            });
+           
 
             const contacts = $("#contacts").filterMultiSelect({
                 placeholderText: "Add Contacts"
@@ -845,7 +831,7 @@
                         if(info.view.type == 'timeGridDay') {
                             usersSpan.classList.add('custom-users-span');
                         }
-                        usersSpan.textContent = 'Users: ';
+                        usersSpan.textContent = 'Property: ';
                         customContentElement.appendChild(usersSpan);
 
                         // Create a span element for the event description

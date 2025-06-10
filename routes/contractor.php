@@ -1,11 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\ContractorAuthController;
-use App\Http\Controllers\Auth\ContractorEmailVerificationController;
-use App\Http\Controllers\Contractor\DashboardController;
 use App\Http\Controllers\Contractor\ProfileController;
-use App\Http\Controllers\Contractor\ContractorCorrespondenceController;
+use App\Http\Controllers\Auth\ContractorAuthController;
 use App\Http\Controllers\Contractor\InvoicesController;
+use App\Http\Controllers\Contractor\DashboardController;
+use App\Http\Controllers\Contractor\ContractorEventController;
+use App\Http\Controllers\Contractor\ContractorCalendarController;
+use App\Http\Controllers\Auth\ContractorEmailVerificationController;
+use App\Http\Controllers\Contractor\ContractorCorrespondenceController;
 
 Route::get('/',  [ContractorAuthController::class, 'login'])->name('contractor.login');
 Route::post('/contractorlogin',[ContractorAuthController::class, 'contractorLogin'])->name('contractorLogin');
@@ -73,5 +75,16 @@ Route::middleware(['contractor', 'verified:contractor.login'])->group(function()
 
     //pdf generate 
     Route::get('contractor/invoices/generatePDF/{id}', [InvoicesController::class, 'generatePDF'])->name('contractor.invoices.generatePDF');
+
+    //contractor Calendar Routes
+    Route::get('diary/{id}/calendar', [ContractorCalendarController::class, 'index'])->name('contractor.calendar');
+    Route::post('diary/save-calendar-state', [ContractorCalendarController::class, 'saveCalendarState'])->name('contractor.saveCalendarState');
+    Route::get('diary/event/{id}/add', [ContractorEventController::class, 'create'])->name('contractor.diary.event.create');
+    Route::post('diary/event/{id}/store', [ContractorEventController::class, 'store'])->name('contractor.diary.event.store');
+    Route::get('diary/event/{id}/edit/{contractor_id}', [ContractorEventController::class, 'edit'])->name('contractor.diary.event.edit');
+    Route::post('diary/event/{id}/update/{contractor_id}', [ContractorEventController::class, 'update'])->name('contractor.diary.event.update');
+    Route::post('diary/event/{id}/delete{contractor_id}', [ContractorEventController::class, 'destroy'])->name('contractor.diary.event.delete'); 
+    Route::post('diary/event/{id}/deleteAllRecurrences/{contractor_id}', [ContractorEventController::class, 'deleteAllRecurrences'])->name('contractor.diary.event.deleteAllRecurrences');
+    Route::post('diary/event/{id}/file-delete/{contractor_id}', [ContractorEventController::class, 'fileDelete'])->name('contractor.diary.event.fileDelete');
 });
 ?>

@@ -4,6 +4,7 @@ use App\Http\Controllers\Landlord\ProfileController;
 use App\Http\Controllers\Auth\LandlordAuthController;
 use App\Http\Controllers\Landlord\InvoicesController;
 use App\Http\Controllers\Landlord\DashboardController;
+use App\Http\Controllers\Landlord\LandlordCalendarController;
 use App\Http\Controllers\Auth\LandlordEmailVerficationController;
 use App\Http\Controllers\Landlord\LandlordCorrespondenceController;
 
@@ -72,5 +73,10 @@ Route::middleware(['landlord', 'verified:landlord.login'])->group(function(){
 
     //pdf generate 
     Route::get('landlord/invoices/generatePDF/{id}', [InvoicesController::class, 'generatePDF'])->name('landlord.invoices.generatePDF');
+
+    //landlord calendar Routes
+    Route::get('/diary/{id}/calendar', [LandlordCalendarController::class, 'index'])->name('landlord.calendar');
+    Route::post('diary/save-calendar-state', [LandlordCalendarController::class, 'saveCalendarState'])->name('landlord.saveCalendarState');    
+    Route::get('diary/event/{id}/edit/{landlord_id}', [LandlordCalendarController::class, 'edit'])->name('landlord.diary.event.edit');
 });
 ?>

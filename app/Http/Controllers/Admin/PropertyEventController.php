@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Admin;
-use App\Models\EmailTemplate;
-use App\Models\EventDocs;
-use App\Models\Events;
-use App\Models\EventType;
-use App\Models\Landlord;
-use App\Observers\RecurrenceObserver;
-use App\Services\EventService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Event;
+use App\Models\Admin;
+use App\Models\Events;
+use App\Models\Landlord;
+use App\Models\Property;
+use App\Models\EventDocs;
+use App\Models\EventType;
+use App\Models\Contractor;
 use Illuminate\Http\Request;
+use App\Models\EmailTemplate;
+use App\Services\EventService;
+use App\Http\Controllers\Controller;
+use App\Observers\RecurrenceObserver;
+use Illuminate\Support\Facades\Event;
 
 class PropertyEventController extends Controller
 {
@@ -25,11 +27,11 @@ class PropertyEventController extends Controller
         $page['page_current'] = 'Add Event';
 
         $event_types = EventType::orderBy('event_name', 'asc')->get();
-        $platform_users = Admin::orderBy('name', 'asc')->get();
+        $properties = Admin::orderBy('name', 'asc')->get();
         $contacts = Landlord::orderBy('name', 'asc')->get();
         $property_id = $propertyId;
 
-        return view('admin.properties.calendar.event.add', compact('page', 'event_types', 'platform_users', 'contacts', 'property_id'));
+        return view('admin.properties.calendar.event.add', compact('page', 'event_types', 'properties', 'contacts', 'property_id'));
     }
 
     public function store(Request $request, EventService $eventService, $propertyId) {
@@ -38,13 +40,13 @@ class PropertyEventController extends Controller
         ]);
 
         $requestData = $request->only(['event_type', 'external_user', 'external_user_name', 'cc', 'address_main_contact', 'date', 'date_to', 'time_from', 'time_to', 'description', 'recurrence', 'reminder', 'repeated_for']);
-        $platformUsers = $request->platform_user ? $request->platform_user : array();
+        $property = $request->property ? $request->property : array();
         $contacts = $request->contacts ? $request->contacts : array();
         $files = $request->file('docs', []);
 
         $requestData['repeated_for'] = $request->repeated_for ? $request->repeated_for : '4';
         
-        $event = $eventService->createEvent($requestData, $platformUsers, $contacts, $files, $propertyId, $created_by_type = 'property');
+        $event = $eventService->createEvent($requestData, $property, $contacts, $files, $propertyId, $created_by_type = 'property');
 
         return redirect()
         ->route( 'admin.properties.calendar', ['savedState' => 'true', 'id' => $propertyId])
@@ -69,16 +71,16 @@ class PropertyEventController extends Controller
             }
         ])->loadCount('events');
 
-        $event_users = \DB::table('event_users')->where('event_id', $event->id)->get();
+        $event_property = \DB::table('event_property')->where('event_id', $event->id)->first();
         $event_contacts = \DB::table('event_contacts')->where('event_id', $event->id)->get();
         // $event_providers = \DB::table('event_providers')->where('event_id', $event->id)->get();
         $event_types = EventType::orderBy('event_name', 'asc')->get();
-        $platform_users = Admin::orderBy('name', 'asc')->get();
-        $contacts = Landlord::orderBy('name', 'asc')->get();
+        $properties = Property::orderBy('created_at', 'asc')->get();
+        $contacts = Contractor::orderBy('name', 'asc')->get();
         // $providers = Supplier::orderby('name', 'desc')->get();
         $property_id = $propertyId;
 
-        return view('admin.properties.calendar.event.edit', compact('page', 'event_types', 'platform_users', 'event', 'event_users', 'event_contacts', 'contacts', 'property_id'));
+        return view('admin.properties.calendar.event.edit', compact('page', 'event_types', 'properties', 'event', 'event_property', 'event_contacts', 'contacts', 'property_id'));
     }
 
     public function update(Request $request, Events $id, $propertyId, $created_by_type = 'property') {
@@ -89,10 +91,10 @@ class PropertyEventController extends Controller
         $eventService = new EventService();  // Initialize the service
         $requestData = $request->only([
             'event_type', 'date', 'time_from', 'time_to', 'external_user_name', 'cc', 'address_main_contact',
-            'description', 'comment', 'platform_user', 'recurrence', 'date_to', 'contacts', 'repeated_for', 'apply_to_future'
+            'description', 'comment', 'property', 'recurrence', 'date_to', 'contacts', 'repeated_for', 'apply_to_future'
         ]);
 
-        $requestData['platform_user'] = !empty($requestData['platform_user']) ? $requestData['platform_user'] : array();
+        $requestData['property'] = !empty($requestData['property']) ? $requestData['property'] : array();
         $requestData['contacts'] = !empty($requestData['contacts']) ? $requestData['contacts'] : array();
         $requestData['files'] = $request->file('docs', []);
         $requestData['repeated_for'] = $request->repeated_for ? $request->repeated_for : '4';
@@ -129,7 +131,7 @@ class PropertyEventController extends Controller
     public function destroy(Events $id, $propertyId) {
         $event = $id;
 
-        \DB::table('event_users')->where('event_id', $event->id)->delete();
+        \DB::table('event_property')->where('event_id', $event->id)->delete();
         $event->delete();
 
         return redirect()
@@ -143,26 +145,26 @@ class PropertyEventController extends Controller
 
         if (is_null($event->event_id)) {
             Events::where('event_id', $event->id)->each(function ($childEvent) {
-                \DB::table('event_users')->where('event_id', $childEvent->id)->delete();
+                \DB::table('event_property')->where('event_id', $childEvent->id)->delete();
                 $childEvent->delete();
             });
     
-            \DB::table('event_users')->where('event_id', $event->id)->delete();
+            \DB::table('event_property')->where('event_id', $event->id)->delete();
             $event->delete();
         } else {
             $parentEvent = Events::where('id', $event->event_id)->first();
     
             if ($parentEvent) {
                 Events::where('event_id', $parentEvent->id)->each(function ($childEvent) {
-                    \DB::table('event_users')->where('event_id', $childEvent->id)->delete();
+                    \DB::table('event_property')->where('event_id', $childEvent->id)->delete();
                     $childEvent->delete();
                 });
     
-                \DB::table('event_users')->where('event_id', $parentEvent->id)->delete();
+                \DB::table('event_property')->where('event_id', $parentEvent->id)->delete();
                 $parentEvent->delete();
             } else {
                 Events::where('event_id', $event->event_id)->each(function ($childEvent) {
-                    \DB::table('event_users')->where('event_id', $childEvent->id)->delete();
+                    \DB::table('event_property')->where('event_id', $childEvent->id)->delete();
                     $childEvent->delete();
                 });
             }

@@ -27,13 +27,13 @@ class AppServiceProvider extends ServiceProvider
             $admin = auth()->guard('admin')->user();
             if ($admin) {
                 $allNotifications = $admin->notifications()
-                ->whereIn('data->notification_detail->type', ['invoice', 'job'])
+                ->whereIn('data->notification_detail->type', ['invoice', 'job', 'Inspection'])
                 ->whereNull('read_at')
                 ->orderBy('created_at', 'desc')
                 ->get();
             
             $allNotificationsCount = $admin->notifications()
-                ->whereIn('data->notification_detail->type', ['invoice', 'job'])
+                ->whereIn('data->notification_detail->type', ['invoice', 'job', 'Inspection'])
                 ->whereNull('read_at')
                 ->count(); 
 

@@ -16,6 +16,7 @@ class Admin extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     // use SoftDeletes;
 
+    protected $table = 'admins';
     protected $guard = 'admin';
 
       /**

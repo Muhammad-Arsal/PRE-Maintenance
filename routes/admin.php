@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\TenantsController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LandlordsController;
+use App\Http\Controllers\Admin\InspectionController;
 use App\Http\Controllers\Admin\ContractorsController;
 use App\Http\Controllers\Admin\TenantEventController;
 use App\Http\Controllers\Admin\PropertyTypeController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Admin\ContractorEventController;
 use App\Http\Controllers\Admin\LandlordCalendarController;
 use App\Http\Controllers\Admin\PropertyCalendarController;
 use App\Http\Controllers\Admin\ContractorCalendarController;
+use App\Http\Controllers\Admin\InspectionQuestionController;
 use App\Http\Controllers\Admin\TenantsCorrespondenceController;
 use App\Http\Controllers\Auth\AdminEmailVerificationController;
 use App\Http\Controllers\Admin\LandlordsCorrespondenceController;
@@ -350,6 +352,28 @@ Route::middleware(['admin', 'verified:admin.login'])->group(function(){
     Route::post('contractors/diary/event/{id}/delete{contractor_id}', [ContractorEventController::class, 'destroy'])->name('admin.contractors.diary.event.delete'); 
     Route::post('contractors/diary/event/{id}/deleteAllRecurrences/{contractor_id}', [ContractorEventController::class, 'deleteAllRecurrences'])->name('admin.contractors.diary.event.deleteAllRecurrences');
     Route::post('contractors/diary/event/{id}/file-delete/{contractor_id}', [ContractorEventController::class, 'fileDelete'])->name('admin.contractors.diary.event.fileDelete');
+
+    //Inspection Questions Routes
+    Route::get('settings/inspectionQuestions', [InspectionQuestionController::class, 'index'])->name('admin.settings.inspectionQuestions');
+    Route::get('settings/inspectionQuestions/create', [InspectionQuestionController::class, 'create'])->name('admin.settings.inspectionQuestions.create');
+    Route::post('settings/inspectionQuestions/store', [InspectionQuestionController::class, 'store'])->name('admin.settings.inspectionQuestions.store');
+    Route::get('settings/inspectionQuestions/{id}/edit', [InspectionQuestionController::class, 'edit'])->name('admin.settings.inspectionQuestions.edit');
+    Route::post('settings/inspectionQuestions/{id}/update', [InspectionQuestionController::class, 'update'])->name('admin.settings.inspectionQuestions.update');
+    Route::post('settings/inspectionQuestions/{id}/destroy', [InspectionQuestionController::class, 'destroy'])->name('admin.settings.inspectionQuestions.destroy');
+    Route::get('settings/inspectionQuestions/search', [InspectionQuestionController::class, 'search'])->name('admin.settings.inspectionQuestions.search');
+
+    //Inspection Routes
+    Route::get('inspection', [InspectionController::class, 'index'])->name('admin.inspection');
+    Route::get('inspection/create', [InspectionController::class, 'create'])->name('admin.inspection.create');
+    Route::post('inspection/store', [InspectionController::class, 'store'])->name('admin.inspection.store');
+    Route::get('inspection/{id}/edit', [InspectionController::class, 'edit'])->name('admin.inspection.edit');
+    Route::post('inspection/{id}/update', [InspectionController::class, 'update'])->name('admin.inspection.update');
+    Route::post('inspection/{id}', [InspectionController::class, 'destroy'])->name('admin.inspection.destroy');
+    Route::get('inspection/search', [InspectionController::class, 'search'])->name('admin.inspection.search');
+    Route::get('inspection/fill/{id}/survey', [InspectionController::class, 'surveyPage'])->name('admin.inspection.survey');
+    Route::post('inspection/fill/{id}/survey', [InspectionController::class, 'surveySubmit'])->name('admin.inspection.survey.submit');
+    Route::get('inspection/{id}/pdf', [InspectionController::class, 'downloadPdf'])->name('admin.inspection.downloadPdf');
+
 });
 
 

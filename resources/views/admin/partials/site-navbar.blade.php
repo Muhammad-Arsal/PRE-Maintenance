@@ -10,6 +10,8 @@
         <li class="nav-item  {{ Request::segment(2) == 'contractors' ? 'open' :''}}"><a href="{{route('admin.settings.contractors')}}" ><i class="la la-user-secret"></i><span class="menu-title">Contractors</span></a>
         <li class="nav-item  {{ Request::segment(2) == 'properties' ? 'open' :''}}"><a href="{{route('admin.properties')}}" ><i class="la la-building"></i><span class="menu-title">Properties</span></a>
         </li>
+        <li class="nav-item  {{ Request::segment(2) == 'inspection' ? 'open' :''}}"><a href="{{route('admin.inspection')}}" ><i class="la la-search"></i><span class="menu-title">Inspection</span></a>
+        </li>
         <li class="nav-item {{ Request::segment(2) == 'accounts' ? 'open' : '' }}">
           <a href="{{route('admin.invoices')}}">
               <i class="la la-calculator"></i>
@@ -42,19 +44,19 @@
       <li class="nav-item"><a class="{{ Request::segment(2) == 'diary' ? 'active' :''}}" href="{{ route('admin.diary') }}" ><i class="la la-calendar"></i><span class="menu-title">Diary</span></a>
       </li>  
       <li class="nav-item has-sub {{ Request::segment(2) == 'settings' ? 'open' :''}}"><a href="javascript:void(0)"><i class="la la-cog"></i><span class="menu-title">Settings</span>
-        <ul class="menu-content">
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'general' ? 'active' :''}}" href="{{ route('admin.settings.general.create') }}">General Settings</a></li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'admins' ? 'active' :''}}" href="{{ route('admin.settings.admins') }}">Admins</a></li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'emailTemplate' ? 'active' :''}}" href="{{ route('admin.emailTemplate.index') }}">Email Templates</a></li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'themeOptions' ? 'active' :''}}" href="{{ route('admin.settings.themeOptions') }}">Theme Options</a></li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'propertyType' ? 'active' :''}}" href="{{ route('admin.settings.propertyType') }}">Property Types</a></li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'contractorType' ? 'active' :''}}" href="{{ route('admin.settings.contractorType') }}">Contractor Types</a></li>
-          <li class="">
-            <a class="menu-item {{ (Request::segment(3) == 'task-tray') ? 'active' :''}}" href="{{ route('admin.settings.taskTray') }}">Task Tray</a>
-          </li>
-          <li class=""><a class="menu-item {{ Request::segment(3) == 'event' ? 'active' :''}}" href="{{ route('admin.settings.event-type') }}">Event Type</a>
-          </li>
-        </ul>
+       <ul class="menu-content">
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'admins' ? 'active' :''}}" href="{{ route('admin.settings.admins') }}">Admins</a></li>
+        <li class="">
+          <a class="menu-item {{ (Request::segment(3) == 'task-tray') ? 'active' :''}}" href="{{ route('admin.settings.taskTray') }}">Task Tray</a>
+        </li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'event' ? 'active' :''}}" href="{{ route('admin.settings.event-type') }}">Event Type</a></li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'themeOptions' ? 'active' :''}}" href="{{ route('admin.settings.themeOptions') }}">Theme Options</a></li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'propertyType' ? 'active' :''}}" href="{{ route('admin.settings.propertyType') }}">Property Types</a></li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'emailTemplate' ? 'active' :''}}" href="{{ route('admin.emailTemplate.index') }}">Email Templates</a></li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'general' ? 'active' :''}}" href="{{ route('admin.settings.general.create') }}">General Settings</a></li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'contractorType' ? 'active' :''}}" href="{{ route('admin.settings.contractorType') }}">Contractor Types</a></li>
+        <li class=""><a class="menu-item {{ Request::segment(3) == 'inspectionQuestions' ? 'active' :''}}" href="{{ route('admin.settings.inspectionQuestions') }}">Inspection Questions</a></li>
+      </ul>
         </a>
       </li>
     </ul>

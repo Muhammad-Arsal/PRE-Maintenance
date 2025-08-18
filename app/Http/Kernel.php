@@ -68,5 +68,9 @@ class Kernel extends HttpKernel
         'tenant' => \App\Http\Middleware\TenantMiddleware ::class,
         'landlord' => \App\Http\Middleware\LandlordMiddleware ::class,
         'contractor' => \App\Http\Middleware\ContractorMiddleware ::class,
+        // Spatie permission middleware (singular namespace)
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 }

@@ -126,6 +126,20 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label>Permissions</label>
+                                            <div class="row">
+                                                @php($perms = config('admin_permissions'))
+                                                @foreach($perms as $key => $label)
+                                                    <div class="col-md-4">
+                                                        <label style="font-weight: normal;">
+                                                            <input type="checkbox" name="permissions[]" value="{{ $key }}" {{ in_array($key, $adminPermissions ?? []) ? 'checked' : '' }}> {{ $label }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="status">Status</label>
                                             <div class="position-relative has-icon-left">
                                                 <select id="status" name="status" class="form-control">

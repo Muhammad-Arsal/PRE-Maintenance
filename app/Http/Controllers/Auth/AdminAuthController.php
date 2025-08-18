@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
@@ -54,6 +55,13 @@ class AdminAuthController extends Controller
             $name = explode(' ',Auth::guard('admin')->user()->name );
 
             $welcome = 'Welcome '.$name[0].', great to see you again!';
+
+            // Ensure the logged-in admin has the 'admin' role
+            $adminUser = Auth::guard('admin')->user();
+            if (method_exists($adminUser, 'hasRole') && !$adminUser->hasRole('admin')) {
+                $role = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'admin']);
+                $adminUser->assignRole($role);
+            }
 
             Admin::where('id',Auth::guard('admin')->user()->id)->update(['last_logged_in'=>now()]);
             return redirect()->route('admin.dashboard')->withSuccess($welcome);

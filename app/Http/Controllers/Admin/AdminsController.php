@@ -6,6 +6,8 @@ use App\Events\AdminAdded;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\AdminProfile;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,6 +68,17 @@ class AdminsController extends Controller
                 ->withFlashType('errors');
         }
 
+        // Ensure the 'admin' role exists for the 'admin' guard and assign it to the new admin
+        $role = Role::firstOrCreate(
+            ['name' => 'admin', 'guard_name' => 'admin']
+        );
+        $admin->assignRole($role);
+        // Grant all admin permissions by default
+        $allPermissions = array_keys(config('admin_permissions'));
+        if (!empty($allPermissions)) {
+            $admin->givePermissionTo($allPermissions);
+        }
+
         // Create admin profile
         $admin_profile = AdminProfile::create([
             'admin_id' => $admin->id,
@@ -110,8 +123,10 @@ class AdminsController extends Controller
         $page['page_current'] = 'Edit Admin';
 
         $admin = Admin::where('id', $id)->first();
+        $allPermissions = Permission::where('guard_name', 'admin')->pluck('name')->toArray();
+        $adminPermissions = $admin->getPermissionNames()->toArray();
 
-        return view('admin.settings.admins.edit', compact('page', 'admin'));
+        return view('admin.settings.admins.edit', compact('page', 'admin', 'allPermissions', 'adminPermissions'));
     }
 
     public function update(Request $request, $id)
@@ -176,6 +191,11 @@ class AdminsController extends Controller
                 'profile_image' => $profile_image_name,
             ]);
         }
+
+        // Sync permissions strictly from DB permissions
+        $validPermissions = Permission::where('guard_name', 'admin')->pluck('name')->toArray();
+        $requested = array_intersect($validPermissions, (array) $request->input('permissions', []));
+        $admin->syncPermissions($requested);
 
         return redirect()
             ->route('admin.settings.admins')

@@ -8,16 +8,18 @@ use App\Notifications\AdminPasswordResetNotification;
 use Illuminate\Database\Eloquent\SoftDeletes;
 // use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
 // use App\Notifications\AdminVerifyEmailNotification;
 
 
 class Admin extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
     // use SoftDeletes;
 
     protected $table = 'admins';
     protected $guard = 'admin';
+    protected $guard_name = 'admin';
 
       /**
      * The attributes that are mass assignable.

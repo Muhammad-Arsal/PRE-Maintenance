@@ -16,8 +16,8 @@ class AdminMiddleware
      * @return mixed
      */
     public function handle(Request $request, Closure $next){
-
-        // return redirect()->route('admin.login');
+        // Ensure Gate & Auth resolve the admin guard for this request
+        Auth::shouldUse('admin');
         $user = Auth::guard('admin')->user();
 
 

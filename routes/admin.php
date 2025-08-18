@@ -47,7 +47,7 @@ Route::post('/reset-password',[AdminAuthController::class, 'passwordUpdate'])->n
 Route::get('/email/verify/{id}/{token}', [AdminEmailVerificationController::class,'verify'])->name('admin.email.verify')->middleware('signed');
 Route::post('/email/verify/{id}/{token}',[AdminEmailVerificationController::class, 'store'])->name('admin.email.store');
 
-Route::middleware(['admin', 'verified:admin.login'])->group(function(){
+Route::middleware(['admin', 'verified:admin.login', 'role:admin,admin'])->group(function(){
 
     Route::get('/dashboard',[DashboardController::class, 'index'])->name('admin.dashboard');
     // Logout

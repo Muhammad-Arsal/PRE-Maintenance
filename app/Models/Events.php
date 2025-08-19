@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Events extends Model
+class Events extends BaseModel
 {
     use HasFactory;
 
@@ -53,10 +53,10 @@ class Events extends Model
         return $this->belongsToMany(Contractor::class, 'event_contacts', 'event_id', 'contact_id');
     }
 
-    public function permissions()
-    {
-        return $this->hasMany(EventPermissions::class, 'event_id');
-    }
+    // public function permissions()
+    // {
+    //     return $this->hasMany(EventPermissions::class, 'event_id');
+    // }
 
     public function docs() {
         return $this->hasMany(EventDocs::class, 'event_id');

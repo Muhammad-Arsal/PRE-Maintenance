@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ContractorType extends Model
+class ContractorType extends BaseModel
 {
     use HasFactory;
     protected $table = 'contractor_types';

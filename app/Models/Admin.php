@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\AdminPasswordResetNotification;
@@ -14,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Admin extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, HasRoles;
+    use Notifiable, HasRoles, Auditable;
     // use SoftDeletes;
 
     protected $table = 'admins';

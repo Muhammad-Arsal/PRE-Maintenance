@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LandlordEmailVerification extends Model
+class LandlordEmailVerification extends BaseModel
 {
     use HasFactory;
 

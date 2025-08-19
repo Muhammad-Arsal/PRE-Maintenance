@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
-use App\Notifications\LandlordPasswordResetNotification;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\LandlordPasswordResetNotification;
 
 class Landlord extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, Auditable;
 
     protected $table = "landlords"; 
 

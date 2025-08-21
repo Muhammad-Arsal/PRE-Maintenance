@@ -76,16 +76,16 @@ trait Auditable
             foreach ($model->audit_changes as $field => $diff) {
                 $from = $diff['from'] ?? '(empty)';
                 $to   = $diff['to'] ?? '(empty)';
-                if($url){
+                if ($url) {
                     $explored_array = explode('/', $url);
-                    if(!in_array('edit', $explored_array) && !in_array('settings', $explored_array)) {
-                        if(count($explored_array) > 5) {
+                    if (!in_array('edit', $explored_array) && !in_array('settings', $explored_array)) {
+                        if (count($explored_array) > 5) {
                             $module_name = $explored_array[4];
                             $tab_name = $explored_array[6];
 
-                            if(!empty($module_name) && !empty($tab_name)) {
+                            if (!empty($module_name) && !empty($tab_name)) {
                                 $custom_message = "The {$field} in {$tab_name} tab of {$module_name} has been changed from \"{$from}\" to \"{$to}\"";
-                            }    
+                            }
                         }
                     }
                 }
@@ -99,7 +99,7 @@ trait Auditable
                 'url'         => $url,
                 'user_id'     => $actor['id'],
                 'user_name'   => $actor['name'],
-                'performed_at'=> now(),
+                'performed_at' => now(),
                 'changes'     => $model->audit_changes,
             ]);
         });
@@ -109,7 +109,6 @@ trait Auditable
             $actor = $model->auditActor();
             $label = class_basename($model);
             $url   = $model->auditUrl();
-
             $custom_message = "New {$label} created";
 
             if ($url) {
@@ -124,33 +123,48 @@ trait Auditable
                             $custom_message = "New {$label} has been created in {$tab_name} tab of {$module_name}";
 
                             if ($tab_name === 'correspondence') {
-
-                                $new_url = $url;
-
                                 if (end($exploded) === 'upload') {
                                     array_splice($exploded, -2);
-                                }
-
-                                elseif (end($exploded) === 'task') {
+                                } elseif (end($exploded) === 'task') {
                                     array_pop($exploded);
                                 }
-
-                                $new_url = url(implode('/', $exploded));
+                                $url = url(implode('/', $exploded));
                             }
                         }
                     }
+                }
+
+                if (in_array('create', $exploded)) {
+                    array_pop($exploded);
+                    array_push($exploded, $model->id);
+                    array_push($exploded, 'edit');
+                    $url = url(implode('/', $exploded));
+                }
+
+                if (in_array('invoices', $exploded)) {
+                    $url = route('admin.invoices');
+                }
+
+                if (in_array('custom', $exploded)) {
+                    $url = route('admin.jobs.edit', $model->id);
+                }
+
+                if (in_array('general', $exploded)) {
+                    $url = route('admin.settings.general.create');
                 }
             }
 
             $model->activityLogs()->create([
                 'action'       => 'created',
                 'description'  => $custom_message,
-                'url'          => $new_url ?? null,
+                'url'          => $url,
                 'user_id'      => $actor['id'],
                 'user_name'    => $actor['name'],
                 'performed_at' => now(),
             ]);
         });
+
+
 
 
         // Deleted
@@ -164,7 +178,7 @@ trait Auditable
                 'url'         => null,
                 'user_id'     => $actor['id'],
                 'user_name'   => $actor['name'],
-                'performed_at'=> now(),
+                'performed_at' => now(),
                 'changes'     => ['__deleted' => ['from' => false, 'to' => true]],
             ]);
         });
@@ -181,7 +195,7 @@ trait Auditable
                     'url'         => $model->auditUrl(),
                     'user_id'     => $actor['id'],
                     'user_name'   => $actor['name'],
-                    'performed_at'=> now(),
+                    'performed_at' => now(),
                     'changes'     => ['__deleted' => ['from' => true, 'to' => false]],
                 ]);
             });

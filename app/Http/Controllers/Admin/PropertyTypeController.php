@@ -10,13 +10,23 @@ class PropertyTypeController extends Controller
 {
     public function index()
     {
+        $page['page_title'] = 'Manage Properties Types';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Properties Types';
+
         $propertyTypes = PropertyType::all();
-        return view('admin.settings.property_types.index', compact('propertyTypes'));
+        return view('admin.settings.property_types.index', compact('propertyTypes', 'page'));
     }
 
     public function create()
     {
-        return view('admin.settings.property_types.create');
+        $page['page_title'] = 'Manage Properties Types';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');   
+        $page['page_current'] = 'Create Property Type';
+
+        return view('admin.settings.property_types.create', compact('page'));
     }
 
     public function store(Request $request)
@@ -32,7 +42,11 @@ class PropertyTypeController extends Controller
 
     public function edit(PropertyType $id)
     {
-        return view('admin.settings.property_types.edit', compact('id'));
+        $page['page_title'] = 'Manage Properties Types';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');
+        $page['page_current'] = 'Edit Property Type';
+        return view('admin.settings.property_types.edit', compact('id', 'page'));
     }
 
     public function update(Request $request, PropertyType $id)

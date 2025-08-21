@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use File;
 use App\Helper\Helpers;
 use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\GeneralSetting;
 use App\Models\SocialOptions;
+use Illuminate\Support\Facades\File;
 
 class SettingsController extends Controller
 {
@@ -95,9 +95,14 @@ class SettingsController extends Controller
 
     public function create()
     {
+        $page['page_title'] = 'Create General Settings';
+        $page['page_parent'] = 'Home';
+        $page['page_parent_link'] = route('admin.dashboard');   
+        $page['page_current'] = 'Create General Settings';
+
         $setting = GeneralSetting::first();
 
-        return view('admin.settings.general_settings.create', compact('setting'));
+        return view('admin.settings.general_settings.create', compact('setting', 'page'));
     }
 
     public function store(Request $request)

@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\JobsController;
+use App\Http\Controllers\Admin\LogsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\TasksController;
 use App\Http\Controllers\Admin\AdminsController;
@@ -87,13 +88,15 @@ Route::middleware(['admin', 'verified:admin.login', 'role:admin,admin'])->group(
     Route::get('/tenants/create', [TenantsController::class, 'create'])->name('admin.settings.tenants.create');
     Route::post('/tenants/store', [TenantsController::class, 'store'])->name('admin.settings.tenants.store');
     Route::get('/tenants/{id}/edit', [TenantsController::class, 'edit'])->name('admin.settings.tenants.edit');
-    Route::get('/tenants/{id}/edit/property', [TenantsController::class, 'editProperty'])->name('admin.settings.tenants.edit.property');
     Route::put('/tenants/{id}/update', [TenantsController::class, 'update'])->name('admin.settings.tenants.update');
     Route::put('/tenants/{id}/update/property', [TenantsController::class, 'storeProperty'])->name('admin.settings.tenants.update.property');
     Route::post('tenants/{id}/destroy', [TenantsController::class, 'destroy'])->name('admin.settings.tenants.destroy');
     Route::post('/tenants/{id}/delete', [TenantsController::class, 'delete'])->name('admin.settings.tenants.delete');
     Route::get('/tenants/search', [TenantsController::class, 'searchData'])->name('admin.settings.tenants.search');
     Route::get('tenants/{id}/show', [TenantsController::class,'show'])->name('admin.settings.tenants.show');
+
+    //Tenant Tabs
+    Route::get('/tenants/{id}/current_property', [TenantsController::class, 'editProperty'])->name('admin.settings.tenants.edit.property');
     Route::get('tenants/{id}/past_tenancy', [TenantsController::class, 'pastTenancy'])->name('admin.properties.past.tenancy');
     Route::get('tenants/{id}/jobs', [TenantsController::class, 'jobs'])->name('admin.tenants.jobs');
     
@@ -102,16 +105,19 @@ Route::middleware(['admin', 'verified:admin.login', 'role:admin,admin'])->group(
     Route::get('/landlords/create', [LandlordsController::class, 'create'])->name('admin.settings.landlords.create');
     Route::post('/landlords/store', [LandlordsController::class, 'store'])->name('admin.settings.landlords.store');
     Route::get('/landlords/{id}/edit', [LandlordsController::class, 'edit'])->name('admin.settings.landlords.edit');
-    Route::get('/landlords/{id}/address', [LandlordsController::class, 'address'])->name('admin.settings.landlord.address');
-    Route::post('/landlords/{id}/address/store', [LandlordsController::class, 'updateAddress'])->name('admin.settings.landlord.address.store');
-    Route::get('/landlords/{id}/bank_details', [LandlordsController::class, 'bankDetails'])->name('admin.settings.landlord.bank');
-    Route::post('/landlords/{id}/bank_details/store', [LandlordsController::class, 'updateBankDetails'])->name('admin.settings.landlord.bank.store');
-    Route::get('/landlords/{id}/properties', [LandlordsController::class, 'properties'])->name('admin.settings.landlord.properties');
     Route::put('/landlords/{id}/update', [LandlordsController::class, 'update'])->name('admin.settings.landlords.update');
     Route::post('landlords/{id}/destroy', [LandlordsController::class, 'destroy'])->name('admin.settings.landlords.destroy');
     Route::post('/landlords/{id}/delete', [LandlordsController::class, 'delete'])->name('admin.settings.landlords.delete');
     Route::get('/landlords/search', [LandlordsController::class, 'searchData'])->name('admin.settings.landlords.search');
     Route::get('landlords/{id}/show', [LandlordsController::class, 'show'])->name('admin.settings.landlords.show');
+
+
+    //Landlord Tabs
+    Route::get('/landlords/{id}/address', [LandlordsController::class, 'address'])->name('admin.settings.landlord.address');
+    Route::post('/landlords/{id}/address/store', [LandlordsController::class, 'updateAddress'])->name('admin.settings.landlord.address.store');
+    Route::get('/landlords/{id}/bank_details', [LandlordsController::class, 'bankDetails'])->name('admin.settings.landlord.bank');
+    Route::post('/landlords/{id}/bank_details/store', [LandlordsController::class, 'updateBankDetails'])->name('admin.settings.landlord.bank.store');
+    Route::get('/landlords/{id}/properties', [LandlordsController::class, 'properties'])->name('admin.settings.landlord.properties');
     Route::get('/landlords/{id}/invoices', [LandlordsController::class, 'invoices'])->name('admin.settings.landlords.invoices');
     Route::get('/landlords/{id}/quotes', [LandlordsController::class, 'jobs'])->name('admin.settings.landlords.jobs');
     Route::get('/landlords/{jobId}/quotes/{landlordId}', [LandlordsController::class, 'quotes'])->name('admin.settings.landlords.jobs.quotes');
@@ -121,37 +127,36 @@ Route::middleware(['admin', 'verified:admin.login', 'role:admin,admin'])->group(
     Route::get('/contractors/create', [ContractorsController::class, 'create'])->name('admin.settings.contractors.create');
     Route::post('/contractors/store', [ContractorsController::class, 'store'])->name('admin.settings.contractors.store');
     Route::get('/contractors/{id}/edit', [ContractorsController::class, 'edit'])->name('admin.settings.contractors.edit');
-    Route::get('/contractors/{id}/edit/address', [ContractorsController::class, 'editAddress'])->name('admin.settings.contractors.edit.address');
     Route::put('/contractors/{id}/update', [ContractorsController::class, 'update'])->name('admin.settings.contractors.update');
-    Route::put('/contractors/{id}/update/address', [ContractorsController::class, 'updateAddress'])->name('admin.settings.contractors.update.address');
     Route::post('contractors/{id}/destroy', [ContractorsController::class, 'destroy'])->name('admin.settings.contractors.destroy');
     Route::post('/contractors/{id}/delete', [ContractorsController::class, 'delete'])->name('admin.settings.contractors.delete');
     Route::get('/contractors/search', [ContractorsController::class, 'searchData'])->name('admin.settings.contractors.search');
-    Route::get('contractors/{id}/view/jobs', [ContractorsController::class, 'jobs'])->name('admin.contractors.viewjobs');
-    Route::get('contractors/{id}/view/invoices', [ContractorsController::class, 'invoices'])->name('admin.contractors.invoices.index');
-    Route::get('contractors/{jobId}/quote/{contractorId}', [ContractorsController::class, 'quote'])->name('admin.contractors.quote');
+
+    //Contractor Tabs
+    Route::get('/contractors/{id}/address', [ContractorsController::class, 'editAddress'])->name('admin.settings.contractors.edit.address');
+    Route::put('/contractors/{id}/address/update', [ContractorsController::class, 'updateAddress'])->name('admin.settings.contractors.update.address');
+    Route::get('contractors/{id}/jobs', [ContractorsController::class, 'jobs'])->name('admin.contractors.viewjobs');
+    Route::get('contractors/{id}/invoices', [ContractorsController::class, 'invoices'])->name('admin.contractors.invoices.index');
+    Route::get('contractors/{jobId}/quotes/{contractorId}', [ContractorsController::class, 'quote'])->name('admin.contractors.quote');
 
     //Properties
     Route::get('/properties', [PropertyController::class, 'index'])->name('admin.properties');
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('admin.properties.create');
     Route::post('/properties/store', [PropertyController::class, 'store'])->name('admin.properties.store');
     Route::get('/properties/{id}/edit', [PropertyController::class, 'edit'])->name('admin.properties.edit');
-    Route::get('/properties/{id}/edit/address', [PropertyController::class, 'editAddress'])->name('admin.properties.edit.address');
     Route::post('/properties/{id}/update', [PropertyController::class, 'update'])->name('admin.properties.update');
-    Route::post('/properties/{id}/update/address', [PropertyController::class, 'updateAddress'])->name('admin.properties.update.address');
     Route::post('properties/{id}/destroy', [PropertyController::class, 'destroy'])->name('admin.properties.destroy');
     Route::get('properties/{id}/show', [PropertyController::class, 'show'])->name('admin.properties.show');
     Route::get('/properties/search', [PropertyController::class,'searchData'])->name('admin.properties.search');
-    Route::get('properties/{id}/diary', [PropertyController::class, 'diary'])->name('admin.properties.diary');
-    Route::put('/properties/diary/{id}', [PropertyController::class, 'updateDiary'])->name('admin.properties.diaryUpdate');
-    Route::post('properties/{id}/editDiary', [PropertyController::class, 'diaryStore'])->name('admin.properties.diaryStore');
-    Route::post('properties/{id}/deleteDiary', [PropertyController::class, 'diaryDelete'])->name('admin.properties.diaryDelete');
-    Route::get('properties/{id}/view/jobs', [PropertyController::class, 'jobs'])->name('admin.properties.viewjobs');
-    Route::get('properties/{id}/view/invoices', [PropertyController::class, 'invoices'])->name('admin.properties.invoices.index');
+
+    //properties Tabs
+    Route::get('properties/{id}/address', [PropertyController::class, 'editAddress'])->name('admin.properties.edit.address');
+    Route::post('properties/{id}/address/update', [PropertyController::class, 'updateAddress'])->name('admin.properties.update.address');
+    Route::get('properties/{id}/jobs', [PropertyController::class, 'jobs'])->name('admin.properties.viewjobs');
+    Route::get('properties/{id}/invoices', [PropertyController::class, 'invoices'])->name('admin.properties.invoices.index');
     Route::get('properties/{id}/past_tenant', [PropertyController::class, 'pastTenant'])->name('admin.properties.past.tenant');
     Route::get('properties/{id}/current_tenant', [PropertyController::class, 'currentTenant'])->name('admin.properties.current.tenant');
-    Route::get('properties/{id}/view/jobs/quotes', [PropertyController::class, 'quotes'])->name('admin.properties.viewjobs.quotes');
-    
+    Route::get('properties/{id}/jobs/quotes', [PropertyController::class, 'quotes'])->name('admin.properties.viewjobs.quotes');
 
     // Property Types
     Route::get('settings/propertyType', [PropertyTypeController::class, 'index'])->name('admin.settings.propertyType');
@@ -171,12 +176,14 @@ Route::middleware(['admin', 'verified:admin.login', 'role:admin,admin'])->group(
     Route::get('/jobs/custom/{id}/create', [JobsController::class, 'customCreate'])->name('admin.jobs.custom.create');
     Route::post('/jobs/store', [JobsController::class,'store'])->name('admin.jobs.store');
     Route::get('/jobs/{id}/edit', [JobsController::class, 'edit'])->name('admin.jobs.edit');
-    Route::get('/jobs/{id}/edit/contractor_list', [JobsController::class, 'editContractorList'])->name('admin.jobs.edit.contractorList');
     Route::post('/jobs/{id}/update', [JobsController::class, 'update'])->name('admin.jobs.update');
     Route::post('/jobs/{id}/update/contractor_list', [JobsController::class, 'updateContractorList'])->name('admin.jobs.update.contractor_list');
     Route::post('jobs/{id}/destroy', [JobsController::class, 'destroy'])->name('admin.jobs.destroy');
     Route::get('jobs/{id}/show', [JobsController::class,'show'])->name('admin.jobs.show');
     Route::get('/jobs/search', [JobsController::class,'searchData'])->name('admin.jobs.search');
+
+    //Jobs Tabs
+    Route::get('jobs/{id}/contractor_list', [JobsController::class, 'editContractorList'])->name('admin.jobs.edit.contractorList');
 
     //invoices
     Route::get('accounts/invoices', [InvoicesController::class, 'index'])->name('admin.invoices');
@@ -374,6 +381,8 @@ Route::middleware(['admin', 'verified:admin.login', 'role:admin,admin'])->group(
     Route::post('inspection/fill/{id}/survey', [InspectionController::class, 'surveySubmit'])->name('admin.inspection.survey.submit');
     Route::get('inspection/{id}/pdf', [InspectionController::class, 'downloadPdf'])->name('admin.inspection.downloadPdf');
 
+    //Logs
+    Route::get('logs', [LogsController::class, 'index'])->name('admin.logs.index');
 });
 
 

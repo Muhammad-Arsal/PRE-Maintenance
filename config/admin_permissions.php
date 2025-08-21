@@ -11,6 +11,7 @@ return [
     'jobs' => 'Jobs',
     'tasks' => 'Tasks',
     'diary' => 'Diary',
+    'logs' => 'Logs',
     'settings.admins' => 'Settings: Admins',
     'settings.task_tray' => 'Settings: Task Tray',
     'settings.event_type' => 'Settings: Event Type',
@@ -21,5 +22,8 @@ return [
     'settings.contractor_types' => 'Settings: Contractor Types',
     'settings.inspection_questions' => 'Settings: Inspection Questions',
 ];
+
+
+
 
 

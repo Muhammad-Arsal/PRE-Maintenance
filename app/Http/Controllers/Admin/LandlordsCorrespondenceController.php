@@ -83,7 +83,7 @@ class LandlordsCorrespondenceController extends Controller
             $data = $request->except('_token');
             $admin_id = auth()->guard('admin')->user()->id;
 
-            $documents = \DB::table('general_correspondence_files')->insert([
+            $documents = GeneralCorrespondenceFiles::create([
                 'parent_id'  =>   0,
                 'text' => $data['comment'],
                 'created_at'    => Carbon::now(),
@@ -129,15 +129,12 @@ class LandlordsCorrespondenceController extends Controller
 
         $commentData = explode("+", $commentData);
 
-        $comment = \DB::table('general_correspondence_files')->where('id', $commentData[0])->update([
+        $comment = GeneralCorrespondenceFiles::where('id', $commentData[0])->update([
             'text' => $newComment,
         ]);
 
         if ($comment) {
-            return response()->json([
-                'success' => true,
-                'comment' => $comment
-            ]);
+            return "hello";
         }
     }
 
@@ -294,7 +291,7 @@ class LandlordsCorrespondenceController extends Controller
                         $original_link = $parent->link . '/' . $file_name;
                     }
 
-                    $documentsId = \DB::table('general_correspondence_files')->insertGetId([
+                    $documentsId = GeneralCorrespondenceFiles::create([
                         'parent_id'  => $parent_id,
                         'file_name'      => $filename,
                         'original_name' => $file_name,

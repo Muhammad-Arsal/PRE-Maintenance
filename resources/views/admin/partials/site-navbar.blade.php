@@ -67,6 +67,11 @@
           href="{{ route('admin.diary') }}"><i class="la la-calendar"></i><span class="menu-title">Diary</span></a>
       </li>
       @endcan
+      @can('logs')
+      <li class="nav-item"><a class="{{ Request::segment(2) == 'logs' ? 'active' :''}}"
+          href="{{ route('admin.logs.index') }}"><i class="la la-gear"></i><span class="menu-title">Logs</span></a>
+      </li>
+      @endcan
       @can('settings.admins')
       <li class="nav-item has-sub {{ Request::segment(2) == 'settings' ? 'open' :''}}"><a href="javascript:void(0)"><i
             class="la la-cog"></i><span class="menu-title">Settings</span>

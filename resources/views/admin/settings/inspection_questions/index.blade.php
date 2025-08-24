@@ -84,7 +84,7 @@
                                     @php $j=1 @endphp
                                     <?php
                                         if($inspectionQuestions->currentPage() !== 1){
-                                            $j =  $per_page * ( $admins->currentPage() - 1) + 1;
+                                            $j =  10 * ( $inspectionQuestions->currentPage() - 1) + 1;
                                         }
                                     ?>
                                     @forelse($inspectionQuestions as $data)

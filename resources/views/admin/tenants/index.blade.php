@@ -108,7 +108,7 @@
                                             <td>{{ $data['name'] }}</td>
                                             <td>
                                                 @if($data->property && $data->property->id)
-                                                    <a href="{{ route('admin.properties.show', $data->property->id) }}">
+                                                    <a href="{{ route('admin.properties.edit', $data->property->id) }}">
                                                         {{ $data->property->line1 . ', ' . $data->property->city . ', ' . $data->property->county . ', ' . $data->property->postcode }}
                                                     </a>
                                                 @else

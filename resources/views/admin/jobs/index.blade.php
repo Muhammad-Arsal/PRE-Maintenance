@@ -126,7 +126,7 @@
                                             <td>{{ $item->priority ?? 'Not Set' }}</td>
                                             {{-- <td>{{ $item->description ?? 'Not Set' }}</td> --}}
                                             <td>
-                                                <a href="{{ route('admin.properties.show', $item->property_id) }}">
+                                                <a href="{{ route('admin.properties.edit', $item->property_id) }}">
                                                     {{ $item->property->line1 . ', ' . $item->property->city . ', ' . $item->property->county . ', ' . $item->property->postcode }}
                                                 </a>
                                             </td>

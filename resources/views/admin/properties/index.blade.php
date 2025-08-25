@@ -163,12 +163,12 @@
                                             <td><strong>{{ $j }}</strong></td>
                                             <td>{{$data->id}}</td>
                                             <td>
-                                                <a href="{{ isset($data->landlord) ? route('admin.settings.landlords.show', $data->landlord->id) : '#' }}">
+                                                <a href="{{ isset($data->landlord) ? route('admin.settings.landlords.edit', $data->landlord->id) : '#' }}">
                                                     {{ $data->landlord->name ?? "" }}
                                                 </a>
                                             </td>
                                             <td>
-                                                <a href="{{ isset($data->tenant) ? route('admin.settings.tenants.show', $data->tenant->id) : '#' }}">
+                                                <a href="{{ isset($data->tenant) ? route('admin.settings.tenants.edit', $data->tenant->id) : '#' }}">
                                                     {{ $data->tenant->name ?? "" }}
                                                 </a>
                                             </td>                                            

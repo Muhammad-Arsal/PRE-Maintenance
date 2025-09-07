@@ -58,7 +58,7 @@
                                                     <div class="row contractor-row mb-2">
                                                         <div class="col-md-6">
                                                             <label>Contractor</label>
-                                                            <select name="contractors[{{ $loop->index }}][contractor_id]" class="form-control contractor-select">
+                                                            <select name="contractors[{{ $loop->index }}][contractor_id]" class="form-control select2">
                                                                 <option value="">Select Contractor</option>
                                                                 @foreach($contractors as $c)
                                                                     <option value="{{ $c->id }}" {{ $c->id == $i ? 'selected' : '' }}>{{ $c->name }}</option>
@@ -213,8 +213,13 @@
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script>
+    $(function() {
+        $('.select2').select2();
+    })
+</script>
 
 <script>
      document.addEventListener("DOMContentLoaded", function() {

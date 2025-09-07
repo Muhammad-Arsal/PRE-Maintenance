@@ -2,6 +2,7 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('dashboard/plugins/new-multi-select/filter_multi_select.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
     <style>
         @keyframes check {
             0% {
@@ -180,7 +181,7 @@
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <label for="property">Property</label>
-                                                            <select name="property[]" class="form-control" required>
+                                                            <select name="property[]" class="form-control select2" required>
                                                                 <option value="">Select a property</option>
 
                                                                 @foreach ($properties as $property)
@@ -202,7 +203,7 @@
                                                 <div class="form-group">
                                                     <label for="platform_users">External User Name</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="external_user_name" class="form-control {{ $errors->has('external_user_name') ? 'error' : '' }}" placeholder="External User Name" name="external_user_name" value="" aria-invalid="true">
+                                                        <input type="text" id="external_user_name" class="form-control {{ $errors->has('external_user_name') ? 'error' : '' }}" name="external_user_name" value="" aria-invalid="true">
                                                         <div class="form-control-position">
                                                             <i class="la la-user"></i>
                                                         </div>
@@ -217,7 +218,7 @@
                                                 <div class="form-group">
                                                     <label for="platform_users">External User Email</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="email" id="external_user" class="form-control {{ $errors->has('external_user') ? 'error' : '' }}" placeholder="External User Email" name="external_user" value="" aria-invalid="true">
+                                                        <input type="email" id="external_user" class="form-control {{ $errors->has('external_user') ? 'error' : '' }}" name="external_user" value="" aria-invalid="true">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -232,7 +233,7 @@
                                                 <div class="form-group">
                                                     <label for="cc">CC</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="email" id="cc" class="form-control {{ $errors->has('cc') ? 'error' : '' }}" placeholder="CC" name="cc" value="" aria-invalid="true">
+                                                        <input type="email" id="cc" class="form-control {{ $errors->has('cc') ? 'error' : '' }}" name="cc" value="" aria-invalid="true">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -249,7 +250,7 @@
                                                 <div class="form-group">
                                                     <label for="address_main_contact">Address Main Contact</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <textarea id="address_main_contact" name="address_main_contact" class="form-control {{ $errors->has('address_main_contact') ? 'error' : '' }}" placeholder="Address Main Contact">{{ old('address_main_contact') ? old('address_main_contact') : '' }}</textarea>
+                                                        <textarea id="address_main_contact" name="address_main_contact" class="form-control {{ $errors->has('address_main_contact') ? 'error' : '' }}">{{ old('address_main_contact') ? old('address_main_contact') : '' }}</textarea>
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
                                                         </div>
@@ -303,7 +304,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="date"
                                                             class="form-control pickadate {{ $errors->has('date') ? 'error' : '' }}"
-                                                            placeholder="Date From" name="date"
+                                                            name="date"
                                                             value="{{ old('date') ? old('date') : '' }}" />
                                                         <div class="form-control-position">
                                                             <i class="la la-calendar"></i>
@@ -321,7 +322,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="date_to"
                                                             class="form-control pickadate {{ $errors->has('date_to') ? 'error' : '' }}"
-                                                            placeholder="Date To" name="date_to"
+                                                            name="date_to"
                                                             value="{{ old('date_to') ? old('date_to') : '' }}" />
                                                         <div class="form-control-position">
                                                             <i class="la la-calendar"></i>
@@ -341,7 +342,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" autocomplete="off"
                                                             class="form-control pickatime picker__input mandatory"
-                                                            id="time_from" name="time_from" placeholder="Time From">
+                                                            id="time_from" name="time_from">
                                                         <div class="form-control-position">
                                                             <i class="la la-clock-o"></i>
                                                         </div>
@@ -354,7 +355,7 @@
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" autocomplete="off"
                                                             class="form-control pickatime picker__input mandatory"
-                                                            id="time_to" name="time_to" placeholder="Time To">
+                                                            id="time_to" name="time_to">
                                                         <div class="form-control-position">
                                                             <i class="la la-clock-o"></i>
                                                         </div>
@@ -373,7 +374,7 @@
                                         <div class="form-group">
                                             <label for="description">Add Description</label>
                                             <div class="position-relative has-icon-left">
-                                                <textarea class="form-control {{ $errors->has('description') ? 'error' : '' }}" rows="6" placeholder="Add Description" name="description" id="description">{{ old('description') ? old('description') : '' }}</textarea>
+                                                <textarea class="form-control {{ $errors->has('description') ? 'error' : '' }}" rows="6" name="description" id="description">{{ old('description') ? old('description') : '' }}</textarea>
                                                 <div class="form-control-position">
                                                     <i class="la la-align-justify"></i>
                                                 </div>
@@ -441,6 +442,10 @@
     <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.date.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.time.js') }}"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/daterange/daterangepicker.js') }}"></script>
+    <script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+    <script>
+        $(function() { $('.select2').select2(); })
+    </script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/dateTime/inputmask.min.js') }}"></script>
 
     <script type="text/javascript">

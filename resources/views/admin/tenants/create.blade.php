@@ -40,8 +40,7 @@
                                                     <div class="form-group">
                                                         <label for="name"><span style="color: red;">*</span>Name</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="name_0" class="form-control"
-                                                                placeholder="First name" name="name[0]">
+                                                            <input type="text" id="name_0" class="form-control" name="name[0]">
                                                             <div class="form-control-position">
                                                                 <i class="la la-user"></i>
                                                             </div>
@@ -60,8 +59,7 @@
                                                     <div class="form-group">
                                                         <label for="phone_number">Phone Number</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="phone_number_0" class="form-control"
-                                                                placeholder="Phone number" name="phone_number[0]" >
+                                                            <input type="text" id="phone_number_0" class="form-control" name="phone_number[0]" >
                                                             <div class="form-control-position">
                                                                 <i class="la la-phone"></i>
                                                             </div>
@@ -75,7 +73,7 @@
                                                     <div class="form-group">
                                                         <label for="work_phone">Work Phone</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="work_phone_0" class="form-control" placeholder="Work phone" name="work_phone[0]">
+                                                            <input type="text" id="work_phone_0" class="form-control" name="work_phone[0]">
                                                             <div class="form-control-position">
                                                                 <i class="la la-phone"></i>
                                                             </div>
@@ -89,7 +87,7 @@
                                                     <div class="form-group">
                                                         <label for="home_phone">Home Phone</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="text" id="home_phone_0" class="form-control" placeholder="Home phone" name="home_phone[0]">
+                                                            <input type="text" id="home_phone_0" class="form-control" name="home_phone[0]">
                                                             <div class="form-control-position">
                                                                 <i class="la la-phone"></i>
                                                             </div>
@@ -103,8 +101,7 @@
                                                     <div class="form-group">
                                                         <label for="email"><span style="color: red;">*</span>Email</label>
                                                         <div class="position-relative has-icon-left">
-                                                            <input type="email" id="email_0" class="form-control" placeholder="Email"
-                                                                name="email[0]">
+                                                            <input type="email" id="email_0" class="form-control" name="email[0]">
                                                             <div class="form-control-position">
                                                                 <i class="la la-envelope"></i>
                                                             </div>
@@ -127,8 +124,7 @@
                                                 <div class="form-group">
                                                     <label for="password">Password</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="password" id="password" class="form-control"
-                                                            placeholder="Password" name="password"  />
+                                                        <input type="password" id="password" class="form-control" name="password"  />
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
@@ -142,8 +138,7 @@
                                                 <div class="form-group">
                                                     <label for="confirmPassword">Confirm Password</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="password" id="password_confirmation" class="form-control"
-                                                            placeholder="Confirm Password" name="password_confirmation">
+                                                        <input type="password" id="password_confirmation" class="form-control" name="password_confirmation">
                                                         <div class="form-control-position">
                                                             <i class="la la-lock"></i>
                                                         </div>
@@ -202,7 +197,7 @@
                                                     <label for="contract_start">Contract Start</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="contract_start" class="form-control datepicker" name="contract_start_display"
-                                                            value="{{ old('contract_start_display') }}" placeholder="DD/MM/YYYY">
+                                                            value="{{ old('contract_start_display') }}">
                                                         <input type="hidden" id="contract_start_hidden" name="contract_start"
                                                             value="{{ old('contract_start') }}">
                                                         <div class="form-control-position">
@@ -217,7 +212,7 @@
                                                     <label for="contract_end">Contract End</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="contract_end" class="form-control datepicker" name="contract_end_display"
-                                                            value="{{ old('contract_end_display') }}" placeholder="DD/MM/YYYY">
+                                                            value="{{ old('contract_end_display') }}">
                                                         <input type="hidden" id="contract_end_hidden" name="contract_end"
                                                             value="{{ old('contract_end') }}">
                                                         <div class="form-control-position">
@@ -232,7 +227,7 @@
                                                 <div class="form-group">
                                                     <label for="deposit">Deposit</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="deposit" class="form-control" placeholder="Enter deposit amount" name="deposit" value="{{ old('deposit') }}">
+                                                        <input type="text" id="deposit" class="form-control" name="deposit" value="{{ old('deposit') }}">
                                                         <div class="form-control-position" style="top: -2px;">
                                                             £ 
                                                         </div>
@@ -247,7 +242,7 @@
                                                 <div class="form-group">
                                                     <label for="date_left_property">Date Left Property</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date_left_property" class="form-control datepicker" placeholder="DD/MM/YYYY" name="date_left_property_display" value="{{ old('date_left_property_display') }}">
+                                                        <input type="text" id="date_left_property" class="form-control datepicker" name="date_left_property_display" value="{{ old('date_left_property_display') }}">
                                                         <input type="hidden" id="date_left_property_hidden" name="date_left_property"
                                                         value="{{ old('date_left_property') }}">
                                                         <div class="form-control-position">

@@ -2,6 +2,7 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('dashboard/plugins/new-multi-select/filter_multi_select.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
     <style>
         @keyframes check {
             0% {
@@ -154,7 +155,7 @@
                                                     <select
                                                     name="property[]"
                                                     id="property"
-                                                    class="form-control {{ $errors->has('property') ? 'error' : '' }}"
+                                                    class="form-control {{ $errors->has('property') ? 'error' : '' }} select2"
                                                     >
                                                     <option value="">Select a property</option>
                                                     @foreach($properties as $property)
@@ -167,7 +168,6 @@
                                                     @endforeach
                                                     </select>
                                                     <div class="form-control-position">
-                                                    <i class="la la-building"></i>
                                                     </div>
                                                 </div>
                                                 @if($errors->has('property'))
@@ -421,6 +421,12 @@
     <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.time.js') }}"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/daterange/daterangepicker.js') }}"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/dateTime/inputmask.min.js') }}"></script>
+    <script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+    <script>
+        $(function() {
+            $('.select2').select2();
+        })
+    </script>
 
     <script type="text/javascript">
         $(function() {

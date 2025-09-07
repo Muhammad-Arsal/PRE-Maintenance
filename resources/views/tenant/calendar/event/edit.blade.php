@@ -2,6 +2,7 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('dashboard/plugins/new-multi-select/filter_multi_select.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
 @endsection
 
 @section('content')
@@ -58,7 +59,7 @@
                                                 <label for="property">Properties</label>
                                                 <div class="position-relative has-icon-left">
                                                     <select name="property[]" id="property" readonly
-                                                    class="form-control {{ $errors->has('property') ? 'error' : '' }}">
+                                                    class="select2 form-control {{ $errors->has('property') ? 'error' : '' }}">
                                                     @foreach ($properties as $property)
                                                         @if (collect($event_property)->pluck('platform_user_id')->contains($property->id))
                                                             <option selected value="{{ $property->id }}">
@@ -436,6 +437,12 @@
     <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.time.js') }}"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/daterange/daterangepicker.js') }}"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/dateTime/inputmask.min.js') }}"></script>
+    <script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+    <script>
+        $(function() {
+            $('.select2').select2();
+        })
+    </script>
 
     <script type="text/javascript">
         $(function() {

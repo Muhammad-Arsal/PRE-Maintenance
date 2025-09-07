@@ -439,3 +439,26 @@ div.toast-success {
     width: 50px;
 }
 
+/* Modal Centering Fix */
+.modal {
+    text-align: center !important;
+}
+
+.modal-dialog {
+    display: inline-block !important;
+    text-align: left !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 30vh !important;
+}
+
+
+/* Global form label styling */
+:root {
+    --form-label-font-weight: 600;
+}
+
+label {
+    font-weight: var(--form-label-font-weight);
+}
+

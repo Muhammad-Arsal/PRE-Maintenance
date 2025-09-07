@@ -173,7 +173,7 @@
                                                 <div class="col-md-6 mt-2">
                                                     <div class="form-group">
                                                         <label>Date <span class="text-danger">*</span></label>
-                                                        <input type="text" name="date[0]" class="form-control flatpickr date" placeholder="DD/MM/YYYY" required>
+                                                        <input type="text" name="date[0]" class="form-control flatpickr date" required>
                                                     </div>
                                                 </div>
                                         
@@ -181,7 +181,7 @@
                                                 <div class="col-md-6 mt-2">
                                                     <div class="form-group">
                                                         <label>Price</label>
-                                                        <input type="text" name="price[0]" class="form-control price" placeholder="Enter price">
+                                                        <input type="text" name="price[0]" class="form-control price">
                                                     </div>
                                                 </div>
                                             </div>

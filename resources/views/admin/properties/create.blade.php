@@ -2,6 +2,8 @@
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
 @endsection
 
 @section('content')
@@ -38,7 +40,7 @@
                                                 <div class="form-group">
                                                     <label for="landlord">Landlord</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <select id="landlord" class="form-control" name="landlord">
+                                                        <select id="landlord" class="form-control select2" name="landlord">
                                                             <option value="">Select Landlord</option>
                                                             @foreach($landlords as $landlord)
                                                                 <option value="{{ $landlord->id }}" {{ old('landlord', $property->landlord ?? '') == $landlord->id ? 'selected' : '' }}>
@@ -47,7 +49,6 @@
                                                             @endforeach
                                                         </select>
                                                         <div class="form-control-position">
-                                                            <i class="la la-user"></i>
                                                         </div>
                                                     </div>
                                                     @error('landlord') <span class="text-danger">{{ $message }}</span> @enderror
@@ -80,7 +81,7 @@
                                                 <div class="form-group">
                                                     <label for="bedrooms">No. of Bedrooms</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="bedrooms" class="form-control" placeholder="Number of Bedrooms" name="bedrooms" value="{{ old('bedrooms', $property->bedrooms ?? '') }}">
+                                                        <input type="text" id="bedrooms" class="form-control" name="bedrooms" value="{{ old('bedrooms', $property->bedrooms ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-bed"></i>
                                                         </div>
@@ -96,7 +97,7 @@
                                                     <label for="monthly_rent">Monthly Rent</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="monthly_rent" class="form-control pl-4" placeholder="Monthly Rent" name="monthly_rent" 
+                                                        <input type="text" id="monthly_rent" class="form-control pl-4" name="monthly_rent" 
                                                             value="{{ old('monthly_rent', $property->monthly_rent ?? '') }}">
                                                     </div>
                                                     @error('monthly_rent') <span class="text-danger">{{ $message }}</span> @enderror
@@ -107,7 +108,7 @@
                                                 <div class="form-group">
                                                     <label for="number_of_floors">Number of Floors</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="number_of_floors" class="form-control" placeholder="Number of Floors" name="number_of_floors" 
+                                                        <input type="text" id="number_of_floors" class="form-control" name="number_of_floors" 
                                                             value="{{ old('number_of_floors', $property->number_of_floors ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
@@ -122,7 +123,7 @@
                                                     <label for="gas_certificate_due">Gas Certificate Due</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="gas_certificate_due" class="form-control datepicker" name="gas_certificate_due_display"
-                                                            value="{{ old('gas_certificate_due_display') }}" placeholder="DD/MM/YYYY">
+                                                            value="{{ old('gas_certificate_due_display') }}">
                                                         <input type="hidden" id="gas_certificate_due_hidden" name="gas_certificate_due"
                                                             value="{{ old('gas_certificate_due') }}">
                                                         <div class="form-control-position">
@@ -141,7 +142,7 @@
                                                     <label for="eicr_due">EICR Due</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="eicr_due" class="form-control datepicker" name="eicr_due_display"
-                                                            value="{{ old('eicr_due_display') }}" placeholder="DD/MM/YYYY">
+                                                            value="{{ old('eicr_due_display') }}">
                                                         <input type="hidden" id="eicr_due_hidden" name="eicr_due"
                                                             value="{{ old('eicr_due') }}">
                                                         <div class="form-control-position">
@@ -157,7 +158,7 @@
                                                     <label for="epc_due">EPC Due</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="epc_due" class="form-control datepicker" name="epc_due_display"
-                                                            value="{{ old('epc_due_display') }}" placeholder="DD/MM/YYYY">
+                                                            value="{{ old('epc_due_display') }}">
                                                         <input type="hidden" id="epc_due_hidden" name="epc_due"
                                                             value="{{ old('epc_due') }}">
                                                         <div class="form-control-position">
@@ -268,7 +269,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_1">Address Line 1</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_1" class="form-control" placeholder="Address Line 1" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
+                                                        <input type="text" id="address_line_1" class="form-control" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -281,7 +282,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_2">Address Line 2</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_2" class="form-control" placeholder="Address Line 2" name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
+                                                        <input type="text" id="address_line_2" class="form-control" name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -294,7 +295,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_3">Address Line 3</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_3" class="form-control" placeholder="Address Line 3" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
+                                                        <input type="text" id="address_line_3" class="form-control" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -309,7 +310,7 @@
                                                 <div class="form-group">
                                                     <label for="city">City</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="city" class="form-control" placeholder="City" name="city" value="{{ old('city', $property->city ?? '') }}">
+                                                        <input type="text" id="city" class="form-control" name="city" value="{{ old('city', $property->city ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
                                                         </div>
@@ -322,7 +323,7 @@
                                                 <div class="form-group">
                                                     <label for="county">County</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="county" class="form-control" placeholder="County" name="county" value="{{ old('county', $property->county ?? '') }}">
+                                                        <input type="text" id="county" class="form-control" name="county" value="{{ old('county', $property->county ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map"></i>
                                                         </div>
@@ -335,7 +336,7 @@
                                                 <div class="form-group">
                                                     <label for="postal_code">Postal Code</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="postal_code" class="form-control" placeholder="Postal Code" name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
+                                                        <input type="text" id="postal_code" class="form-control" name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -349,7 +350,7 @@
                                                 <div class="form-group">
                                                     <label for="country"><span style="color: red;">*</span>Country</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="country" class="form-control" placeholder="Country" 
+                                                        <input type="text" id="country" class="form-control" 
                                                             name="country" value="{{ old('country', $property->country ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
@@ -364,7 +365,7 @@
 
                                         <div class="form-group">
                                             <label for="note">Note</label>
-                                            <textarea id="note" class="form-control" name="note" rows="4" placeholder="Enter your note here...">{{ old('note', $property->note ?? '') }}</textarea>
+                                            <textarea id="note" class="form-control" name="note" rows="4">{{ old('note', $property->note ?? '') }}</textarea>
                                             @error('note') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
                                         
@@ -392,6 +393,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script>
+    $(function() { $('.select2').select2(); })
+</script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script>
+    $(function() {
+        $('.select2').select2();
+    })
+</script>
 
 <script>
     $(document).ready(function () {

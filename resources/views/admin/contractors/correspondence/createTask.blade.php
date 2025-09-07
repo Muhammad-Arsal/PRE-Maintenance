@@ -36,8 +36,8 @@
                                             <label for="name">Task Description</label>
                                             <div class="position-relative has-icon-left">
                                                 <textarea name="description" id="description"
-                                                    class="form-control {{ $errors->has('description') ? 'error' : '' }}"
-                                                    placeholder="Task Description"></textarea>
+                                                    class="form-control {{ $errors->has('description') ? 'error' : '' }}">
+                                                </textarea>
                                                 <div class="form-control-position">
                                                     <i class="la la-align-justify"></i>
                                                 </div>
@@ -158,7 +158,7 @@
                                                             <label for="due_date">Due Date</label>
                                                             <div class="position-relative has-icon-left">
                                                                 <input type="text" class="form-control pickadate picker__input"
-                                                                    name="due_date" placeholder="Due Date">
+                                                                    name="due_date">
                                                                 <div class="form-control-position">
                                                                     <i class="la la-calendar"></i>
                                                                 </div>
@@ -216,8 +216,7 @@
                                                     <label for="notes">Add Notes</label>
                                                     <div class="position-relative has-icon-left">
                                                         <textarea name="notes" cols="6" rows="6" id="notes"
-                                                            class="form-control"
-                                                            placeholder="Add Notes">{{ old('notes') ? old('notes') : '' }}</textarea>
+                                                            class="form-control">{{ old('notes') ? old('notes') : '' }}</textarea>
                                                         <div class="form-control-position">
                                                             <i class="la la-align-justify"></i>
                                                         </div>
@@ -232,7 +231,7 @@
                                             
                                         </div>
                                         <div class="form-actions right">
-                                            <a href="{{ route('admin.tasks') }}" class="theme-btn btn btn-primary">
+                                            <a href="{{ route('admin.contractors.correspondence', $contractor) }}" class="theme-btn btn btn-primary">   
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">
@@ -258,7 +257,7 @@
                                                             <div class="position-relative has-icon-left remidner--date">
                                                                 <input type="text"
                                                                     class="form-control pickadate picker__input mandatory"
-                                                                    id="reminder_date" placeholder="Date">
+                                                                    id="reminder_date">
                                                                 <div class="form-control-position">
                                                                     <i class="la la-calendar"></i>
                                                                 </div>
@@ -269,7 +268,7 @@
                                                             <div class="position-relative has-icon-left">
                                                                 <input type="text"
                                                                     class="form-control pickatime picker__input mandatory"
-                                                                    id="reminder_time" placeholder="Time">
+                                                                    id="reminder_time">
                                                                 <div class="form-control-position">
                                                                     <i class="la la-time"></i>
                                                                 </div>
@@ -281,7 +280,7 @@
                                                             <label for="reminder_name">Name</label>
                                                             <div class="position-relative has-icon-left">
                                                                 <input type="text" class="form-control mandatory"
-                                                                    id="reminder_name" placeholder="Name" />
+                                                                    id="reminder_name" />
                                                                 <div class="form-control-position">
                                                                     <i class="la la-commenting"></i>
                                                                 </div>
@@ -291,8 +290,7 @@
                                                             <label for="reminder_description">Description</label>
                                                             <div class="position-relative has-icon-left">
                                                                 <textarea class="form-control mandatory"
-                                                                    id="reminder_description"
-                                                                    placeholder="Description"></textarea>
+                                                                    id="reminder_description"></textarea>
                                                                 <div class="form-control-position">
                                                                     <i class="la la-commenting"></i>
                                                                 </div>
@@ -328,7 +326,7 @@
                                                             <div class="position-relative has-icon-left remidner--date">
                                                                 <input type="text"
                                                                     class="form-control pickadate picker__input mandatory"
-                                                                    id="reminder_view_date" placeholder="Date">
+                                                                    id="reminder_view_date">
                                                                 <div class="form-control-position">
                                                                     <i class="la la-calendar"></i>
                                                                 </div>
@@ -339,7 +337,7 @@
                                                             <div class="position-relative has-icon-left">
                                                                 <input type="text"
                                                                     class="form-control pickatime picker__input mandatory"
-                                                                    id="reminder_view_time" placeholder="Time">
+                                                                    id="reminder_view_time">
                                                                 <div class="form-control-position">
                                                                     <i class="la la-time"></i>
                                                                 </div>
@@ -351,7 +349,7 @@
                                                             <label for="reminder_view_name">Name</label>
                                                             <div class="position-relative has-icon-left">
                                                                 <input type="text" class="form-control mandatory"
-                                                                    id="reminder_view_name" placeholder="Name" />
+                                                                    id="reminder_view_name" />
                                                                 <div class="form-control-position">
                                                                     <i class="la la-commenting"></i>
                                                                 </div>
@@ -361,8 +359,7 @@
                                                             <label for="reminder_view_description">Description</label>
                                                             <div class="position-relative has-icon-left">
                                                                 <textarea class="form-control mandatory"
-                                                                    id="reminder_view_description"
-                                                                    placeholder="Description"></textarea>
+                                                                    id="reminder_view_description"></textarea>
                                                                 <div class="form-control-position">
                                                                     <i class="la la-commenting"></i>
                                                                 </div>

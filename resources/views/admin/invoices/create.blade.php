@@ -79,7 +79,7 @@
                                                 <div class="form-group">
                                                     <label for="reference">Reference</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="reference" class="form-control" placeholder="Reference" name="reference" value="{{ old('reference', $property->reference ?? '') }}">
+                                                        <input type="text" id="reference" class="form-control" name="reference" value="{{ old('reference', $property->reference ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-tag"></i> 
                                                         </div>
@@ -92,7 +92,7 @@
                                                 <div class="form-group">
                                                     <label for="date"><span style="color: red;">*</span>Date</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="date" class="form-control flatpickr" placeholder="DD/MM/YYYY" name="date" value="">
+                                                        <input type="text" id="date" class="form-control flatpickr" name="date" value="">
                                                         <div class="form-control-position">
                                                             <i class="la la-calendar"></i>
                                                         </div>
@@ -110,7 +110,7 @@
                                                     <label for="subtotal">Subtotal</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="subtotal" class="form-control pl-4 auto-format" placeholder="Subtotal" name="subtotal" value="0.00">
+                                                        <input type="text" id="subtotal" class="form-control pl-4 auto-format" name="subtotal" value="0.00">
 
                                                     </div>
                                                     @error('subtotal') <span class="text-danger">{{ $message }}</span> @enderror
@@ -122,7 +122,7 @@
                                                     <label for="vat_rate">VAT Rate (%)</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">%</div> <!-- Percentage Symbol -->
-                                                        <input type="text" id="vat_rate" class="form-control pl-4 auto-format" placeholder="VAT Rate" name="vat_rate" 
+                                                        <input type="text" id="vat_rate" class="form-control pl-4 auto-format" name="vat_rate" 
                                                             value="{{ number_format(\DB::table('general_settings')->value('vat_rate'), 2) }}">
 
                                                     </div>
@@ -135,7 +135,7 @@
                                                     <label for="vat">VAT</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="vat" class="form-control pl-4" placeholder="VAT" name="vat" 
+                                                        <input type="text" id="vat" class="form-control pl-4" name="vat" 
                                                             value="0.00">
                                                     </div>
                                                     @error('vat') <span class="text-danger">{{ $message }}</span> @enderror
@@ -147,7 +147,7 @@
                                                     <label for="total">Total</label>
                                                     <div class="position-relative has-icon-left">
                                                         <div class="form-control-position" style="top: -2px;">£</div> <!-- Pound Symbol -->
-                                                        <input type="text" id="total" class="form-control pl-4" placeholder="Total" name="total" 
+                                                        <input type="text" id="total" class="form-control pl-4" name="total" 
                                                             value="0.00">
                                                     </div>
                                                     @error('total') <span class="text-danger">{{ $message }}</span> @enderror
@@ -205,7 +205,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_1"><span style="color: red;">*</span>Address Line 1</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_1" class="form-control" placeholder="Address Line 1" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
+                                                        <input type="text" id="address_line_1" class="form-control" name="address_line_1" value="{{ old('address_line_1', $property->address_line_1 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -218,7 +218,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_2">Address Line 2</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_2" class="form-control" placeholder="Address Line 2" name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
+                                                        <input type="text" id="address_line_2" class="form-control" name="address_line_2" value="{{ old('address_line_2', $property->address_line_2 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -231,7 +231,7 @@
                                                 <div class="form-group">
                                                     <label for="address_line_3">Address Line 3</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="address_line_3" class="form-control" placeholder="Address Line 3" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
+                                                        <input type="text" id="address_line_3" class="form-control" name="address_line_3" value="{{ old('address_line_3', $property->address_line_3 ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map-marker"></i>
                                                         </div>
@@ -246,7 +246,7 @@
                                                 <div class="form-group">
                                                     <label for="city"><span style="color: red;">*</span>City</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="city" class="form-control" placeholder="City" name="city" value="{{ old('city', $property->city ?? '') }}">
+                                                        <input type="text" id="city" class="form-control" name="city" value="{{ old('city', $property->city ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-building"></i>
                                                         </div>
@@ -259,7 +259,7 @@
                                                 <div class="form-group">
                                                     <label for="county"><span style="color: red;">*</span>County</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="county" class="form-control" placeholder="County" name="county" value="{{ old('county', $property->county ?? '') }}">
+                                                        <input type="text" id="county" class="form-control" name="county" value="{{ old('county', $property->county ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-map"></i>
                                                         </div>
@@ -272,7 +272,7 @@
                                                 <div class="form-group">
                                                     <label for="postal_code"><span style="color: red;">*</span>Postal Code</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="postal_code" class="form-control" placeholder="Postal Code" name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
+                                                        <input type="text" id="postal_code" class="form-control" name="postal_code" value="{{ old('postal_code', $property->postal_code ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-envelope"></i>
                                                         </div>
@@ -287,7 +287,7 @@
                                                 <div class="form-group">
                                                     <label for="country"><span style="color: red;">*</span>Country</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <input type="text" id="country" class="form-control" placeholder="Country" 
+                                                        <input type="text" id="country" class="form-control" 
                                                             name="country" value="{{ old('country', $property->country ?? '') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
@@ -302,7 +302,7 @@
 
                                         <div class="form-group">
                                             <label for="description"><span style="color: red;">*</span>Description</label>
-                                            <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter your description here...">{{ old('description', $property->description ?? '') }}</textarea>
+                                            <textarea id="description" class="form-control" name="description" rows="4">{{ old('description', $property->description ?? '') }}</textarea>
                                             @error('description') <span class="text-danger">{{ $message }}</span> @enderror
                                         </div>
 

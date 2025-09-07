@@ -2,6 +2,7 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/new-multi-select/filter_multi_select.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
     <style>
         .fc-daygrid-dot-event {
             flex-wrap: wrap;
@@ -327,7 +328,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="property">Property</label>
-                                        <select name="property[]" class="form-control">
+                                        <select name="property[]" class="form-control select2">
                                             @foreach ($properties as $property)
                                                 <option value="{{ $property->id }}">{{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->country . ', ' . $property->postcode }}</option>
                                             @endforeach
@@ -498,6 +499,10 @@
     <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.date.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.time.js') }}"></script>
     <script src="{{ asset('/dashboard/vendors/js/pickers/daterange/daterangepicker.js') }}"></script>
+    <script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+    <script>
+        $(function() { $('.select2').select2(); })
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var validate = $('#eventForm').validate({

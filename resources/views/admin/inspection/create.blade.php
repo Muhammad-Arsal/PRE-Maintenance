@@ -2,6 +2,7 @@
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
 @endsection
 
 @section('content')
@@ -78,14 +79,13 @@
                                                 <div class="form-group">
                                                 <label for="property_id">Property</label>
                                                 <div class="position-relative has-icon-left">
-                                                    <select id="property_id" name="property_id" class="form-control">
+                                                    <select id="property_id" name="property_id" class="form-control select2">
                                                     <option value="">Select Property</option>
                                                     @foreach ($allProperties as $property)
                                                         <option value="{{ $property->id }}">{{ $property->line1 . ', ' . $property->city . ', ' . $property->county . ', ' . $property->postcode }}</option>
                                                     @endforeach
                                                     </select>
                                                     <div class="form-control-position">
-                                                    <i class="la la-building"></i>
                                                     </div>
                                                 </div>
                                                 <span class="text-danger">@error('property_id'){{ $message }}@enderror</span>
@@ -180,6 +180,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script>
+    $(function() {
+        $('.select2').select2();
+    })
+</script>
 <script>
     $(document).ready(function() {
         // Initialize Flatpickr

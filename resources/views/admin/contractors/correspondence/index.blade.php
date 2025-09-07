@@ -1,6 +1,7 @@
 @extends('admin.partials.main')
 
 @section('css')
+    <link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
     <style>
         .borderless td {
             border: 0 !important;
@@ -677,7 +678,7 @@
 
                         <div class="form-group">
                             <label>contractor</label>
-                            <select name="contractor" class="form-control" id="contractor">
+                            <select name="contractor" class="form-control select2" id="contractor">
                                 <option value="">Choose contractor</option>
                                 @foreach ($contractors as $item)
                                     <option {{ $contractor->id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->name }}</option>
@@ -758,6 +759,10 @@
 @endsection
 
 @section('js')
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script>
+    $(function() { $('.select2').select2(); })
+</script>
 <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.date.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/dashboard/vendors/js/pickers/pickadate/picker.time.js') }}"></script>

@@ -232,7 +232,7 @@
                                             
                                         </div>
                                         <div class="form-actions right">
-                                            <a href="{{ route('admin.tasks') }}" class="theme-btn btn btn-primary">
+                                            <a href="{{ route('admin.tenants.correspondence', $tenant) }}" class="theme-btn btn btn-primary">
                                                 <i class="la la-times"></i> Cancel
                                             </a>
                                             <button type="submit" class="theme-btn btn btn-primary">

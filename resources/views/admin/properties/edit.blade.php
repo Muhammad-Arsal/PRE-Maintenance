@@ -2,6 +2,7 @@
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('/dashboard/vendors/css/forms/selects/select2.css') }}" />
 @endsection
 
 @section('content')
@@ -74,7 +75,7 @@
                                                 <div class="form-group">
                                                     <label for="landlord">Landlord</label>
                                                     <div class="position-relative has-icon-left">
-                                                        <select id="landlord" class="form-control" name="landlord">
+                                                        <select id="landlord" class="form-control select2" name="landlord">
                                                             <option value="">Select Landlord</option>
                                                             @foreach($landlords as $landlord)
                                                                 <option value="{{ $landlord->id }}" {{ old('landlord', $property->landlord_id ?? '') == $landlord->id ? 'selected' : '' }}>
@@ -83,7 +84,6 @@
                                                             @endforeach
                                                         </select>
                                                         <div class="form-control-position">
-                                                            <i class="la la-user"></i>
                                                         </div>
                                                     </div>
                                                     @error('landlord') <span class="text-danger">{{ $message }}</span> @enderror
@@ -318,6 +318,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{{ asset('/dashboard/vendors/js/forms/select/select2.js') }}" type="text/javascript"></script>
+<script>
+    $(function() {
+        $('.select2').select2();
+    })
+</script>
 
 <script>
     $(document).ready(function () {

@@ -281,7 +281,7 @@
                                                     <label for="country"><span style="color: red;">*</span>Country</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="country" class="form-control" placeholder="Country" 
-                                                            name="country" value="{{ old('country', $property->country ?? '') }}">
+                                                            name="country" value="{{ old('country', $property->country ?? 'United Kingdom') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
                                                         </div>

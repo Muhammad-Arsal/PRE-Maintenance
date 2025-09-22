@@ -352,7 +352,7 @@
                                                     <label for="country">Country</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="country" class="form-control" 
-                                                            name="country" value="{{ old('country', $contractor->country ?? '') }}">
+                                                            name="country" value="{{ old('country', $contractor->country ?? 'United Kingdom') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
                                                         </div>

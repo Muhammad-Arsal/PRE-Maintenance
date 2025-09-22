@@ -87,6 +87,26 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
+                                                    <label for="title">Title</label>
+                                                    <div class="position-relative has-icon-left">
+                                                        <select id="title" name="title" class="form-control">
+                                                            <option value="">Select Title</option>
+                                                            <option value="Mr" {{ old('title', $user->title ?? '') == 'Mr' ? 'selected' : '' }}>Mr</option>
+                                                            <option value="Mrs" {{ old('title', $user->title ?? '') == 'Mrs' ? 'selected' : '' }}>Mrs</option>
+                                                            <option value="Miss" {{ old('title', $user->title ?? '') == 'Miss' ? 'selected' : '' }}>Miss</option>
+                                                            <option value="Ms" {{ old('title', $user->title ?? '') == 'Ms' ? 'selected' : '' }}>Ms</option>
+                                                        </select>
+                                                        <div class="form-control-position">
+                                                            <i class="la la-user"></i>
+                                                        </div>
+                                                    </div>
+                                                    @error('title') 
+                                                        <span class="text-danger">{{ $message }}</span> 
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
                                                     <label for="fname">First Name</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="fname" class="form-control"
@@ -115,26 +135,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="title">Title</label>
-                                                    <div class="position-relative has-icon-left">
-                                                        <select id="title" name="title" class="form-control">
-                                                            <option value="">Select Title</option>
-                                                            <option value="Mr" {{ old('title', $user->title ?? '') == 'Mr' ? 'selected' : '' }}>Mr</option>
-                                                            <option value="Mrs" {{ old('title', $user->title ?? '') == 'Mrs' ? 'selected' : '' }}>Mrs</option>
-                                                            <option value="Miss" {{ old('title', $user->title ?? '') == 'Miss' ? 'selected' : '' }}>Miss</option>
-                                                            <option value="Ms" {{ old('title', $user->title ?? '') == 'Ms' ? 'selected' : '' }}>Ms</option>
-                                                        </select>
-                                                        <div class="form-control-position">
-                                                            <i class="la la-user"></i>
-                                                        </div>
-                                                    </div>
-                                                    @error('title') 
-                                                        <span class="text-danger">{{ $message }}</span> 
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
@@ -337,7 +338,7 @@
                                                     <label for="country">Country</label>
                                                     <div class="position-relative has-icon-left">
                                                         <input type="text" id="country" class="form-control" 
-                                                            name="country" value="{{ old('country', $property->country ?? '') }}">
+                                                            name="country" value="{{ old('country', $property->country ?? 'United Kingdom') }}">
                                                         <div class="form-control-position">
                                                             <i class="la la-globe"></i>
                                                         </div>

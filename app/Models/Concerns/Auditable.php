@@ -78,7 +78,7 @@ trait Auditable
                 $to   = $diff['to'] ?? '(empty)';
                 if ($url) {
                     $explored_array = explode('/', $url);
-                    if (!in_array('edit', $explored_array) && !in_array('settings', $explored_array)) {
+                    if (!in_array('edit', $explored_array) && !in_array('settings', $explored_array) && !in_array('reset-password', $explored_array)) {
                         if (count($explored_array) > 5) {
                             $module_name = $explored_array[4];
                             $tab_name = $explored_array[6];
